@@ -155,7 +155,7 @@ button{font:inherit;color:inherit}
 .origin{position:relative;height:460vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .counter{position:absolute;left:clamp(16px,max(6vw,112px),112px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
-.counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(96px,22vw,320px);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(78px,15vw,220px);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .counter .meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);display:flex;gap:22px}
 .counter .meta b{color:var(--signal);font-weight:500}
 .caption{position:absolute;right:clamp(16px,6vw,96px);top:clamp(110px,22vh,240px);max-width:min(30ch,80vw);text-align:right;font-size:clamp(20px,2.6vw,34px);line-height:1.2;text-wrap:balance;opacity:0}
@@ -307,10 +307,10 @@ footer a:hover{color:var(--signal)}
 
 /* ---------- life: the year odometer ---------- */
 .counter{pointer-events:auto}
-.counter .yr{display:flex;line-height:.82;cursor:default}
-.counter .dg{display:inline-block;height:.82em;overflow:hidden;position:relative;transition:transform .35s cubic-bezier(.2,.9,.3,1.4),color .4s,text-shadow .4s}
+.counter .yr{display:flex;line-height:1.3;cursor:default;margin-block:-.2em -.18em}
+.counter .dg{display:inline-block;height:1.3em;overflow:hidden;position:relative;transition:transform .35s cubic-bezier(.2,.9,.3,1.4),color .4s,text-shadow .4s}
 .counter .dg .strip{display:block;transition:transform .55s cubic-bezier(.2,.85,.25,1.12)}
-.counter .dg .strip span{display:block;height:.82em;line-height:.82em;text-align:center}
+.counter .dg .strip span{display:block;height:1.3em;line-height:1.3em;text-align:center}
 .counter .dg.hit{color:var(--signal);text-shadow:0 0 28px rgba(34,211,238,.55);transition:color 0s,text-shadow 0s}
 .counter:hover .yr{text-shadow:-3px 0 rgba(34,211,238,.6),3px 0 rgba(224,56,143,.5)}
 .counter .dg:hover{transform:translateY(-.06em) scaleY(1.04);color:var(--signal)}
@@ -1138,7 +1138,7 @@ function setYear(y) {
   String(y).padStart(4, '0').split('').forEach((ch, k) => {
     const d = yrDigits[k], n = +ch;
     if (d.v === n) return;
-    d.strip.style.transform = `translateY(${-n * 0.82}em)`;
+    d.strip.style.transform = `translateY(${-n * 1.3}em)`;
     if (d.v >= 0 && !reduce) { d.dg.classList.remove('hit'); void d.dg.offsetWidth; d.dg.classList.add('hit'); clearTimeout(d.t); d.t = setTimeout(() => d.dg.classList.remove('hit'), 140); }
     d.v = n;
   });
