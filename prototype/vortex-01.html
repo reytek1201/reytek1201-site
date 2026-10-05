@@ -882,7 +882,7 @@ $('#signup').addEventListener('submit', e => {
 /* ---------- scroll story ---------- */
 const els = {
   heroInner: $('#heroInner'), origin: $('#origin'), hub: $('#hub'), counter: $('#counter'), yr: $('#yr'), bpm: $('#bpm'), era: $('#era'),
-  cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
+  cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioBox: $('#bio'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
   chapters: [...document.querySelectorAll('.chapters a')], bars: [...document.querySelectorAll('#sound .bars i')]
 };
 const CAPS = [
@@ -1985,10 +1985,15 @@ function frame(now) {
     const shiftX = narrow() ? 0 : -0.62 * ease(c), shiftY = narrow() ? 0.34 * ease(c) : 0;
     const ps = lerp(0.72, sH, heroK);          // portrait section: about 30% smaller than before
     portrait.scale.set(ps, ps, 1);
-    portrait.position.x = lerp(shiftX, hc.x - (FACE_C[0] - 0.5) * 2.7 * sH, heroK);
-    portrait.position.y = lerp(shiftY, hc.y - (FACE_C[1] - 0.5) * 2.7 * sH, heroK);
+    // bio phase: the middle of the head (cap to chin) lines up with the middle of the bio text
+    const HEAD = [0.49, 0.575], hb = ease(c);
+    let ty = shiftY;
+    if (!narrow() && hb > 0) { const br = els.bioBox.getBoundingClientRect(); ty = ((SH / 2 - (br.top + br.height / 2)) / ppu) * hb; }
+    const bx = shiftX - (HEAD[0] - 0.5) * 2.7 * ps * hb, by = ty - (HEAD[1] - 0.5) * 2.7 * ps * hb;
+    portrait.position.x = lerp(bx, hc.x - (FACE_C[0] - 0.5) * 2.7 * sH, heroK);
+    portrait.position.y = lerp(by, hc.y - (FACE_C[1] - 0.5) * 2.7 * sH, heroK);
     PU.uR.value = Math.max(heroK * faceT * FACE_R * (1 + gl.hover * 0.07 + beat * 0.02), b * 0.74);
-    PU.uC.value.set(lerp(FACE_C[0], 0.48, b), lerp(FACE_C[1], 0.515, b));   // fully open: centered on face + cap
+    PU.uC.value.set(lerp(lerp(FACE_C[0], 0.48, b), HEAD[0], hb), lerp(lerp(FACE_C[1], 0.515, b), HEAD[1], hb));   // settles on the head's center
     PU.uHover.value = gl.hover; PU.uScale.value = ps;
     PU.uOpacity.value = Math.max(heroK * faceT, clamp(b * 3)) * (1 - clamp(hubIn * 2.2));
     const vs = lerp(0.9, hr / 0.62, heroK);
