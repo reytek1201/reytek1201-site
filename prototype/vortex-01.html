@@ -161,20 +161,38 @@ button{font:inherit;color:inherit}
 .hub-head .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--signal)}
 .hub-head h2{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 118;font-size:clamp(26px,4vw,56px);line-height:1;letter-spacing:-.02em;text-wrap:balance}
 .hub-head p{margin:0;color:var(--ash);font-size:17px}
-.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;perspective:1100px}
 @media (max-width:1000px){.doors{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:520px){.doors{grid-template-columns:1fr}}
-.door{position:relative;background:rgba(5,6,8,.82);padding:28px 24px 26px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;gap:24px;overflow:hidden;text-decoration:none;--mx:50%;--my:50%;outline-offset:-4px}
-.door::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .35s;
+@media (max-width:520px){.doors{grid-template-columns:1fr;gap:16px}}
+.door{position:relative;min-height:320px;padding:26px 24px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:24px;text-decoration:none;color:var(--bone);border-radius:3px;
+  background:linear-gradient(158deg,rgba(24,27,33,.94),rgba(9,10,13,.96) 58%,rgba(6,7,9,.97));border:1px solid rgba(237,235,230,.1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 22px 44px -24px rgba(0,0,0,.95);
+  transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--lift,0px));
+  transition:transform .6s cubic-bezier(.16,1,.3,1),box-shadow .5s,border-color .4s,opacity .8s;
+  --mx:50%;--my:50%;outline-offset:4px}
+.door.hot{--lift:26px;transition:transform .15s linear,box-shadow .5s,border-color .4s,opacity .8s;border-color:rgba(34,211,238,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 40px 70px -26px rgba(0,0,0,1),0 0 60px -20px rgba(34,211,238,.35)}
+.doors.pre .door{opacity:0;transform:translateY(46px) rotateX(14deg)}
+.door .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.07) 46%,rgba(255,255,255,.015) 54%,transparent 68%);background-size:240% 100%;background-position:var(--gx,50%) 0}
+.door.hot .glare{opacity:1}
+.door-num{position:absolute;right:14px;bottom:-10px;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 132;font-size:clamp(96px,9vw,132px);line-height:1;color:transparent;
+  -webkit-text-stroke:1px rgba(237,235,230,.1);pointer-events:none;transform:translateZ(2px) translate(var(--px,0px),var(--py,0px));transition:-webkit-text-stroke-color .45s}
+.door.hot .door-num{-webkit-text-stroke-color:rgba(34,211,238,.45)}
+.door-run{position:absolute;left:-12px;top:-12px;width:calc(100% + 24px);height:calc(100% + 24px);pointer-events:none;transform:translateZ(4px)}
+.door .idx{transform:translateZ(16px)}
+.door p{transform:translateZ(28px)}
+.door .status{transform:translateZ(22px)}
+@media (max-width:520px){.door{min-height:220px}}
+.door::before{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .35s;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='48.5' viewBox='0 0 28 48.5'><path d='M14 0 L28 8.08 L28 24.25 L14 32.33 L0 24.25 L0 8.08 Z M14 32.33 L14 48.5' fill='none' stroke='%2322D3EE' stroke-width='.8'/></svg>");
   -webkit-mask-image:radial-gradient(180px circle at var(--mx) var(--my),#000,transparent 70%);mask-image:radial-gradient(180px circle at var(--mx) var(--my),#000,transparent 70%)}
-.door::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .35s;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(34,211,238,.13),transparent 70%)}
-.door:hover::before,.door:hover::after,.door:focus-visible::before,.door:focus-visible::after{opacity:1}
-.door > *{position:relative;z-index:1}
+.door::after{content:'';position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .35s;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(34,211,238,.13),transparent 70%)}
+.door.hot::before,.door.hot::after,.door:focus-visible::before,.door:focus-visible::after{opacity:1}
 .door .idx{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;color:var(--dim);display:flex;justify-content:space-between}
 .door .idx span:last-child{color:var(--ash)}
-.door h3{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 118;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.01em;transition:transform .4s cubic-bezier(.16,1,.3,1)}
-.door:hover h3{transform:translateX(6px)}
+.door h3{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 118;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.01em;transform:translateZ(44px);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.door.hot h3{transform:translateZ(44px) translateX(6px)}
 .door p{margin:0;color:var(--ash);font-size:15px;max-width:30ch}
 .door .status{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);display:flex;align-items:center;gap:8px}
 .door .status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--pulse);box-shadow:0 0 8px var(--pulse)}
@@ -295,7 +313,7 @@ footer a:hover{color:var(--signal)}
   footer{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:640px){#soundlbl{display:none}#sound{padding:11px 12px}}
-@media (prefers-reduced-motion:reduce){.ch *, .ch::after, .rail .spark{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.ch *, .ch::after, .rail .spark{animation:none!important}.doors.pre .door{opacity:1;transform:none}}
 
 /* cursor */
 #cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(237,235,230,.6);border-radius:50%;pointer-events:none;z-index:70;transition:width .25s,height .25s,margin .25s,border-color .25s,opacity .3s;opacity:0}
@@ -853,9 +871,6 @@ function pingNext() {
 }
 
 /* ---------- hub doors glow ---------- */
-document.querySelectorAll('.door').forEach(d => d.addEventListener('pointermove', e => {
-  const r = d.getBoundingClientRect(); d.style.setProperty('--mx', (e.clientX - r.left) + 'px'); d.style.setProperty('--my', (e.clientY - r.top) + 'px');
-}));
 $('#signup').addEventListener('submit', e => {
   e.preventDefault();
   const v = $('#email').value.trim(), msg = $('#msg');
@@ -1724,6 +1739,140 @@ document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', 
   requestAnimationFrame(() => scrollTo({ top: sectionTop(i), behavior: reduce ? 'auto' : 'smooth' }));
 }));
 
+/* ---------- hub cards: depth, tilt and a light runner that ignites on hover ---------- */
+const hoverable = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const doorsEl = $('.doors');
+const cards = [...document.querySelectorAll('.door')].map((el, i) => {
+  const glare = document.createElement('span'); glare.className = 'glare'; glare.setAttribute('aria-hidden', 'true');
+  const num = document.createElement('span'); num.className = 'door-num'; num.setAttribute('aria-hidden', 'true'); num.textContent = String(i + 1).padStart(2, '0');
+  const cv = document.createElement('canvas'); cv.className = 'door-run'; cv.setAttribute('aria-hidden', 'true');
+  el.prepend(num); el.append(glare, cv);
+  el.style.transitionDelay = '0s';
+  const c = { el, cv, ctx: cv.getContext('2d'), on: false, a: 0, s: 0, v: 0, dist: 0, flare: 0, seg: -1, w: 0, h: 0, tx: 0, ty: 0, rx: 0, ry: 0, i, cleared: true };
+  el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') igniteCard(c, e); });
+  el.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    const r = el.getBoundingClientRect();
+    c.tx = (e.clientX - r.left) / r.width - 0.5; c.ty = (e.clientY - r.top) / r.height - 0.5;
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+  el.addEventListener('pointerleave', () => coolCard(c));
+  el.addEventListener('focus', () => igniteCard(c));
+  el.addEventListener('blur', () => coolCard(c));
+  return c;
+});
+const RUN_PAD = 12;
+function sizeCard(c) {
+  const w = c.el.offsetWidth, h = c.el.offsetHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+  if (w === c.w && h === c.h && dpr === c.dpr) return;
+  c.w = w; c.h = h; c.dpr = dpr; c.cv.width = Math.round((w + RUN_PAD * 2) * dpr); c.cv.height = Math.round((h + RUN_PAD * 2) * dpr);
+}
+function cardPt(c, s) {   // perimeter point (canvas px), hard 90° corners
+  const w = c.w - 1, h = c.h - 1, P = 2 * (w + h); s = ((s % P) + P) % P;
+  let x, y, seg;
+  if (s < w) { x = s; y = 0; seg = 0; }
+  else if (s < w + h) { x = w; y = s - w; seg = 1; }
+  else if (s < 2 * w + h) { x = w - (s - w - h); y = h; seg = 2; }
+  else { x = 0; y = h - (s - 2 * w - h); seg = 3; }
+  return [(x + RUN_PAD + 0.5) * c.dpr, (y + RUN_PAD + 0.5) * c.dpr, seg];
+}
+function ignitionSound() {
+  if (!A.on || !A.ctx) return;
+  const ctx = A.ctx, t = ctx.currentTime, o = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  o.type = 'sawtooth'; o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(260, t + 0.32);
+  f.type = 'lowpass'; f.Q.value = 6; f.frequency.setValueAtTime(300, t); f.frequency.exponentialRampToValueAtTime(2600, t + 0.3);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.045, t + 0.05); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+  o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + 0.5);
+}
+function igniteCard(c, e) {
+  if (c.on) return;
+  c.on = true; c.el.classList.add('hot'); sizeCard(c);
+  if (c.a < 0.05) {   // fresh start: launch from the edge point nearest the pointer
+    const w = c.w - 1, h = c.h - 1;
+    let s = 0;
+    if (e) {
+      const r = c.el.getBoundingClientRect(), x = clamp((e.clientX - r.left) / r.width) * w, y = clamp((e.clientY - r.top) / r.height) * h;
+      const d = [y, w - x, h - y, x], m = d.indexOf(Math.min(...d));
+      s = m === 0 ? x : m === 1 ? w + y : m === 2 ? w + h + (w - x) : 2 * w + h + (h - y);
+    }
+    c.s = s; c.v = 0; c.dist = 0; c.flare = 1;
+    ignitionSound();
+  }
+}
+function coolCard(c) { c.on = false; c.tx = c.ty = 0; c.el.classList.remove('hot'); }
+function drawRunner(c, beatK) {
+  const g = c.ctx, W = c.cv.width, H = c.cv.height, dpr = c.dpr;
+  g.clearRect(0, 0, W, H);
+  const P = 2 * (c.w - 1 + c.h - 1), L = reduce ? P : Math.min(P * 0.5, c.dist), a = c.a * (1 + beatK * 0.5);
+  if (L < 2) return;
+  const N = Math.max(8, Math.floor(L / 3)), pts = [];
+  for (let k = 0; k <= N; k++) pts.push(cardPt(c, c.s - (L * k) / N));
+  const B = 22, step = N / B;
+  g.lineCap = 'round'; g.lineJoin = 'miter';
+  for (let pass = 0; pass < 2; pass++) {
+    for (let b = 0; b < B; b++) {
+      const k0 = Math.floor(b * step), k1 = Math.min(N, Math.ceil((b + 1) * step) + 1), fade = reduce ? 0.7 : Math.pow(1 - b / B, 1.6);
+      g.beginPath(); g.moveTo(pts[k0][0], pts[k0][1]);
+      for (let k = k0 + 1; k <= k1; k++) g.lineTo(pts[k][0], pts[k][1]);
+      if (pass === 0) { g.strokeStyle = `rgba(34,211,238,${(a * fade * 0.16).toFixed(3)})`; g.lineWidth = 8 * dpr; }
+      else { g.strokeStyle = b < 2 && !reduce ? `rgba(225,252,255,${Math.min(1, a * fade).toFixed(3)})` : `rgba(34,211,238,${Math.min(1, a * fade * 1.1).toFixed(3)})`; g.lineWidth = 1.7 * dpr; }
+      g.stroke();
+    }
+  }
+  if (reduce) return;
+  const [hx, hy] = pts[0], hr = (14 + c.flare * 16 + beatK * 6) * dpr;
+  let rg = g.createRadialGradient(hx, hy, 0, hx, hy, hr);
+  rg.addColorStop(0, `rgba(235,253,255,${Math.min(1, a)})`); rg.addColorStop(0.25, `rgba(110,232,250,${a * 0.7})`); rg.addColorStop(1, 'rgba(34,211,238,0)');
+  g.fillStyle = rg; g.beginPath(); g.arc(hx, hy, hr, 0, 7); g.fill();
+  // the light it throws across the card face
+  g.save(); g.beginPath(); g.rect(RUN_PAD * dpr, RUN_PAD * dpr, (c.w) * dpr, (c.h) * dpr); g.clip();
+  rg = g.createRadialGradient(hx, hy, 0, hx, hy, 150 * dpr); rg.addColorStop(0, `rgba(34,211,238,${a * 0.12})`); rg.addColorStop(1, 'rgba(34,211,238,0)');
+  g.fillStyle = rg; g.fillRect(0, 0, W, H); g.restore();
+}
+function hubFrame(dt) {
+  // touch screens: the card nearest the middle of the screen runs
+  if (!hoverable) {
+    let best = null, bd = 1e9;
+    const hr = els.hub.getBoundingClientRect();
+    if (hr.top < VH() && hr.bottom > 0) cards.forEach(c => { const r = c.el.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - VH() / 2); if (d < bd && d < VH() * 0.35) { bd = d; best = c; } });
+    cards.forEach(c => { if (c === best) igniteCard(c); else if (c.on && document.activeElement !== c.el) coolCard(c); });
+  }
+  const playing = D.audible && trackAt(D.t) >= 0;
+  const bpm = playing ? TRACKS[trackAt(D.t)].bpm * Math.abs(D.vel / NOM) : 0;
+  cards.forEach(c => {
+    // tilt and parallax
+    if (hoverable && !reduce) {
+      c.rx = lerp(c.rx, -c.ty * 11, 0.14); c.ry = lerp(c.ry, c.tx * 13, 0.14);
+      if (c.on || Math.abs(c.rx) + Math.abs(c.ry) > 0.02) {
+        const st = c.el.style;
+        st.setProperty('--rx', c.rx.toFixed(2) + 'deg'); st.setProperty('--ry', c.ry.toFixed(2) + 'deg');
+        st.setProperty('--px', (-c.tx * 18).toFixed(1) + 'px'); st.setProperty('--py', (-c.ty * 12).toFixed(1) + 'px');
+        st.setProperty('--gx', (50 - c.tx * 90).toFixed(1) + '%');
+      }
+    }
+    // runner: ignites, accelerates up to speed, lays its wall, fades out after you leave
+    c.a = lerp(c.a, c.on ? 1 : 0, 1 - Math.exp(-dt * (c.on ? 9 : 2.6)));
+    if (c.a < 0.004 && !c.on) { if (!c.cleared) { c.ctx.clearRect(0, 0, c.cv.width, c.cv.height); c.cleared = true; } return; }
+    c.cleared = false; sizeCard(c);
+    const P = 2 * (c.w - 1 + c.h - 1);
+    const lap = playing && bpm > 0 ? 480 / bpm : 2.8;          // half time with the deck, or a steady cruise
+    const cruise = P / lap;
+    c.v = lerp(c.v, c.on ? cruise : cruise * 0.7, 1 - Math.exp(-dt * 2.4));
+    if (!reduce) { c.s += c.v * dt; c.dist += c.v * dt; }
+    const seg = cardPt(c, c.s)[2];
+    if (seg !== c.seg) { c.seg = seg; c.flare = Math.max(c.flare, 0.8); }
+    c.flare *= Math.exp(-dt * 5);
+    drawRunner(c, playing ? beat : 0);
+  });
+}
+if ('IntersectionObserver' in window && !reduce) {
+  doorsEl.classList.add('pre');
+  cards.forEach((c, i) => { c.el.style.transitionDelay = (i * 0.09) + 's'; });
+  new IntersectionObserver((es, ob) => es.forEach(en => {
+    if (en.isIntersecting) { doorsEl.classList.remove('pre'); setTimeout(() => cards.forEach(c => { c.el.style.transitionDelay = '0s'; }), 1400); ob.disconnect(); }
+  }), { threshold: 0.15 }).observe(doorsEl);
+}
+
 /* ---------- main loop ---------- */
 const faceEl = $('#face');
 const FACE_R = 0.30, FACE_C = [0.495, 0.535];
@@ -1751,6 +1900,7 @@ function frame(now) {
   els.bars.forEach((b, i) => b.style.height = (A.on ? 3 + Math.min(9, (i % 2 ? highV * 14 : bassV * 14) + beat * (6 - i)) : 3) + 'px');
   mark.parentElement.style.setProperty('--b', reduce ? 0 : (beat * (A.on ? 1 : 0.4)).toFixed(3));
   deckFrame(dt);
+  hubFrame(dt);
   if (D.built && D.visible) { const mr = dk.section.getBoundingClientRect(); D.render((VH() - mr.top) / (VH() * 0.85), mouse.x, mouse.y); }
   updateMark(dt);
   if (!reduce && document.body.classList.contains('lit')) {
