@@ -797,13 +797,13 @@ function buildScene() {
   const vortex = new THREE.Group(); vortex.add(lines, pts); scene.add(vortex);
 
   /* portrait plane with iris mask */
-  const PU = { uTex: { value: null }, uR: { value: 0 }, uC: { value: new THREE.Vector2(0.5, 0.5) }, uHover: { value: 0 }, uScale: { value: 1 }, uOpacity: { value: 0 }, uBeat: U.uBeat, uClock: U.uClock, uEye: { value: new THREE.Vector2(0.451, 0.600) }, cCyan: U.cCyan };
+  const PU = { uTex: { value: null }, uR: { value: 0 }, uC: { value: new THREE.Vector2(0.5, 0.5) }, uHover: { value: 0 }, uScale: { value: 1 }, uOpacity: { value: 0 }, uBeat: U.uBeat, uClock: U.uClock, uEye: { value: new THREE.Vector2(0.451, 0.600) }, uEye2: { value: new THREE.Vector2(0.571, 0.600) }, uTw: { value: 0 }, uTwA: { value: 0 }, cCyan: U.cCyan };
   const tex = new THREE.TextureLoader().load(PORTRAIT, () => window.BOOT && BOOT.mark('portrait'), undefined, () => window.BOOT && BOOT.mark('portrait')); tex.minFilter = THREE.LinearFilter; PU.uTex.value = tex;
   const portrait = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 2.7), new THREE.ShaderMaterial({
     uniforms: PU, ...blend,
     vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
     fragmentShader: `
-      uniform sampler2D uTex; uniform float uR,uOpacity,uBeat,uClock,uHover,uScale; uniform vec2 uC,uEye; uniform vec3 cCyan; varying vec2 vUv;
+      uniform sampler2D uTex; uniform float uR,uOpacity,uBeat,uClock,uHover,uScale,uTw,uTwA; uniform vec2 uC,uEye,uEye2; uniform vec3 cCyan; varying vec2 vUv;
       void main(){
         vec2 c=vUv-uC; float d=length(c); float ang=atan(c.y,c.x);
         float edge=uR+(0.007*sin(ang*7.0+uClock*1.8)+0.004*sin(ang*13.0-uClock*2.6))*(0.25+uR)/uScale;
@@ -811,8 +811,17 @@ function buildScene() {
         vec3 col=texture2D(uTex,vUv).rgb;
         float eye=exp(-pow(length(vUv-uEye)*62.0,2.0));
         float lum=dot(col,vec3(0.299,0.587,0.114));
-        vec3 iris=vec3(0.30,0.62,0.95)*(lum*1.25+0.04);
-        col=mix(col,iris,eye*clamp(0.55+uBeat*0.12+uHover*0.12,0.0,0.8));
+        // the lit eye: a soft blue that deepens and glows when you hover the portrait
+        vec3 iris=mix(vec3(0.30,0.62,0.95),vec3(0.20,0.62,1.0),uHover)*(lum*(1.25+uHover*0.45)+0.04);
+        col=mix(col,iris,eye*clamp(0.55+uBeat*0.12+uHover*0.35,0.0,0.92));
+        col+=cCyan*eye*uHover*0.16;
+        // the eye in shadow: a faint blue glint on hover, and now and then a twinkle
+        vec2 q=vUv-uEye2; float ca=cos(uTwA), sa=sin(uTwA); q=vec2(ca*q.x-sa*q.y, sa*q.x+ca*q.y);
+        float e2=exp(-pow(length(q)*70.0,2.0));
+        float core=exp(-pow(length(q)*140.0,2.0));
+        float rays=exp(-abs(q.y)*520.0)*exp(-abs(q.x)*42.0)+exp(-abs(q.x)*520.0)*exp(-abs(q.y)*42.0);
+        float diag=exp(-abs(q.x-q.y)*900.0)*exp(-length(q)*140.0)+exp(-abs(q.x+q.y)*900.0)*exp(-length(q)*140.0);
+        col+=vec3(0.30,0.70,1.0)*e2*0.16*uHover + vec3(0.72,0.94,1.0)*(core*1.9+rays*1.2+diag*0.45)*uTw;
         col*=m*(1.0-smoothstep(edge-0.14,edge,d)*0.55);
         float rim=exp(-pow((d-edge)*210.0*uScale,2.0))*(1.0-smoothstep(0.6,0.74,uR))*step(0.002,uR);
         col+=(cCyan*0.8+vec3(0.25))*rim*(0.55+uBeat*0.7+uHover*0.35);
@@ -2167,7 +2176,14 @@ function frame(now) {
     camera.updateMatrixWorld();
     const ppu = SH / (2 * camZ * Math.tan(camera.fov * Math.PI / 360));   // screen px per world unit at the face plane
     const hc = { x: 0, y: 0 }, hr = Math.max(0.05, frad / ppu);
+    hover = Math.max(hover, gl.bioHover || 0);
     gl.hover = lerp(gl.hover || 0, hover, 0.08);
+    // twinkle in the shadowed eye: once when you arrive, then every few seconds while you stay
+    if (gl.hover > 0.45 && !reduce) {
+      if (!gl.twOn || clock - gl.twAt > gl.twNext) { gl.twOn = true; gl.twAt = clock; gl.twNext = 3.5 + Math.random() * 2.5; if (typeof blip === 'function') blip(1318.5, 0.03); }
+    } else if (gl.hover < 0.2) gl.twOn = false;
+    { const tt = clock - (gl.twAt || -9); const env = tt < 0 ? 0 : tt < 0.12 ? tt / 0.12 : Math.exp(-(tt - 0.12) * 4.2);
+      PU.uTw.value = env * (0.88 + 0.12 * Math.sin(tt * 38)); PU.uTwA.value = tt * 0.7; }
     const faceT = igniteAt >= 0 ? ease(clamp((clock - igniteAt - 0.4) / 1.8)) : 0;
     const sH = hr / (FACE_R * 2.7);
     const shiftX = narrow() ? 0 : -0.62 * ease(c), shiftY = narrow() ? 0.34 * ease(c) : 0;
@@ -2197,6 +2213,11 @@ function frame(now) {
     vortex.position.x = portrait.position.x + (PU.uC.value.x - 0.5) * 2.7 * ps;
     vortex.position.y = portrait.position.y + (PU.uC.value.y - 0.5) * 2.7 * ps;
     vortex.rotation.z = -p * 1.4 - hubIn * 0.6;
+    // hovering the portrait in the bio section counts too
+    if (b > 0.5 && mouse.active && fine) {
+      const hx = SW / 2 + (vortex.position.x - camera.position.x) * ppu, hy = SH / 2 - (vortex.position.y - camera.position.y) * ppu;
+      gl.bioHover = clamp(1.4 - Math.hypot(mouse.px - hx, mouse.py - hy) / (0.2 * 2.7 * ps * ppu)) * clamp((b - 0.5) * 2) * (1 - clamp(hubIn * 2));
+    } else gl.bioHover = 0;
     const w = toWorld(mouse.x, mouse.y), lm = toLocal(w.x, w.y); U.uMouse.value.set(lm.x, lm.y);
     U.uFade.value = lerp(1, 0.5, b * 0.6) * lerp(1, 0.4, hubIn);
     renderer.render(gl.scene, camera);
