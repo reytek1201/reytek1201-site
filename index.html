@@ -168,7 +168,9 @@ button{font:inherit;color:inherit}
   .bio p{font-size:16px}
   .bio p.big{font-size:22px}
   .caption{left:16px;right:16px;text-align:left;max-width:none}
-  .counter{left:16px}
+  .counter{left:16px;right:16px;justify-items:center;text-align:center}
+  .counter .meta{justify-content:center;gap:16px}
+  .caption{text-align:center}
   .chapters a{padding:6px 5px;font-size:10px;letter-spacing:.08em}
   .chapters a[data-go="0"],.hud-tl a > span:last-child{display:none}
 }
@@ -307,6 +309,7 @@ footer a:hover{color:var(--signal)}
 .ch .tip b{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:15px;line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--bone)}
 .ch .tip i{font-style:normal;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
 .rail{position:fixed;z-index:32;left:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;opacity:0;transition:opacity 1s 1.8s}
+.lit.foot-in .rail{opacity:0;pointer-events:none;transition:opacity .4s}
 .lit .rail{opacity:1}
 .rail::before{content:'';position:absolute;left:50%;top:-48px;bottom:-48px;width:1px;background:linear-gradient(transparent,rgba(237,235,230,.18) 18%,rgba(237,235,230,.18) 82%,transparent);z-index:-1}
 .rail .spark{position:absolute;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:var(--signal);box-shadow:0 0 8px 2px rgba(34,211,238,.8);z-index:-1;animation:spark 3.4s linear infinite}
@@ -2054,6 +2057,9 @@ if ('IntersectionObserver' in window && !reduce) {
     if (en.isIntersecting) { doorsEl.classList.remove('pre'); setTimeout(() => cards.forEach(c => { c.el.style.transitionDelay = '0s'; }), 1400); ob.disconnect(); }
   }), { threshold: 0.15 }).observe(doorsEl);
 }
+
+/* ---------- the fixed icon bar steps aside when the footer (with the same links) is on screen ---------- */
+if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => document.body.classList.toggle('foot-in', en.isIntersecting)), { threshold: 0.25 }).observe(document.querySelector('footer'));
 
 /* ---------- main loop ---------- */
 const faceEl = $('#face');
