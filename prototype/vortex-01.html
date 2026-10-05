@@ -1240,7 +1240,7 @@ function deckBuild() {
     const ti = trackAt(D.t), rate = D.vel / NOM;
     let target;
     if (reduce) target = PER / 30;
-    else if (D.audible && ti >= 0) target = PER * TRACKS[ti].bpm * rate / 240;   // one lap per bar, signed with the record
+    else if (D.audible && ti >= 0) target = PER * TRACKS[ti].bpm * rate / 480;   // half time: one lap every two bars, signed with the record
     else target = (PER / 14) * (D.motor ? 1.6 : 1) * (D.audible ? Math.max(-6, Math.min(6, rate)) : 1);
     target = clamp(target, -PER * 1.6, PER * 1.6);
     run.v = lerp(run.v, target, 1 - Math.exp(-dt * (D.grab || D.backspin > 0 ? 16 : 3.5)));
