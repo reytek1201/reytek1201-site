@@ -1180,7 +1180,10 @@ function ensureWorklet() {
   if (!A.ctx.audioWorklet) { workletP = Promise.reject(new Error('AudioWorklet unsupported')); workletP.catch(() => {}); return workletP; }
   workletP = A.ctx.audioWorklet.addModule(WORKLET_URL).then(() => {
     const n = new AudioWorkletNode(A.ctx, 'deck', { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2] });
-    n.connect(A.deckOut);
+    // speed taming: the faster the record moves (backspins, fast scratches), the duller and quieter it gets
+    const lp = A.ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 20000; lp.Q.value = 0.5;
+    const tg = A.ctx.createGain(); tg.gain.value = 1;
+    n.connect(lp); lp.connect(tg); tg.connect(A.deckOut); D.fxLp = lp; D.fxGain = tg;
     n.port.onmessage = e => { const m = e.data; if (m.id === D.loaded && m.seq === D.seq) D.rep = { pos: m.pos, at: performance.now() / 1000 }; };
     D.node = n;
   });
@@ -1254,7 +1257,7 @@ function cueTo(t, fast) { liftNeedle(); D.auto = { phi: phiForR(tToR(t)), t, dro
 function playTrack(i) {
   D.sel = i; updateCrate();
   if (D.audible && D.vel > NOM * 0.5 && !reduce) {
-    D.backspin = 0.72; D.vel = -NOM * 6.5; D.pending = i; shock(0, 0, true);
+    D.backspin = 0.72; D.vel = -NOM * 4.2; D.pending = i; shock(0, 0, true);
     return;
   }
   setSound(true); ensureWorklet().catch(() => {}); loadTrack(i);
@@ -1846,6 +1849,14 @@ function deckFrame(dt) {
     if (ti >= 0 && ti !== D.loaded && ti !== D.loadingId) { D.sel = ti; loadTrack(ti); }
   }
   if (D.node) {
+    if (D.fxLp) {
+      const over = Math.max(0, Math.abs(rate) - 1.15), spin = D.backspin > 0 ? 1 : 0;
+      const gTarget = 1 / (1 + 0.55 * Math.pow(over, 1.15) + spin * 0.6);
+      const fTarget = over > 0 ? Math.max(1400, 16000 / (1 + over * 2.2)) : 20000;
+      const t = A.ctx.currentTime;
+      D.fxGain.gain.setTargetAtTime(gTarget, t, 0.03);
+      D.fxLp.frequency.setTargetAtTime(fTarget, t, 0.03);
+    }
     if (Math.abs(rate - D.lastRate) > 0.0004 || (rate === 0 && D.lastRate !== 0)) { D.node.port.postMessage({ t: 'rate', v: rate }); D.lastRate = rate; }
     if (D.audible !== D.sentNeedle) { D.node.port.postMessage({ t: 'needle', v: D.audible }); D.sentNeedle = D.audible; }
   }
