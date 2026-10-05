@@ -194,6 +194,53 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 footer a{text-decoration:none;transition:color .2s}
 footer a:hover{color:var(--signal)}
 
+/* music: the deck */
+.music{position:relative;overflow:hidden;overflow:clip;padding-block:16vh 10vh;background:linear-gradient(transparent,rgba(5,6,8,.84) 14vh,rgba(5,6,8,.84) calc(100% - 14vh),transparent)}
+.music-in{max-width:1440px;margin:0 auto;padding-inline:clamp(16px,6vw,96px);display:grid;gap:30px}
+@media (min-width:821px){.music-in{padding-left:max(clamp(16px,6vw,96px),112px)}}
+.music-head{display:grid;gap:12px;max-width:62ch}
+.music-head .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--signal)}
+.music-head h2{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 128;font-size:clamp(30px,4.6vw,64px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase}
+.music-head p{margin:0;color:var(--ash);font-size:17px;max-width:58ch}
+.deck-wrap{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:1000px){.deck-wrap{grid-template-columns:minmax(0,1fr)}}
+.deck-stage{position:relative;width:100%;aspect-ratio:1.3;max-width:100%;background:radial-gradient(58% 55% at 42% 52%,rgba(34,211,238,.08),transparent 70%)}
+@media (max-width:600px){.deck-stage{aspect-ratio:1.32}.deck-hint .l{display:none}}
+@media (min-width:601px){.deck-hint .s{display:none}}
+#deckGL{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.no-deck::after{content:'The 3D deck needs WebGL. Use the tracks beside it to play.';position:absolute;inset:0;display:grid;place-items:center;color:var(--ash);font-family:var(--f-mono);font-size:12px;text-align:center;padding:16px}
+.deck-hint{position:absolute;left:0;top:0;pointer-events:none;font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#041014;background:var(--signal);padding:7px 11px;border-radius:2px;white-space:nowrap;box-shadow:0 0 26px rgba(34,211,238,.55);transition:opacity .4s}
+.deck-hint::after{content:'';position:absolute;left:50%;top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:var(--signal)}
+.deck-tip{position:absolute;left:0;top:0;pointer-events:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:rgba(5,6,8,.85);border-left:2px solid var(--signal);padding:7px 10px;white-space:nowrap}
+.deck-panel{display:grid;gap:16px;border:1px solid var(--line);background:rgba(5,6,8,.82);padding:18px;border-radius:3px;min-width:0}
+.readout{display:grid;gap:12px;padding:14px;border:1px solid rgba(34,211,238,.28);border-radius:2px;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),linear-gradient(rgba(34,211,238,.06),rgba(34,211,238,.015))}
+.ro-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--signal);text-transform:uppercase;font-variant-numeric:tabular-nums}
+.ro-main{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center}
+.ro-main img{width:64px;height:64px;object-fit:cover;border-radius:2px;display:block;background:var(--ink)}
+.ro-main b{display:block;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 118;font-size:19px;line-height:1.05;text-transform:uppercase;letter-spacing:.01em;overflow-wrap:anywhere}
+.ro-main i{display:block;margin-top:4px;font-style:normal;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase}
+#roWave{width:100%;height:44px;display:block;cursor:pointer}
+.ro-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase}
+.ro-stats b{display:block;margin-top:2px;color:var(--bone);font-weight:500;font-size:14px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.crate{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.crate button{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.02);border:1px solid var(--line);padding:8px 12px 8px 8px;border-radius:2px;color:var(--bone);transition:border-color .25s,background .25s}
+.crate button:hover{border-color:rgba(34,211,238,.55);background:rgba(34,211,238,.05)}
+.crate button[aria-current="true"]{border-color:var(--signal);box-shadow:inset 3px 0 0 var(--signal)}
+.crate img{width:44px;height:44px;object-fit:cover;border-radius:1px;display:block}
+.crate .tx{display:grid;gap:2px;min-width:0}
+.crate .t{font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crate .m{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase}
+.crate .n{font-family:var(--f-mono);font-size:11px;color:var(--dim)}
+.deck-ctl{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:10px;align-items:center}
+.hw{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:12px 14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:2px;color:var(--bone);transition:border-color .25s,color .25s}
+.hw:hover{border-color:var(--bone)}
+.hw[aria-pressed="true"]{border-color:var(--signal);color:var(--signal);box-shadow:inset 0 0 14px rgba(34,211,238,.15)}
+.pitch{display:grid;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase;min-width:0}
+.pitch input{width:100%;accent-color:var(--signal)}
+.sc-link{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);text-decoration:none;justify-self:start}
+.sc-link:hover{color:var(--signal)}
+
 /* channels: social icons */
 .ch{--s:46px;position:relative;display:inline-grid;place-items:center;width:var(--s);height:var(--s);border-radius:50%;color:var(--bone);text-decoration:none;outline-offset:4px;transition:transform .35s cubic-bezier(.16,1,.3,1);will-change:transform}
 .ch svg{width:100%;height:100%;overflow:visible;display:block}
@@ -276,7 +323,7 @@ footer a:hover{color:var(--signal)}
 
 <div class="hud hud-tl"><span class="dot"></span><b>REYTEK</b><span>/ hub</span></div>
 <div class="hud hud-tr chapters" aria-hidden="true">
-  <span data-ch="0" class="on">Signal</span><span data-ch="1">Origin</span><span data-ch="2">Portrait</span><span data-ch="3">Hub</span>
+  <span data-ch="0" class="on">Signal</span><span data-ch="1">Origin</span><span data-ch="2">Portrait</span><span data-ch="3">Music</span><span data-ch="4">Hub</span>
 </div>
 <div class="hud hud-bl">Hub v0.1 · Coming soon</div>
 <nav class="rail" id="rail" aria-label="Reytek on social media"><span class="lbl" aria-hidden="true">Channels</span><span class="spark" aria-hidden="true"></span></nav>
@@ -322,6 +369,38 @@ footer a:hover{color:var(--signal)}
         <p>The early-'90s rave scene, with its warehouses, borrowed sound systems and rooms full of strangers moving as one, showed him what a kick drum can do to people. That's still the standard he works to.</p>
         <p>His sound has grown darker and more deliberate since: cinematic in scale, exact in its synthesis, made with the patience of someone who has been listening for a long time.</p>
         <p class="dim">Built for the big speaker stack, and for the drive home after.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="music" id="music" aria-label="Music">
+    <div class="music-in">
+      <div class="music-head">
+        <span class="lbl">› Now spinning · Side A</span>
+        <h2>Drop the needle.</h2>
+        <p>Drag the tonearm onto a groove, or tap a band on the record. Grab the vinyl to scratch. Pick another track while one is playing and it backspins into the next.</p>
+      </div>
+      <div class="deck-wrap">
+        <div class="deck-stage" id="deckStage">
+          <canvas id="deckGL" aria-label="Turntable. Use the controls beside it to play tracks."></canvas>
+          <div class="deck-hint" id="deckHint" aria-hidden="true"><span class="l">Drag me onto the record</span><span class="s">Drag or tap a groove</span></div>
+          <div class="deck-tip" id="deckTip" hidden></div>
+        </div>
+        <aside class="deck-panel" aria-label="Deck controls">
+          <div class="readout">
+            <div class="ro-top"><span id="roState" aria-live="polite">Standby</span><span id="roTime">0:00 / 0:00</span></div>
+            <div class="ro-main"><img id="roCover" alt="" width="64" height="64"><div><b id="roTitle">—</b><i id="roMeta"></i></div></div>
+            <canvas id="roWave" aria-label="Track waveform. Click to cue a point in the track." role="img"></canvas>
+            <div class="ro-stats"><span>Pitch<b id="roPitch">0.0%</b></span><span>RPM<b id="roRpm">33⅓</b></span><span>BPM<b id="roBpm">—</b></span><span>Beat<b id="roBeat">·</b></span></div>
+          </div>
+          <ol class="crate" id="crate" aria-label="Tracks"></ol>
+          <div class="deck-ctl">
+            <button class="hw" id="btnStart" type="button" aria-pressed="false">Start</button>
+            <button class="hw" id="btnRpm" type="button" aria-pressed="false">33 rpm</button>
+            <label class="pitch" for="pitch">Pitch ±8%<input id="pitch" type="range" min="-8" max="8" step="0.1" value="0"></label>
+          </div>
+          <a class="sc-link" href="https://soundcloud.com/reytek1201" target="_blank" rel="noopener">Full catalogue on SoundCloud ↗</a>
+        </aside>
       </div>
     </div>
   </section>
@@ -547,10 +626,12 @@ function startAudio() {
   const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.2;
   const an = A.an = ctx.createAnalyser(); an.fftSize = 512; an.smoothingTimeConstant = 0.72; A.data = new Uint8Array(an.frequencyBinCount);
   master.connect(comp); comp.connect(an); an.connect(ctx.destination);
+  const loop = A.loop = ctx.createGain(); loop.gain.value = (typeof D !== 'undefined' && D.hold) ? 0 : 1; loop.connect(master);
+  const deckOut = A.deckOut = ctx.createGain(); deckOut.gain.value = 0; deckOut.connect(an);
   const dl = ctx.createDelay(1); dl.delayTime.value = SPB * 0.75;
   const fb = ctx.createGain(); fb.gain.value = 0.36;
   const dlp = ctx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 2000;
-  dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(master); A.send = dl;
+  dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(loop); A.send = dl;
   const nb = ctx.createBuffer(1, ctx.sampleRate * 0.5, ctx.sampleRate); const nd = nb.getChannelData(0);
   for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1; A.noise = nb;
   let next = ctx.currentTime + 0.12, step = 0;
@@ -562,6 +643,7 @@ function startAudio() {
 const ROOTS = [55, 55, 43.65, 49];
 const CHORDS = [[110, 164.81, 196, 261.63, 246.94], [87.31, 130.81, 174.61, 220, 261.63]];
 function playStep(s, t) {
+  if (D.hold) return;
   const bar = Math.floor(s / 16) % 16, st = s % 16, brk = bar === 12 || bar === 13;
   if (st % 4 === 0 && bar >= 2 && !brk) { kick(t); A.beats.push(t); }
   if (bar === 14 && st === 0) A.drops.push(t);
@@ -574,24 +656,24 @@ function env(g, t, peak, dur) { g.gain.setValueAtTime(0.0001, t); g.gain.exponen
 function kick(t) {
   const c = A.ctx, o = c.createOscillator(), g = c.createGain();
   o.frequency.setValueAtTime(165, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
-  env(g, t, 1.0, 0.42); o.connect(g); g.connect(A.master); o.start(t); o.stop(t + 0.45);
+  env(g, t, 1.0, 0.42); o.connect(g); g.connect(A.loop); o.start(t); o.stop(t + 0.45);
 }
 function hat(t, v, d) {
   const c = A.ctx, n = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
   n.buffer = A.noise; f.type = 'highpass'; f.frequency.value = 7600;
-  env(g, t, v, d); n.connect(f); f.connect(g); g.connect(A.master); n.start(t); n.stop(t + d + 0.02);
+  env(g, t, v, d); n.connect(f); f.connect(g); g.connect(A.loop); n.start(t); n.stop(t + d + 0.02);
 }
 function bass(t, fr) {
   const c = A.ctx, o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
   o.type = 'sawtooth'; o.frequency.value = fr; f.type = 'lowpass'; f.Q.value = 7;
   f.frequency.setValueAtTime(950, t); f.frequency.exponentialRampToValueAtTime(150, t + 0.11);
-  env(g, t, 0.2, 0.14); o.connect(f); f.connect(g); g.connect(A.master); o.start(t); o.stop(t + 0.16);
+  env(g, t, 0.2, 0.14); o.connect(f); f.connect(g); g.connect(A.loop); o.start(t); o.stop(t + 0.16);
 }
 function pad(t, notes, vol) {
   const c = A.ctx, f = c.createBiquadFilter(), g = c.createGain(), dur = SPB * 8;
   f.type = 'lowpass'; f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(1100, t + dur * 0.5); f.frequency.linearRampToValueAtTime(600, t + dur);
   g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 1.0); g.gain.setValueAtTime(vol, t + dur - 1.2); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.4);
-  f.connect(g); g.connect(A.master); g.connect(A.send);
+  f.connect(g); g.connect(A.loop); g.connect(A.send);
   notes.forEach(n => [-7, 7].forEach(cents => {
     const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = n; o.detune.value = cents;
     o.connect(f); o.start(t); o.stop(t + dur + 0.5);
@@ -600,7 +682,7 @@ function pad(t, notes, vol) {
 function stab(t) {
   const c = A.ctx, f = c.createBiquadFilter(), g = c.createGain();
   f.type = 'bandpass'; f.Q.value = 3; f.frequency.setValueAtTime(2400, t); f.frequency.exponentialRampToValueAtTime(500, t + 0.3);
-  env(g, t, 0.1, 0.32); f.connect(g); g.connect(A.master); g.connect(A.send);
+  env(g, t, 0.1, 0.32); f.connect(g); g.connect(A.loop); g.connect(A.send);
   [220, 261.63, 329.63, 392].forEach(n => { const o = c.createOscillator(); o.type = 'square'; o.frequency.value = n; o.connect(f); o.start(t); o.stop(t + 0.35); });
 }
 function setSound(on) {
@@ -609,8 +691,10 @@ function setSound(on) {
   if (on) {
     startAudio(); A.ctx.resume();
     A.master.gain.cancelScheduledValues(A.ctx.currentTime); A.master.gain.setTargetAtTime(0.85, A.ctx.currentTime, 0.5);
+    A.deckOut.gain.cancelScheduledValues(A.ctx.currentTime); A.deckOut.gain.setTargetAtTime(1, A.ctx.currentTime, 0.05);
   } else if (A.ctx) {
     A.master.gain.cancelScheduledValues(A.ctx.currentTime); A.master.gain.setTargetAtTime(0, A.ctx.currentTime, 0.15);
+    A.deckOut.gain.cancelScheduledValues(A.ctx.currentTime); A.deckOut.gain.setTargetAtTime(0, A.ctx.currentTime, 0.1);
     setTimeout(() => { if (!A.on) A.ctx.suspend(); }, 600);
   }
 }
@@ -831,6 +915,618 @@ function updateMark(dt) {
   mark.style.setProperty('--ry', (reduce ? 0 : mouse.x * 11 * hk).toFixed(2) + 'deg');
 }
 
+/* ---------- the deck: music section ---------- */
+const TRACKS = [{"title":"The Light Was Plain","file":"audio/the-light-was-plain.mp3","cover":"covers/the-light-was-plain.webp","bpm":99.4,"dur":237.6,"gain":1.245,"beats":[2.879,3.437,4.087,4.783,5.387,5.991,6.571,7.175,7.779,8.359,8.963,9.543,10.194,10.844,11.494,12.144,12.748,13.351,13.932,14.489,15.093,15.743,16.347,16.951,17.508,18.158,18.739,19.342,19.946,20.55,21.153,21.757,22.361,22.895,23.545,24.149,24.752,25.356,25.96,26.54,27.144,27.748,28.352,28.955,29.559,30.163,30.743,31.347,31.951,32.554,33.158,33.739,34.342,34.946,35.55,36.153,36.757,37.361,37.965,38.545,39.149,39.753,40.356,40.96,41.564,42.167,42.748,43.352,43.932,44.536,45.14,45.743,46.347,46.951,47.554,48.158,48.762,49.342,49.946,50.573,51.177,51.78,52.384,52.965,53.568,54.149,54.753,55.356,55.96,56.564,57.168,57.771,58.375,58.955,59.559,60.163,60.743,61.347,61.951,62.555,63.158,63.739,64.342,64.946,65.55,66.154,66.757,67.361,67.942,68.545,69.149,69.753,70.333,70.96,71.541,72.144,72.748,73.352,73.932,74.536,75.14,75.743,76.347,76.951,77.555,78.158,78.739,79.343,79.946,80.55,81.154,81.734,82.338,82.942,83.545,84.149,84.753,85.357,85.937,86.541,87.144,87.748,88.352,88.956,89.536,90.14,90.744,91.347,91.951,92.555,93.135,93.739,94.343,94.946,95.55,96.154,96.734,97.338,97.942,98.545,99.149,99.753,100.333,100.937,101.541,102.145,102.748,103.352,103.956,104.536,105.14,105.744,106.347,106.951,107.532,108.135,108.739,109.343,109.946,110.55,111.154,111.758,112.338,112.942,113.546,114.149,114.753,115.334,115.937,116.541,117.145,117.748,118.352,118.956,119.536,120.14,120.744,121.347,121.951,122.532,123.135,123.739,124.343,124.947,125.55,126.154,126.735,127.338,127.942,128.546,129.149,129.73,130.334,130.937,131.541,132.145,132.748,133.329,133.933,134.536,135.14,135.744,136.348,136.928,137.532,138.136,138.739,139.343,139.947,140.55,141.131,141.735,142.338,142.942,143.523,144.126,144.707,145.334,145.937,146.518,147.122,147.725,148.352,148.933,149.537,150.14,150.744,151.324,151.928,152.532,153.136,153.739,154.343,154.924,155.527,156.131,156.735,157.338,157.942,158.523,159.15,159.753,160.334,160.938,161.541,162.145,162.725,163.329,163.933,164.537,165.14,165.721,166.325,166.928,167.532,168.136,168.739,169.32,169.924,170.527,171.131,171.735,172.339,172.919,173.523,174.126,174.73,175.334,175.938,176.518,177.122,177.726,178.329,178.933,179.513,180.117,180.721,181.325,181.928,182.532,183.136,183.74,184.32,184.877,185.458,186.108,186.735,187.339,187.919,188.523,189.127,189.73,190.334,190.914,191.518,192.122,192.726,193.329,193.887,194.514,195.117,195.721,196.325,196.928,197.532,198.089,198.74,199.367,199.924,200.528,201.131,201.735,202.339,202.942,203.546,204.15,204.73,205.311,205.868,206.518,207.122,207.726,208.329,208.91,209.514,210.117,210.721,211.325,211.929,212.532,213.136,213.716,214.32,214.924,215.504,216.108,216.712,217.316,217.919,218.523,219.127,219.73,220.334,220.915,221.518,222.122,222.726,223.306,223.91,224.514,225.117,225.721,226.325,226.929,227.509,228.113,228.717,229.32,229.924,230.504,231.108,231.712,232.316,232.919,233.523,234.104,234.707],"peaks":[0.01,0.07,0.09,0.1,0.27,0.3,0.26,0.33,0.31,0.22,0.13,0.11,0.36,0.23,0.38,0.36,0.28,0.12,0.13,0.33,0.33,0.44,0.94,0.39,0.78,0.76,0.46,0.76,0.81,0.86,0.45,0.77,0.72,0.66,0.33,0.76,0.83,0.5,0.79,0.52,0.77,0.44,0.69,0.84,0.57,0.43,0.63,0.71,0.55,0.66,0.44,0.79,0.49,0.86,0.86,0.51,0.61,0.86,0.85,0.53,0.7,0.48,0.65,0.5,0.48,0.82,0.54,0.45,0.38,0.48,0.45,0.47,0.47,0.49,0.38,0.34,0.4,0.42,0.42,0.43,0.5,0.4,0.32,0.37,0.48,0.51,0.53,0.47,0.54,0.42,0.45,0.31,0.33,0.32,0.79,0.55,0.59,0.83,0.75,0.62,0.84,0.53,0.71,0.39,0.81,0.7,0.64,0.75,0.76,0.71,0.58,0.8,0.68,0.6,0.65,0.68,0.65,0.65,0.68,0.48,0.66,0.61,0.64,0.66,0.61,0.45,0.73,0.78,0.61,0.77,0.54,0.7,0.69,0.77,0.71,0.67,0.67,0.78,0.75,0.72,0.77,0.68,0.76,0.74,0.77,0.76,0.68,0.72,0.7,0.73,0.7,0.69,0.75,0.64,0.47,0.81,0.76,0.74,0.75,0.57,0.74,0.49,0.8,0.73,0.76,0.64,0.79,0.74,0.75,0.82,0.51,0.74,0.79,0.76,0.76,0.67,0.66,0.7,0.66,0.67,0.62,0.59,0.67,0.65,0.69,0.69,0.63,0.66,0.64,0.63,0.65,0.7,0.62,0.64,0.58,0.66,0.63,0.66,0.69,0.55,0.67,0.72,0.7,0.63,0.6,0.64,0.66,0.62,0.63,0.62,0.61,0.61,0.57,0.36,0.25,0.37,0.47,0.26,0.6,0.58,0.49,0.3,0.34,0.41,0.35,0.59,0.58,0.54,0.26,0.45,0.5,0.47,0.63,0.57,0.61,0.58,0.59,0.59,0.55,0.45,0.73,0.7,0.71,0.68,0.62,0.67,0.69,0.66,0.69,0.71,0.5,0.75,0.62,0.67,0.7,0.59,0.67,0.69,0.76,0.78,0.84,0.7,0.79,0.78,0.73,0.78,0.7,0.81,0.67,0.77,0.42,0.31,0.28,0.24,0.33,0.4,0.76,0.74,0.7,0.38,0.39,0.35,0.37,0.82,0.78,0.76,0.21,0.25,0.26,0.29,0.42,0.87,0.82,0.35,0.36,0.34,0.37,0.31,1.0,0.64,0.28,0.33,0.28,0.29,0.28,0.33,0.26,0.2,0.15,0.28,0.26,0.22,0.31,0.24,0.27,0.24,0.27,0.23,0.3,0.21,0.68,0.5,0.36,0.5,0.53,0.52,0.47,0.87,0.76,0.75,0.56,0.74,0.7,0.77,0.72,0.65,0.72,0.74,0.74,0.75,0.86,0.71,0.77,0.82,0.83,0.79,0.7,0.81,0.76,0.74,0.7,0.76,0.76,0.8,0.73,0.82,0.72,0.07,0.02,0.01]},{"title":"Traces of You","file":"audio/traces-of-you.mp3","cover":"covers/traces-of-you.webp","bpm":123.0,"dur":268.76,"gain":1.0,"beats":[2.438,2.902,3.39,3.878,4.342,4.83,5.317,5.805,6.269,6.757,7.221,7.709,8.173,8.661,9.149,9.636,10.124,10.588,11.053,11.54,12.028,12.516,12.98,13.468,13.955,14.42,14.907,15.395,15.859,16.347,16.834,17.299,17.786,18.251,18.739,19.226,19.691,20.178,20.643,21.13,21.618,22.105,22.639,23.174,23.661,24.149,24.636,25.147,25.658,26.146,26.633,27.121,27.609,28.096,28.561,29.048,29.513,30.0,30.488,30.975,31.463,31.927,32.415,32.903,33.367,33.855,34.342,34.807,35.294,35.782,36.246,36.734,37.198,37.686,38.174,38.638,39.126,39.613,40.101,40.565,41.053,41.517,42.005,42.469,42.957,43.421,43.909,44.397,44.884,45.349,45.836,46.301,46.811,47.276,47.763,48.251,48.715,49.203,49.691,50.155,50.643,51.107,51.595,52.082,52.57,53.034,53.522,54.01,54.474,54.962,55.449,55.914,56.401,56.889,57.353,57.841,58.305,58.793,59.281,59.745,60.233,60.72,61.208,61.672,62.16,62.647,63.112,63.599,64.087,64.551,65.039,65.527,65.991,66.479,66.966,67.431,67.918,68.406,68.87,69.358,69.846,70.333,70.821,71.285,71.75,72.237,72.702,73.189,73.677,74.165,74.629,75.117,75.581,76.069,76.556,77.021,77.508,77.996,78.46,78.948,79.435,79.923,80.387,80.875,81.34,81.827,82.315,82.802,83.267,83.754,84.219,84.706,85.194,85.658,86.146,86.634,87.098,87.586,88.073,88.561,89.025,89.513,90.001,90.465,90.953,91.417,91.905,92.392,92.857,93.344,93.832,94.319,94.784,95.271,95.736,96.223,96.711,97.176,97.663,98.151,98.638,99.103,99.59,100.078,100.542,101.03,101.518,101.982,102.47,102.934,103.422,103.909,104.374,104.861,105.349,105.837,106.301,106.789,107.253,107.741,108.228,108.693,109.18,109.668,110.155,110.62,111.107,111.595,112.06,112.547,113.012,113.499,113.987,114.474,114.939,115.426,115.914,116.378,116.866,117.354,117.841,118.306,118.793,119.258,119.745,120.233,120.697,121.185,121.673,122.137,122.625,123.112,123.577,124.064,124.552,125.016,125.504,125.991,126.456,126.943,127.431,127.896,128.383,128.871,129.335,129.823,130.31,130.775,131.262,131.75,132.214,132.702,133.19,133.654,134.142,134.629,135.094,135.581,136.069,136.557,137.021,137.509,137.973,138.461,138.948,139.413,139.9,140.388,140.875,141.34,141.827,142.315,142.78,143.267,143.732,144.219,144.707,145.194,145.659,146.146,146.611,147.098,147.586,148.05,148.538,149.026,149.49,149.978,150.465,150.93,151.417,151.905,152.369,152.857,153.345,153.809,154.297,154.784,155.249,155.736,156.224,156.688,157.176,157.663,158.151,158.616,159.103,159.568,160.055,160.543,161.007,161.495,161.982,162.47,162.934,163.422,163.886,164.374,164.862,165.326,165.814,166.301,166.766,167.253,167.741,168.205,168.693,169.181,169.645,170.133,170.62,171.108,171.572,172.06,172.524,173.012,173.5,173.987,174.452,174.939,175.427,175.891,176.379,176.866,177.331,177.818,178.306,178.794,179.258,179.722,180.21,180.698,181.185,181.65,182.114,182.602,183.089,183.577,184.065,184.552,185.017,185.504,185.992,186.456,186.944,187.431,187.896,188.383,188.871,189.336,189.823,190.311,190.798,191.263,191.75,192.238,192.702,193.19,193.678,194.165,194.63,195.094,195.582,196.069,196.557,197.021,197.486,197.973,198.461,198.949,199.413,199.901,200.388,200.876,201.34,201.828,202.292,202.78,203.267,203.732,204.22,204.707,205.172,205.659,206.147,206.634,207.099,207.586,208.051,208.538,209.026,209.514,209.978,210.466,210.93,211.418,211.905,212.393,212.857,213.345,213.833,214.297,214.785,215.249,215.737,216.224,216.712,217.176,217.664,218.128,218.616,219.103,219.568,220.056,220.543,221.008,221.495,221.983,222.447,222.935,223.422,223.887,224.374,224.862,225.35,225.814,226.302,226.766,227.254,227.741,228.206,228.693,229.181,229.645,230.133,230.621,231.108,231.573,232.06,232.548,233.012,233.5,233.964,234.452,234.94,235.427,235.892,236.379,236.844,237.331,237.819,238.306,238.771,239.258,239.746,240.234,240.721,241.209,241.697,242.161,242.649,243.113,243.577,244.065,244.529,245.017,245.481,245.969,246.457,246.944,247.409,247.896,248.384,248.848,249.336,249.823,250.288,250.776,251.263,251.728,252.215,252.703,253.167,253.655,254.142,254.607,255.094,255.582,256.046,256.534,257.022,257.486,257.974,258.461,258.926,259.413,259.901,260.389,260.876,261.341],"peaks":[0.01,0.04,0.58,0.54,0.36,0.3,0.33,0.33,0.33,0.34,0.36,0.37,0.38,0.57,0.53,0.55,0.54,0.53,0.57,0.39,0.33,0.36,0.28,0.29,0.25,0.26,0.3,0.27,0.43,0.45,0.48,0.39,0.45,0.51,0.52,0.44,0.49,0.52,0.53,0.57,0.46,0.41,0.39,0.37,0.35,0.24,0.17,0.17,0.18,0.19,0.22,0.21,0.51,0.34,0.96,0.96,0.96,0.93,0.93,0.92,0.96,0.97,0.93,0.91,0.95,0.95,0.96,0.97,0.94,0.92,0.96,0.97,0.9,0.93,0.98,0.9,0.97,0.96,0.94,0.82,0.87,0.79,0.81,0.83,0.81,0.49,0.48,0.48,0.47,0.47,0.39,0.32,0.26,0.37,0.41,0.83,0.81,0.75,0.77,0.8,0.79,0.83,0.8,0.83,0.85,0.79,0.77,0.8,0.75,0.77,0.77,0.77,0.82,0.86,0.82,0.76,0.75,0.74,0.75,0.8,0.74,0.8,0.83,0.81,0.77,0.86,0.8,0.78,0.76,0.71,0.78,0.48,0.45,0.41,0.4,0.41,0.81,0.83,0.78,0.79,0.84,0.8,0.79,0.81,0.82,0.82,0.79,0.76,0.84,0.79,0.84,0.76,0.81,0.85,0.83,0.8,0.76,0.75,0.78,0.73,0.72,0.77,0.78,0.83,0.84,0.79,0.85,0.78,0.79,0.74,0.78,0.78,0.8,0.83,0.8,0.83,0.79,0.77,0.58,0.58,0.55,0.59,0.57,0.51,0.55,0.54,0.53,0.52,0.51,0.46,0.43,0.47,0.43,0.43,0.37,0.41,0.41,0.41,1.0,0.94,0.88,0.82,0.86,0.84,0.87,0.82,0.84,0.81,0.87,0.83,0.77,0.83,0.87,0.87,0.84,0.88,0.87,0.86,0.87,0.82,0.85,0.86,0.84,0.77,0.84,0.86,0.86,0.85,0.82,0.6,0.52,0.5,0.51,0.44,0.53,0.49,0.55,0.55,0.53,0.36,0.22,0.26,0.33,0.26,0.41,0.4,0.41,0.53,0.52,0.97,0.52,0.55,0.53,0.55,0.55,0.56,0.56,0.52,0.5,0.55,0.54,0.54,0.52,0.54,0.59,0.57,0.55,0.56,0.6,0.54,0.55,0.51,0.55,0.54,0.56,0.52,0.46,0.45,0.45,0.44,0.48,0.42,0.44,0.45,0.48,0.47,0.39,0.4,0.45,0.47,0.88,0.82,0.85,0.84,0.85,0.83,0.9,0.88,0.97,0.97,0.94,0.87,0.9,0.81,0.82,0.86,0.95,0.98,0.95,0.87,0.88,0.87,0.85,0.78,0.82,0.83,0.82,0.88,0.87,0.94,0.93,0.88,0.46,0.39,0.39,0.35,0.98,0.94,0.94,0.91,0.93,0.93,0.95,0.9,0.92,0.92,0.86,0.92,0.92,0.95,0.85,0.93,0.81,0.77,0.8,0.78,0.72,0.95,0.72,0.75,0.64,0.21,0.11,0.05,0.02,0.01,0.01,0.0,0.0,0.0]}];
+const WORKLET_URL = 'deck-worklet.js';
+const NOM = 100 / 3 / 60;                 // 33 1/3 rpm in revolutions per second
+const LEAD = 2.5, GAPT = 3, RUNOUT_T = 4; // seconds of lead-in, gap between tracks, run-out
+const R_LEAD = 1.465, R_OUT = 1.42, R_IN = 0.66, R_RUN = 0.56, GAP_W = 0.045, R_REC = 1.5;
+const PV = { x: 2.3, z: -1.2 }, ARM_L = 2.45, ARM_Y = 0.42, PHI_REST = 97 * Math.PI / 180;
+const D = {
+  built: false, node: null, out: null, loaded: -1, loadingId: -1, bytes: {}, seq: 0, rep: null,
+  motor: false, rpm: 33, vel: 0, angle: 0, pitch: 0,
+  phi: PHI_REST, lift: 0.85, needle: false, audible: false, armDrag: false, auto: null,
+  grab: false, grabA: 0, grabT: 0, grabVel: 0, down: null,
+  t: -LEAD, sel: 0, beatIdx: 0, beatNo: 0, lastLocal: -99, hold: false, visible: false, near: false,
+  backspin: 0, pending: null, started: false, lastRate: 0, lockRev: 0, hover: -1, pitchDrag: false, sentNeedle: false
+};
+
+// ---- side layout: lead-in, track bands (width by duration), gaps, run-out ----
+const SEG = [];
+(() => {
+  SEG.push({ k: 'lead', t0: -LEAD, t1: 0, r0: R_LEAD, r1: R_OUT });
+  const total = TRACKS.reduce((s, x) => s + x.dur, 0), span = (R_OUT - R_IN) - GAP_W * (TRACKS.length - 1);
+  let t = 0, r = R_OUT;
+  TRACKS.forEach((tr, i) => {
+    const w = span * tr.dur / total;
+    tr.start = t; tr.r0 = r; tr.r1 = r - w;
+    SEG.push({ k: 'track', i, t0: t, t1: t + tr.dur, r0: r, r1: r - w });
+    t += tr.dur; r -= w;
+    if (i < TRACKS.length - 1) { SEG.push({ k: 'gap', t0: t, t1: t + GAPT, r0: r, r1: r - GAP_W }); t += GAPT; r -= GAP_W; }
+  });
+  SEG.push({ k: 'run', t0: t, t1: t + RUNOUT_T, r0: r, r1: R_RUN });
+  D.sideEnd = t; D.tMax = t + RUNOUT_T;
+})();
+function tToR(t) { t = clamp(t, -LEAD, D.tMax); for (const s of SEG) if (t <= s.t1) return lerp(s.r0, s.r1, (t - s.t0) / (s.t1 - s.t0)); return R_RUN; }
+function rToT(r) { r = clamp(r, R_RUN, R_LEAD); for (const s of SEG) if (r >= s.r1) return lerp(s.t0, s.t1, (s.r0 - r) / (s.r0 - s.r1)); return D.tMax; }
+function segAt(t) { for (const s of SEG) if (t < s.t1) return s; return SEG[SEG.length - 1]; }
+function trackAt(t) { const s = segAt(t); return s.k === 'track' ? s.i : -1; }
+
+// ---- tonearm geometry: stylus position for an arm angle, and the inverse ----
+const stylusAt = phi => ({ x: PV.x + ARM_L * Math.cos(phi), z: PV.z + ARM_L * Math.sin(phi) });
+const rAt = phi => { const s = stylusAt(phi); return Math.hypot(s.x, s.z); };
+const PHI_MAX = (() => { let lo = PHI_REST, hi = PHI_REST + 1.2; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (rAt(m) > 0.5) lo = m; else hi = m; } return lo; })();
+function phiForR(r) { let lo = PHI_REST, hi = PHI_MAX; for (let i = 0; i < 28; i++) { const m = (lo + hi) / 2; if (rAt(m) > r) lo = m; else hi = m; } return (lo + hi) / 2; }
+const fmt = s => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+
+const dk = {
+  stage: $('#deckStage'), canvas: $('#deckGL'), hint: $('#deckHint'), tip: $('#deckTip'),
+  state: $('#roState'), time: $('#roTime'), title: $('#roTitle'), meta: $('#roMeta'), cover: $('#roCover'),
+  wave: $('#roWave'), pitchOut: $('#roPitch'), rpmOut: $('#roRpm'), bpmOut: $('#roBpm'), beatOut: $('#roBeat'),
+  start: $('#btnStart'), rpmBtn: $('#btnRpm'), pitch: $('#pitch'), crate: $('#crate'), section: $('#music')
+};
+
+// ---- audio: worklet voice + needle sounds ----
+let workletP = null;
+function ensureWorklet() {
+  if (!A.ctx) startAudio();
+  if (workletP) return workletP;
+  if (!A.ctx.audioWorklet) { workletP = Promise.reject(new Error('AudioWorklet unsupported')); workletP.catch(() => {}); return workletP; }
+  workletP = A.ctx.audioWorklet.addModule(WORKLET_URL).then(() => {
+    const n = new AudioWorkletNode(A.ctx, 'deck', { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [2] });
+    n.connect(A.deckOut);
+    n.port.onmessage = e => { const m = e.data; if (m.id === D.loaded && m.seq === D.seq) D.rep = { pos: m.pos, at: performance.now() / 1000 }; };
+    D.node = n;
+  });
+  workletP.catch(() => { dk.state.textContent = 'Audio unsupported'; });
+  return workletP;
+}
+function fetchBytes(i) {
+  if (!D.bytes[i]) D.bytes[i] = fetch(TRACKS[i].file).then(r => { if (!r.ok) throw new Error('fetch ' + r.status); return r.arrayBuffer(); });
+  return D.bytes[i];
+}
+async function loadTrack(i) {
+  if (D.loadingId === i || D.loaded === i) return;
+  D.loadingId = i;
+  try {
+    await ensureWorklet();
+    const bytes = await fetchBytes(i);
+    const buf = await new Promise((res, rej) => A.ctx.decodeAudioData(bytes.slice(0), res, rej));
+    if (D.loadingId !== i) return;
+    const L = new Float32Array(buf.length), R = new Float32Array(buf.length);
+    buf.copyFromChannel(L, 0); buf.copyFromChannel(R, buf.numberOfChannels > 1 ? 1 : 0);
+    D.seq++;
+    D.node.port.postMessage({ t: 'load', id: i, L, R, sr: buf.sampleRate, gain: TRACKS[i].gain, at: D.t - TRACKS[i].start, seq: D.seq }, [L.buffer, R.buffer]);
+    D.loaded = i; D.loadingId = -1; D.rep = null; resetBeats();
+  } catch (err) { if (D.loadingId === i) D.loadingId = -1; dk.state.textContent = 'Load error'; console.warn(err); }
+}
+function seekWorklet() {
+  if (!D.node || D.loaded < 0) return;
+  D.seq++; D.rep = null;
+  D.node.port.postMessage({ t: 'seek', at: D.t - TRACKS[D.loaded].start, seq: D.seq });
+}
+function needleSound(down) {
+  if (!A.ctx || !A.on) return;
+  const c = A.ctx, t = c.currentTime;
+  const n = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  n.buffer = A.noise; f.type = 'bandpass'; f.frequency.value = down ? 1400 : 2600; f.Q.value = 0.8;
+  env(g, t, down ? 0.09 : 0.05, down ? 0.07 : 0.03); n.connect(f); f.connect(g); g.connect(A.deckOut); n.start(t); n.stop(t + 0.1);
+  if (down) { const o = c.createOscillator(), og = c.createGain(); o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.08); env(og, t, 0.25, 0.12); o.connect(og); og.connect(A.deckOut); o.start(t); o.stop(t + 0.14); }
+}
+function resetBeats() {
+  const tr = TRACKS[D.loaded]; if (!tr) return;
+  const local = D.t - tr.start; let lo = 0, hi = tr.beats.length;
+  while (lo < hi) { const m = (lo + hi) >> 1; if (tr.beats[m] < local) lo = m + 1; else hi = m; }
+  D.beatIdx = lo; D.lastLocal = local;
+}
+
+// ---- actions ----
+function setMotor(on) {
+  D.motor = on; dk.start.setAttribute('aria-pressed', on ? 'true' : 'false');
+  dk.start.textContent = on ? 'Stop' : 'Start';
+  if (D.btnPress) D.btnPress = 1;
+}
+function setRpm(r) { D.rpm = r; dk.rpmBtn.textContent = r === 33 ? '33 rpm' : '45 rpm'; dk.rpmBtn.setAttribute('aria-pressed', r === 45 ? 'true' : 'false'); }
+function setPitch(v) { D.pitch = clamp(Math.round(v * 10) / 10, -8, 8); if (Math.abs(D.pitch) < 0.25) D.pitch = 0; dk.pitch.value = D.pitch; }
+function dropAt(t) {
+  setSound(true);
+  ensureWorklet().catch(() => {});
+  D.t = clamp(t, -LEAD, D.tMax); D.needle = true; D.started = true; D.auto = null;
+  if (!D.motor) setMotor(true);
+  const ti = trackAt(D.t); if (ti >= 0) { D.sel = ti; loadTrack(ti); }
+  if (D.loaded >= 0) seekWorklet();
+  resetBeats();
+}
+function liftNeedle() { if (D.needle) { D.needle = false; } }
+function cueTo(t, fast) { liftNeedle(); D.auto = { phi: phiForR(tToR(t)), t, drop: true, fast: !!fast }; }
+function playTrack(i) {
+  D.sel = i; updateCrate();
+  if (D.audible && D.vel > NOM * 0.5 && !reduce) {
+    D.backspin = 0.72; D.vel = -NOM * 6.5; D.pending = i; shock(0, 0, true);
+    return;
+  }
+  setSound(true); ensureWorklet().catch(() => {}); loadTrack(i);
+  cueTo(TRACKS[i].start, false);
+}
+function finishBackspin() {
+  const i = D.pending; D.pending = null; if (i == null) return;
+  liftNeedle(); D.lift = 0.5;
+  D.auto = { phi: phiForR(tToR(TRACKS[i].start)), t: TRACKS[i].start, drop: true, fast: true };
+}
+
+// ---- panel ----
+TRACKS.forEach((t, i) => {
+  const li = document.createElement('li');
+  li.innerHTML = `<button type="button"><img src="${t.cover}" alt="" width="44" height="44"><span class="tx"><span class="t">${t.title}</span><span class="m">${Math.round(t.bpm)} BPM · ${fmt(t.dur)}</span></span><span class="n">A${i + 1}</span></button>`;
+  const b = li.querySelector('button');
+  b.addEventListener('click', () => playTrack(i));
+  b.setAttribute('aria-label', `Play ${t.title}, ${fmt(t.dur)}`);
+  dk.crate.appendChild(li);
+});
+function updateCrate() { [...dk.crate.querySelectorAll('button')].forEach((b, i) => b.setAttribute('aria-current', i === D.sel ? 'true' : 'false')); }
+updateCrate();
+dk.start.addEventListener('click', () => { setSound(true); ensureWorklet().catch(() => {}); setMotor(!D.motor); });
+dk.rpmBtn.addEventListener('click', () => setRpm(D.rpm === 33 ? 45 : 33));
+dk.pitch.addEventListener('input', () => setPitch(parseFloat(dk.pitch.value)));
+dk.wave.addEventListener('click', e => {
+  const r = dk.wave.getBoundingClientRect(), f = clamp((e.clientX - r.left) / r.width), tr = TRACKS[D.sel];
+  setSound(true); ensureWorklet().catch(() => {}); loadTrack(D.sel);
+  cueTo(tr.start + f * tr.dur, true);
+});
+let shownSel = -1;
+function showTrack(i) {
+  if (i === shownSel) return; shownSel = i;
+  const t = TRACKS[i];
+  dk.title.textContent = t.title; dk.cover.src = t.cover; dk.meta.textContent = `Side A · track ${i + 1} · ${fmt(t.dur)}`;
+  if (D.setLabel) D.setLabel(i);
+  updateCrate();
+}
+function drawWave() {
+  const cv = dk.wave, w = cv.clientWidth, h = cv.clientHeight; if (!w) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const g = cv.getContext('2d'), tr = TRACKS[D.sel], pk = tr.peaks, n = pk.length;
+  const local = clamp((D.t - tr.start) / tr.dur), bw = cv.width / n;
+  g.clearRect(0, 0, cv.width, cv.height);
+  for (let i = 0; i < n; i++) {
+    const a = pk[i], bh = Math.max(1, a * cv.height * 0.92), played = i / n < local && trackAt(D.t) === D.sel;
+    g.fillStyle = played ? '#22D3EE' : 'rgba(237,235,230,.28)';
+    g.fillRect(i * bw, (cv.height - bh) / 2, Math.max(1, bw - dpr * 0.6), bh);
+  }
+  if (trackAt(D.t) === D.sel) { g.fillStyle = '#EDEBE6'; g.fillRect(local * cv.width - dpr, 0, dpr * 2, cv.height); }
+}
+
+// ---- 3D deck ----
+function deckBuild() {
+  const canvas = dk.canvas;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(30, 1.3, 0.1, 100);
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+
+  const M = {
+    chrome: new THREE.MeshStandardMaterial({ color: 0xd9dee6, metalness: 0.55, roughness: 0.22 }),
+    satin: new THREE.MeshStandardMaterial({ color: 0x9da3ad, metalness: 0.5, roughness: 0.38 }),
+    dark: new THREE.MeshStandardMaterial({ color: 0x15171b, metalness: 0.4, roughness: 0.45 }),
+    black: new THREE.MeshStandardMaterial({ color: 0x0b0c0f, metalness: 0.3, roughness: 0.5 }),
+    rubber: new THREE.MeshStandardMaterial({ color: 0x07080a, metalness: 0, roughness: 0.92 }),
+    cyan: new THREE.MeshStandardMaterial({ color: 0x0a3540, metalness: 0.2, roughness: 0.3, emissive: 0x22d3ee, emissiveIntensity: 0.4 }),
+    led: new THREE.MeshStandardMaterial({ color: 0x041014, emissive: 0x22d3ee, emissiveIntensity: 0 })
+  };
+  // lit directly (no reflection map) so it looks the same on every GPU
+  scene.add(new THREE.HemisphereLight(0x8f9bb3, 0x050506, 0.55));
+  const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(-3, 7, 4); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xbfd9ff, 0.45); fill.position.set(5, 4, 6); scene.add(fill);
+  const back = new THREE.DirectionalLight(0x22d3ee, 0.9); back.position.set(2, 3, -6); scene.add(back);
+  const spec = new THREE.PointLight(0xffffff, 0.9, 14); spec.position.set(1.5, 5, 3); scene.add(spec);
+  const rim = new THREE.PointLight(0x22d3ee, 1.4, 8); rim.position.set(-1.62, 0.6, -1.0); scene.add(rim);
+
+  // plinth
+  const X0 = -1.85, X1 = 2.95, Z0 = -1.9, Z1 = 1.9, PW = X1 - X0, PD = Z1 - Z0, PCX = (X0 + X1) / 2;
+  const body = new THREE.Mesh(new THREE.BoxGeometry(PW, 0.36, PD), M.dark); body.position.set(PCX, -0.18, 0); scene.add(body);
+  const topCan = document.createElement('canvas'); topCan.width = 2048; topCan.height = Math.round(2048 * PD / PW);
+  const topTex = new THREE.CanvasTexture(topCan); topTex.encoding = THREE.sRGBEncoding; topTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const top = new THREE.Mesh(new THREE.PlaneGeometry(PW, PD), new THREE.MeshStandardMaterial({ map: topTex, metalness: 0.3, roughness: 0.5 }));
+  top.rotation.x = -Math.PI / 2; top.position.set(PCX, 0.001, 0); scene.add(top);
+  const toCan = (x, z) => [(x - X0) / PW * topCan.width, (z - Z0) / PD * topCan.height];
+  function drawTop() {
+    const g = topCan.getContext('2d'), W = topCan.width, H = topCan.height, s = W / PW;
+    g.fillStyle = '#131519'; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.022})`; g.fillRect(0, Math.random() * H, W, 1); }
+    for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.05})`; g.fillRect(0, Math.random() * H, W, 1); }
+    g.strokeStyle = 'rgba(255,255,255,.14)'; g.lineWidth = 5; g.strokeRect(4, 4, W - 8, H - 8);
+    let [cx, cy] = toCan(0, 0);
+    g.fillStyle = '#08090b'; g.beginPath(); g.arc(cx, cy, 1.64 * s, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.08)'; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, 1.67 * s, 0, 7); g.stroke();
+    const mono = px => `500 ${px}px "IBM Plex Mono", ui-monospace, monospace`;
+    g.fillStyle = 'rgba(237,235,230,.5)'; g.font = mono(0.07 * s); g.textAlign = 'center';
+    let [x, y] = toCan(-1.45, 1.83); g.fillText('START · STOP', x, y);
+    [x, y] = toCan(-0.92, 1.84); g.fillText('33', x, y); [x, y] = toCan(-0.6, 1.84); g.fillText('45', x, y);
+    g.textAlign = 'right'; g.font = mono(0.055 * s);
+    for (let v = -8; v <= 8; v += 2) {
+      const z = 0.95 + v / 8 * 0.6; [x, y] = toCan(2.42, z);
+      g.fillStyle = v === 0 ? 'rgba(34,211,238,.9)' : 'rgba(237,235,230,.45)';
+      g.fillText((v > 0 ? '+' : '') + v, x, y + 0.02 * s); g.fillRect(x + 0.03 * s, y - 1, 0.05 * s, 2);
+    }
+    g.textAlign = 'center'; g.fillStyle = 'rgba(237,235,230,.5)'; g.font = mono(0.06 * s);
+    [x, y] = toCan(2.62, 0.22); g.fillText('PITCH', x, y);
+    g.textAlign = 'left'; g.fillStyle = 'rgba(237,235,230,.88)';
+    g.font = `800 ${0.15 * s}px Anybody, "Arial Black", sans-serif`;
+    if ('fontStretch' in g) try { g.fontStretch = 'ultra-expanded'; } catch (e) {}
+    [x, y] = toCan(-1.72, -1.6); g.fillText('REYTEK', x, y);
+    if ('fontStretch' in g) try { g.fontStretch = 'normal'; } catch (e) {}
+    g.font = mono(0.055 * s); g.fillStyle = 'rgba(237,235,230,.42)';
+    [x, y] = toCan(-1.72, -1.48); g.fillText('RT-1991 · DIRECT DRIVE · QUARTZ LOCK', x, y);
+    g.fillStyle = 'rgba(34,211,238,.75)'; [x, y] = toCan(1.62, 1.84); g.textAlign = 'center'; g.fillText('CUE', x, y);
+    topTex.needsUpdate = true;
+  }
+  drawTop();
+  if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('800 40px Anybody'), document.fonts.load('500 20px "IBM Plex Mono"')]).then(drawTop).catch(() => {});
+
+  // platter with strobe dots
+  const dotsCan = document.createElement('canvas'); dotsCan.width = 2048; dotsCan.height = 128;
+  const maskCan = document.createElement('canvas'); maskCan.width = 2048; maskCan.height = 128;
+  (() => {
+    const g = dotsCan.getContext('2d'), m = maskCan.getContext('2d');
+    const grd = g.createLinearGradient(0, 0, 0, 128); grd.addColorStop(0, '#b7bcc4'); grd.addColorStop(0.5, '#8d929b'); grd.addColorStop(1, '#6d7179');
+    g.fillStyle = grd; g.fillRect(0, 0, 2048, 128); m.fillStyle = '#000'; m.fillRect(0, 0, 2048, 128);
+    [[180, 26, 9], [183, 52, 8], [216, 78, 7], [222, 102, 6]].forEach(([n, y, rr]) => {
+      for (let i = 0; i < n; i++) {
+        const x = (i + 0.5) / n * 2048;
+        g.fillStyle = '#2a2d33'; g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill();
+        m.fillStyle = '#fff'; m.beginPath(); m.arc(x, y, rr * 0.8, 0, 7); m.fill();
+      }
+    });
+  })();
+  const dotsTex = new THREE.CanvasTexture(dotsCan), maskTex = new THREE.CanvasTexture(maskCan);
+  dotsTex.encoding = THREE.sRGBEncoding; dotsTex.wrapS = maskTex.wrapS = THREE.RepeatWrapping;
+  const sideMat = new THREE.MeshStandardMaterial({ map: dotsTex, emissiveMap: maskTex, emissive: 0x22d3ee, emissiveIntensity: 0.12, metalness: 0.5, roughness: 0.32 });
+  const platter = new THREE.Mesh(new THREE.CylinderGeometry(1.58, 1.6, 0.16, 160, 1), [sideMat, M.rubber, M.rubber]);
+  platter.position.y = 0.08; scene.add(platter);
+
+  // the record: one shader draws grooves, gaps, sheen, label and the light-trail glow
+  const labelCan = document.createElement('canvas'); labelCan.width = labelCan.height = 1024;
+  const labelTex = new THREE.CanvasTexture(labelCan); labelTex.minFilter = THREE.LinearMipmapLinearFilter;
+  const covers = TRACKS.map(t => { const im = new Image(); im.src = t.cover; return im; });
+  let labelFor = -1;
+  function drawLabel(i) {
+    const g = labelCan.getContext('2d'), S = 1024, c = S / 2, im = covers[i];
+    g.clearRect(0, 0, S, S);
+    g.save(); g.beginPath(); g.arc(c, c, c, 0, 7); g.clip();
+    g.fillStyle = '#0b0d12'; g.fillRect(0, 0, S, S);
+    if (im.complete && im.naturalWidth) g.drawImage(im, 0, 0, S, S);
+    const rg = g.createRadialGradient(c, c, c * 0.55, c, c, c); rg.addColorStop(0, 'rgba(5,6,8,0)'); rg.addColorStop(0.7, 'rgba(5,6,8,.55)'); rg.addColorStop(1, 'rgba(5,6,8,.92)');
+    g.fillStyle = rg; g.fillRect(0, 0, S, S);
+    g.strokeStyle = 'rgba(34,211,238,.8)'; g.lineWidth = 4; g.beginPath(); g.arc(c, c, c * 0.8, 0, 7); g.stroke();
+    g.fillStyle = 'rgba(237,235,230,.92)'; g.font = '500 30px "IBM Plex Mono", ui-monospace, monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const text = `REYTEK  ·  SIDE A  ·  33⅓ RPM  ·  A${i + 1}  ${TRACKS[i].title.toUpperCase()}  ·  `;
+    const step = (Math.PI * 2) / text.length;
+    for (let k = 0; k < text.length; k++) { g.save(); g.translate(c, c); g.rotate(-Math.PI / 2 + k * step); g.translate(0, -c * 0.89); g.fillText(text[k], 0, 0); g.restore(); }
+    g.restore();
+    g.fillStyle = '#d7dbe2'; g.beginPath(); g.arc(c, c, 18, 0, 7); g.fill();
+    labelTex.needsUpdate = true; labelFor = i;
+  }
+  covers.forEach((im, i) => { im.onload = () => { if (labelFor === i || labelFor < 0) drawLabel(i); }; });
+  D.setLabel = i => drawLabel(i);
+  drawLabel(0);
+  const bands = []; for (let i = 0; i < 4; i++) bands.push(new THREE.Vector2(i < TRACKS.length ? TRACKS[i].r0 : 0, i < TRACKS.length ? TRACKS[i].r1 : 0));
+  const RU = {
+    uAngle: { value: 0 }, uBeat: { value: 0 }, uNeedleR: { value: -1 }, uPlayOuter: { value: 0 }, uHoverO: { value: 0 }, uHoverI: { value: 0 },
+    uLight: { value: -0.75 }, uRLead: { value: R_LEAD }, uRRun: { value: R_RUN }, uBand: { value: bands }, uNB: { value: TRACKS.length },
+    uLabel: { value: labelTex }, cCyan: { value: new THREE.Color(0x22d3ee) }
+  };
+  const rec = new THREE.Mesh(new THREE.CircleGeometry(R_REC, 180), new THREE.ShaderMaterial({
+    uniforms: RU, extensions: { derivatives: true },
+    vertexShader: 'varying vec2 vW; void main(){ vec4 w=modelMatrix*vec4(position,1.0); vW=w.xz; gl_Position=projectionMatrix*viewMatrix*w; }',
+    fragmentShader: `
+      uniform float uAngle,uBeat,uNeedleR,uPlayOuter,uHoverO,uHoverI,uLight,uRLead,uRRun;
+      uniform vec2 uBand[4]; uniform int uNB; uniform sampler2D uLabel; uniform vec3 cCyan;
+      varying vec2 vW;
+      void main(){
+        float r=length(vW); float aw=atan(vW.y,vW.x); float al=aw-uAngle;
+        vec3 col=vec3(0.013,0.013,0.016);
+        float groove=step(uRRun,r)*step(r,uRLead);
+        float band=0.0;
+        for(int i=0;i<4;i++){ if(i>=uNB) break; if(r<=uBand[i].x && r>=uBand[i].y) band=1.0; }
+        float ph=r*2200.0+sin(al*3.0+r*9.0)*0.8;
+        float g=0.5+0.5*sin(ph); g=mix(g,0.5,clamp(fwidth(ph)/3.0,0.0,1.0));
+        float fine=0.5+0.5*sin(r*640.0);
+        col+=vec3(0.024)*groove*(g*band+0.35*fine*(1.0-band));
+        float c=abs(cos(aw-uLight));
+        float lobe=pow(c,18.0), lobe2=pow(c,90.0);
+        col+=vec3(0.62,0.66,0.74)*lobe*groove*(0.07+0.15*band*g+0.24*(1.0-band));
+        col+=vec3(0.9)*lobe2*groove*0.12;
+        float dead=step(0.5,r)*step(r,uRRun);
+        col+=vec3(0.5,0.53,0.6)*lobe*dead*0.3;
+        float played=step(uNeedleR,r)*step(r,uPlayOuter)*step(0.0,uNeedleR);
+        float tr=pow(0.5+0.5*sin(al*3.0-r*26.0),12.0)+0.5*pow(0.5+0.5*sin(al*5.0+r*61.0),20.0);
+        col+=cCyan*played*(0.03+tr*(0.07+uBeat*0.22));
+        col+=cCyan*0.1*step(uHoverI,r)*step(r,uHoverO)*(0.5+0.5*g);
+        col+=cCyan*exp(-pow((r-uNeedleR)*120.0,2.0))*0.4*step(0.0,uNeedleR);
+        if(r<0.5){
+          vec2 lp=vec2(cos(al),sin(al))*r;
+          vec3 lab=texture2D(uLabel,vec2(lp.x+0.5,0.5-lp.y)).rgb;
+          col=lab*(0.9+0.2*lobe);
+          if(r<0.035) col=vec3(0.55,0.57,0.6)*(0.6+0.7*lobe);
+        }
+        col+=vec3(0.06)*smoothstep(1.47,1.5,r)*lobe;
+        col*=smoothstep(1.5,1.494,r);
+        gl_FragColor=vec4(col,1.0);
+      }`
+  }));
+  rec.rotation.x = -Math.PI / 2; rec.position.y = 0.182; scene.add(rec);
+  const recEdge = new THREE.Mesh(new THREE.CylinderGeometry(R_REC, R_REC, 0.02, 180, 1, true), M.black); recEdge.position.y = 0.172; scene.add(recEdge);
+  const spindle = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.14, 24), M.chrome); spindle.position.y = 0.22; scene.add(spindle);
+
+  // tonearm base
+  const base = new THREE.Group(); base.position.set(PV.x, 0, PV.z); scene.add(base);
+  const cyl = (rt, rb, h, mat, y, seg = 48) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), mat); m.position.y = y; base.add(m); return m; };
+  cyl(0.38, 0.4, 0.04, M.dark, 0.02); cyl(0.27, 0.27, 0.14, M.satin, 0.11); cyl(0.29, 0.29, 0.02, M.chrome, 0.19); cyl(0.13, 0.15, 0.2, M.chrome, 0.3);
+  const skate = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.06, 32), M.satin); skate.position.set(PV.x - 0.42, 0.03, PV.z - 0.25); scene.add(skate);
+  const restS = (() => { const d = 1.95; return { x: PV.x + d * Math.cos(PHI_REST), z: PV.z + d * Math.sin(PHI_REST) }; })();
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.5, 20), M.satin); post.position.set(restS.x, 0.25, restS.z); scene.add(post);
+  const cradle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, 0.12), M.black); cradle.position.set(restS.x, 0.5, restS.z); scene.add(cradle);
+  // arm: yaw (swing) > pitch (lift)
+  const yaw = new THREE.Group(); yaw.position.set(PV.x, ARM_Y, PV.z); scene.add(yaw);
+  const pitchG = new THREE.Group(); yaw.add(pitchG);
+  const curve = new THREE.CatmullRomCurve3([V(-0.42, 0, 0), V(0.1, 0, 0), V(0.7, 0, 0.06), V(1.3, 0, -0.05), V(1.85, 0, 0.02), V(2.13, -0.01, 0.07)]);
+  pitchG.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 120, 0.034, 14, false), M.chrome));
+  const add = (geo, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); pitchG.add(m); return m; };
+  add(new THREE.BoxGeometry(0.22, 0.16, 0.22), M.satin, 0, 0, 0);
+  add(new THREE.CylinderGeometry(0.16, 0.16, 0.3, 40), M.dark, -0.6, 0, 0, 0, 0, Math.PI / 2);
+  add(new THREE.CylinderGeometry(0.165, 0.165, 0.03, 40), M.chrome, -0.44, 0, 0, 0, 0, Math.PI / 2);
+  add(new THREE.CylinderGeometry(0.05, 0.05, 0.12, 20), M.satin, 2.14, -0.01, 0.07, 0, 0, Math.PI / 2);
+  add(new THREE.BoxGeometry(0.38, 0.026, 0.17), M.black, 2.32, -0.04, 0.035, 0, -0.12, 0);
+  add(new THREE.BoxGeometry(0.16, 0.012, 0.025), M.satin, 2.36, -0.03, 0.16, 0, 0.2, 0);
+  // long DJ cartridge with a cyan stripe, sloping down to the stylus
+  add(new THREE.BoxGeometry(0.34, 0.09, 0.08), M.black, 2.33, -0.115, 0, 0, 0, -0.3);
+  add(new THREE.BoxGeometry(0.3, 0.012, 0.082), M.cyan, 2.32, -0.066, 0, 0, 0, -0.3);
+  add(new THREE.ConeGeometry(0.014, 0.06, 12), M.chrome, 2.45, -0.21, 0, Math.PI, 0, 0);
+  const tipGlow = add(new THREE.SphereGeometry(0.02, 16, 12), M.led, 2.45, -0.235, 0);
+
+  // controls
+  const ctrl = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); scene.add(m); return m; };
+  const startBtn = ctrl(new THREE.BoxGeometry(0.56, 0.07, 0.36), M.satin, -1.45, 0.035, 1.55);
+  const b33 = ctrl(new THREE.BoxGeometry(0.26, 0.045, 0.15), M.satin, -0.92, 0.0225, 1.64);
+  const b45 = ctrl(new THREE.BoxGeometry(0.26, 0.045, 0.15), M.satin, -0.6, 0.0225, 1.64);
+  const led33 = ctrl(new THREE.BoxGeometry(0.16, 0.012, 0.02), M.led.clone(), -0.92, 0.05, 1.6);
+  const led45 = ctrl(new THREE.BoxGeometry(0.16, 0.012, 0.02), M.led.clone(), -0.6, 0.05, 1.6);
+  const slot = ctrl(new THREE.BoxGeometry(0.07, 0.012, 1.36), M.rubber, 2.62, 0.006, 0.95);
+  const knob = ctrl(new THREE.BoxGeometry(0.32, 0.11, 0.14), M.satin, 2.62, 0.055, 0.95);
+  const knobLine = ctrl(new THREE.BoxGeometry(0.3, 0.004, 0.012), M.cyan, 2.62, 0.112, 0.95);
+  const detent = ctrl(new THREE.SphereGeometry(0.03, 16, 12), M.led.clone(), 2.85, 0.03, 0.95);
+  const cueBtn = ctrl(new THREE.BoxGeometry(0.22, 0.05, 0.16), M.satin, 1.62, 0.025, 1.64);
+  const target = ctrl(new THREE.CylinderGeometry(0.05, 0.055, 0.32, 20), M.dark, -1.62, 0.16, -1.0);
+  ctrl(new THREE.SphereGeometry(0.045, 16, 12), M.cyan, -1.62, 0.33, -1.0);
+  const controls = [startBtn, b33, b45, knob, slot, cueBtn];
+
+  // pointer: tonearm drag, scratching, tap-to-cue, hardware buttons
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hit = new THREE.Vector3();
+  function rayFrom(e) { const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, cam); }
+  function onPlane(y) { plane.constant = -y; return ray.ray.intersectPlane(plane, hit) ? { x: hit.x, z: hit.z } : null; }
+  function armDist(p) {
+    const s = stylusAt(D.phi), ax = s.x - PV.x, az = s.z - PV.z, t = clamp(((p.x - PV.x) * ax + (p.z - PV.z) * az) / (ax * ax + az * az), 0, 1.05);
+    return Math.hypot(p.x - (PV.x + ax * t), p.z - (PV.z + az * t));
+  }
+  const angOf = p => Math.atan2(p.z, p.x);
+  const wrap = a => { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; };
+  canvas.addEventListener('pointerdown', e => {
+    if (!A.ctx) startAudio();
+    ensureWorklet().catch(() => {});
+    rayFrom(e);
+    const hits = ray.intersectObjects(controls, false);
+    if (hits.length) {
+      const o = hits[0].object;
+      if (o === startBtn) { setSound(true); setMotor(!D.motor); D.press = 1; }
+      else if (o === b33) setRpm(33); else if (o === b45) setRpm(45);
+      else if (o === cueBtn) { if (D.needle) liftNeedle(); else if (rAt(D.phi) <= R_LEAD + 0.01) dropAt(rToT(rAt(D.phi))); }
+      else { D.pitchDrag = true; const p = onPlane(0.06); if (p) setPitch((p.z - 0.95) / 0.6 * 8); canvas.setPointerCapture(e.pointerId); }
+      return;
+    }
+    const pa = onPlane(ARM_Y);
+    if (pa && armDist(pa) < (e.pointerType === 'touch' ? 0.4 : 0.22)) {
+      D.armDrag = true; D.auto = null; liftNeedle(); canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing';
+      setSound(true); return;
+    }
+    const pr = onPlane(0.182);
+    if (pr && Math.hypot(pr.x, pr.z) < R_REC) {
+      D.grab = true; D.grabA = angOf(pr); D.grabT = performance.now(); D.grabVel = 0;
+      D.down = { x: e.clientX, y: e.clientY, t: performance.now(), r: Math.hypot(pr.x, pr.z) };
+      canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing';
+    }
+  });
+  canvas.addEventListener('pointermove', e => {
+    rayFrom(e);
+    if (D.armDrag) {
+      const p = onPlane(ARM_Y); if (!p) return;
+      let phi = Math.atan2(p.z - PV.z, p.x - PV.x); if (phi < 0) phi += 2 * Math.PI;
+      D.phi = clamp(phi, PHI_REST, PHI_MAX);
+      return;
+    }
+    if (D.pitchDrag) { const p = onPlane(0.06); if (p) setPitch((p.z - 0.95) / 0.6 * 8); return; }
+    if (D.grab) {
+      const p = onPlane(0.182); if (!p) return;
+      const a = angOf(p), da = wrap(a - D.grabA), now = performance.now(), dt = Math.max(1, now - D.grabT) / 1000;
+      D.grabA = a; D.grabT = now; D.angle += da;
+      D.grabVel = lerp(D.grabVel, da / (2 * Math.PI) / dt, 0.6);
+      return;
+    }
+    const hits = ray.intersectObjects(controls, false), pa = onPlane(ARM_Y), pr = onPlane(0.182);
+    canvas.style.cursor = hits.length ? 'pointer' : (pa && armDist(pa) < 0.22) || (pr && Math.hypot(pr.x, pr.z) < R_REC) ? 'grab' : '';
+  });
+  function release(e) {
+    if (D.armDrag) {
+      D.armDrag = false; const r = rAt(D.phi);
+      if (r <= R_LEAD + 0.01 && r >= R_RUN) dropAt(rToT(r));
+      else D.auto = { phi: PHI_REST, drop: false };
+    }
+    if (D.grab) {
+      D.grab = false;
+      const d = D.down; D.down = null;
+      if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6 && performance.now() - d.t < 300 && !D.needle && d.r <= R_LEAD && d.r >= R_RUN) {
+        setSound(true); const t = rToT(d.r), ti = trackAt(t); if (ti >= 0) { D.sel = ti; loadTrack(ti); }
+        cueTo(t, false);
+      }
+    }
+    D.pitchDrag = false; canvas.style.cursor = '';
+  }
+  canvas.addEventListener('pointerup', release);
+  canvas.addEventListener('pointercancel', release);
+
+  // camera fit + intro sweep
+  let W = 0, H = 0;
+  function resize() {
+    const r = dk.stage.getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height);
+    renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix();
+  }
+  resize(); if (window.ResizeObserver) new ResizeObserver(resize).observe(dk.stage); addEventListener('resize', resize);
+  const proj = new THREE.Vector3();
+  function screenOf(x, y, z) { proj.set(x, y, z).project(cam); return { x: (proj.x * 0.5 + 0.5) * W, y: (-proj.y * 0.5 + 0.5) * H }; }
+
+  D.screen = (x, y, z) => screenOf(x, y, z);
+  D.render = (sp, mx, my) => {
+    const el = lerp(0.3, 0.98, ease(clamp(sp))), yawC = mx * 0.05;
+    const vf = cam.fov * Math.PI / 360, hf = Math.atan(Math.tan(vf) * cam.aspect);
+    const dist = Math.max((PW * 0.53) / Math.tan(hf), (PD * 0.5 * Math.sin(el) + 0.45 * Math.cos(el) + 0.3) / Math.tan(vf)) * 1.02;
+    const tx = PCX - 0.05, tz = 0.08;
+    cam.position.set(tx + Math.sin(yawC) * dist * Math.cos(el), dist * Math.sin(el) + my * 0.1, tz + Math.cos(yawC) * dist * Math.cos(el));
+    cam.lookAt(tx, 0, tz);
+    platter.rotation.y = -D.angle;
+    RU.uAngle.value = D.angle; RU.uBeat.value = beat;
+    const tr = D.loaded >= 0 ? TRACKS[D.loaded] : TRACKS[D.sel];
+    const ti = trackAt(D.t);
+    RU.uNeedleR.value = D.audible ? rAt(D.phi) : -1;
+    RU.uPlayOuter.value = D.audible && ti >= 0 ? TRACKS[ti].r0 : 0;
+    const hr = D.armDrag ? rAt(D.phi) : -1, ht = hr > 0 ? trackAt(rToT(hr)) : -1;
+    RU.uHoverO.value = ht >= 0 ? TRACKS[ht].r0 : 0; RU.uHoverI.value = ht >= 0 ? TRACKS[ht].r1 : 0;
+    sideMat.emissiveIntensity = 0.1 + beat * (D.audible ? 1.6 : 0.3);
+    yaw.rotation.y = -D.phi; pitchG.rotation.z = D.lift * 0.075;
+    M.led.emissiveIntensity = D.audible ? 1.2 + beat * 2 : 0;
+    led33.material.emissiveIntensity = D.rpm === 33 ? 1.4 : 0.05; led45.material.emissiveIntensity = D.rpm === 45 ? 1.4 : 0.05;
+    detent.material.emissiveIntensity = D.pitch === 0 ? 1.6 : 0.05;
+    knob.position.z = knobLine.position.z = 0.95 + D.pitch / 8 * 0.6;
+    D.press = (D.press || 0) * 0.85; startBtn.position.y = 0.035 - D.press * 0.02;
+    rim.intensity = 1.2 + beat * 2.2;
+    renderer.render(scene, cam);
+    // hint + tooltip anchored to the headshell
+    const s = stylusAt(D.phi), sp2 = screenOf(s.x, ARM_Y + D.lift * 0.18 - 0.1, s.z);
+    dk.hint.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(-50%,-150%)`;
+    dk.hint.style.opacity = D.started || D.armDrag || D.auto ? 0 : 1;
+    if (D.armDrag && ht >= 0) {
+      dk.tip.hidden = false;
+      dk.tip.textContent = `A${ht + 1} · ${TRACKS[ht].title} · ${fmt(rToT(hr) - TRACKS[ht].start)}`;
+      dk.tip.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(18px,-50%)`;
+    } else if (D.armDrag) {
+      dk.tip.hidden = false; dk.tip.textContent = hr > R_LEAD ? 'Off the record · release to rest' : hr > R_OUT ? 'Lead-in' : 'Run-out';
+      dk.tip.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(18px,-50%)`;
+    } else dk.tip.hidden = true;
+  };
+  D.built = true;
+}
+
+// ---- per-frame physics, audio sync, readout ----
+let roTick = 0;
+function deckFrame(dt) {
+  // platter motor, scratch, backspin
+  const target = D.motor ? NOM * (D.rpm / (100 / 3)) * (1 + D.pitch / 100) : 0;
+  if (D.grab) { D.vel = D.grabVel; D.grabVel *= Math.exp(-dt * 10); }
+  else if (D.backspin > 0) { D.backspin -= dt; D.vel = lerp(D.vel, target, 1 - Math.exp(-dt * 1.7)); if (D.backspin <= 0) finishBackspin(); }
+  else { const acc = D.motor ? 2.4 : 0.7, dv = target - D.vel; D.vel += clamp(dv, -acc * dt, acc * dt); }
+  if (!D.grab) D.angle += D.vel * 2 * Math.PI * dt;
+
+  // arm motion and needle lift
+  if (D.auto) {
+    const k = 1 - Math.exp(-dt * (D.auto.fast ? 16 : 6.5));
+    D.phi += (D.auto.phi - D.phi) * k;
+    if (Math.abs(D.auto.phi - D.phi) < 0.003) { D.phi = D.auto.phi; const a = D.auto; D.auto = null; if (a.drop) dropAt(a.t); }
+  } else if (D.needle && !D.armDrag) D.phi = phiForR(tToR(D.t));
+  const atRest = !D.needle && !D.armDrag && !D.auto && Math.abs(D.phi - PHI_REST) < 0.01;
+  const liftT = D.needle ? 0 : (atRest ? 0.62 : 1);
+  D.lift += (liftT - D.lift) * (1 - Math.exp(-dt * (D.needle ? 6 : 16)));
+  const audible = D.needle && D.lift < 0.05;
+  if (audible && !D.audible) { needleSound(true); seekWorklet(); resetBeats(); }
+  if (!audible && D.audible) needleSound(false);
+  D.audible = audible;
+
+  // playback position: follow the worklet when it has the track, else integrate
+  const rate = D.audible ? D.vel / NOM : 0;
+  if (D.audible) {
+    const running = A.ctx && A.ctx.state === 'running';
+    if (D.loaded >= 0 && D.rep && running) {
+      const now = performance.now() / 1000;
+      D.t = TRACKS[D.loaded].start + D.rep.pos + rate * clamp(now - D.rep.at, 0, 0.12);
+    } else if (running) D.t += rate * dt;
+    if (D.t >= D.tMax || D.t <= -LEAD) {
+      D.t = clamp(D.t, -LEAD, D.tMax); seekWorklet();
+      if (D.t >= D.tMax) { const rev = Math.floor(D.angle / (2 * Math.PI)); if (rev !== D.lockRev) { D.lockRev = rev; needleSound(false); } }
+    }
+    const ti = trackAt(D.t);
+    if (ti >= 0 && ti !== D.loaded && ti !== D.loadingId) { D.sel = ti; loadTrack(ti); }
+  }
+  if (D.node) {
+    if (Math.abs(rate - D.lastRate) > 0.0004 || (rate === 0 && D.lastRate !== 0)) { D.node.port.postMessage({ t: 'rate', v: rate }); D.lastRate = rate; }
+    if (D.audible !== D.sentNeedle) { D.node.port.postMessage({ t: 'needle', v: D.audible }); D.sentNeedle = D.audible; }
+  }
+
+  // beats from the real track drive the vortex
+  if (D.audible && D.loaded >= 0) {
+    const tr = TRACKS[D.loaded], local = D.t - tr.start;
+    if (local < D.lastLocal - 0.05 || local > D.lastLocal + 1) resetBeats();
+    else if (rate > 0.2) while (D.beatIdx < tr.beats.length && tr.beats[D.beatIdx] <= local) { D.beatIdx++; beat = 1; justBeat = true; D.beatNo = D.beatIdx; }
+    D.lastLocal = local;
+  }
+
+  // the generated loop steps aside while the deck is in use
+  const hold = D.needle || D.armDrag || D.motor || D.backspin > 0 || !!D.auto;
+  if (hold !== D.hold) {
+    D.hold = hold;
+    if (A.loop) { A.loop.gain.cancelScheduledValues(A.ctx.currentTime); A.loop.gain.setTargetAtTime(hold ? 0 : 1, A.ctx.currentTime, hold ? 0.06 : 0.8); }
+  }
+
+  // readout (10x a second is plenty)
+  roTick += dt;
+  if (roTick > 0.1) {
+    roTick = 0;
+    const ti = trackAt(D.t), seg = segAt(D.t);
+    const si = D.audible && ti >= 0 ? ti : D.sel;
+    showTrack(si);
+    const tr = TRACKS[si];
+    let st = 'Standby';
+    if (D.backspin > 0) st = 'Backspin';
+    else if (D.armDrag) st = 'Cueing';
+    else if (D.grab && D.audible) st = 'Scratch';
+    else if (D.audible && D.loadingId >= 0) st = 'Loading';
+    else if (D.audible) st = seg.k === 'track' ? (Math.abs(D.vel) < 0.02 ? 'Paused' : 'Playing') : seg.k === 'lead' ? 'Lead-in' : seg.k === 'gap' ? 'Gap' : 'Run-out';
+    else if (D.auto) st = 'Cueing';
+    else if (D.motor) st = 'Spinning';
+    dk.state.textContent = st;
+    dk.time.textContent = (ti === si ? fmt(D.t - tr.start) : '0:00') + ' / ' + fmt(tr.dur);
+    const eff = D.vel / NOM;
+    dk.pitchOut.textContent = (D.pitch > 0 ? '+' : '') + D.pitch.toFixed(1) + '%';
+    dk.rpmOut.textContent = D.rpm === 33 ? '33⅓' : '45';
+    dk.bpmOut.textContent = D.audible && ti >= 0 ? (TRACKS[ti].bpm * Math.abs(eff)).toFixed(1) : TRACKS[D.sel].bpm.toFixed(1);
+    dk.beatOut.textContent = D.audible && ti >= 0 ? String((Math.max(0, D.beatNo - 1) % 4) + 1) : '·';
+  }
+  if (D.visible) drawWave();
+}
+
+// build when the section first comes near, render only while visible
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(es => es.forEach(en => {
+    D.near = en.isIntersecting;
+    if (en.isIntersecting) {
+      if (!D.built) { try { deckBuild(); } catch (err) { console.warn(err); dk.stage.classList.add('no-deck'); } }
+      TRACKS.forEach((_, i) => fetchBytes(i).catch(() => {}));
+    }
+  }), { rootMargin: '600px 0px' }).observe(dk.section);
+  new IntersectionObserver(es => es.forEach(en => { D.visible = en.isIntersecting; }), { rootMargin: '80px 0px' }).observe(dk.stage);
+}
+
 /* ---------- main loop ---------- */
 const faceEl = $('#face');
 const FACE_R = 0.30, FACE_C = [0.495, 0.535];
@@ -857,6 +1553,8 @@ function frame(now) {
   beat *= Math.exp(-dt * 6.5);
   els.bars.forEach((b, i) => b.style.height = (A.on ? 3 + Math.min(9, (i % 2 ? highV * 14 : bassV * 14) + beat * (6 - i)) : 3) + 'px');
   mark.parentElement.style.setProperty('--b', reduce ? 0 : (beat * (A.on ? 1 : 0.4)).toFixed(3));
+  deckFrame(dt);
+  if (D.built && D.visible) { const mr = dk.section.getBoundingClientRect(); D.render((VH() - mr.top) / (VH() * 0.85), mouse.x, mouse.y); }
   updateMark(dt);
   if (!reduce && document.body.classList.contains('lit')) {
     if (A.on ? justBeat : clock > nextPing) { pingNext(); nextPing = clock + 1.6; }
@@ -889,8 +1587,9 @@ function frame(now) {
     const t = clamp((c - i * 0.15) / 0.2);
     el.style.opacity = t; el.style.transform = `translateY(${(1 - t) * 14}px)`; el.style.filter = `blur(${(1 - t) * 6}px)`;
   });
-  const ch = scrollS < oTop + vh * 0.2 ? 0 : p < 0.38 ? 1 : (hubIn < 0.3 ? 2 : 3);
-  if (ch !== chapter) { chapter = ch; document.body.classList.toggle('in-hub', ch === 3); els.chapters.forEach((s, i) => s.classList.toggle('on', i === ch)); }
+  const musicTop = dk.section.offsetTop, hubTop = els.hub.offsetTop;
+  const ch = scrollS < oTop + vh * 0.2 ? 0 : p < 0.38 ? 1 : scrollS + vh * 0.5 < musicTop ? 2 : scrollS + vh * 0.5 < hubTop ? 3 : 4;
+  if (ch !== chapter) { chapter = ch; document.body.classList.toggle('in-hub', ch === 4); els.chapters.forEach((s, i) => s.classList.toggle('on', i === ch)); }
 
   // cursor
   cx = lerp(cx, mouse.px, 0.2); cy = lerp(cy, mouse.py, 0.2);
