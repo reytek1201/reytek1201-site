@@ -797,7 +797,7 @@ function buildScene() {
   const vortex = new THREE.Group(); vortex.add(lines, pts); scene.add(vortex);
 
   /* portrait plane with iris mask */
-  const PU = { uTex: { value: null }, uR: { value: 0 }, uC: { value: new THREE.Vector2(0.5, 0.5) }, uHover: { value: 0 }, uScale: { value: 1 }, uOpacity: { value: 0 }, uBeat: U.uBeat, uClock: U.uClock, uEye: { value: new THREE.Vector2(0.451, 0.600) }, uEye2: { value: new THREE.Vector2(0.571, 0.600) }, uTw: { value: 0 }, uTwA: { value: 0 }, cCyan: U.cCyan };
+  const PU = { uTex: { value: null }, uR: { value: 0 }, uC: { value: new THREE.Vector2(0.5, 0.5) }, uHover: { value: 0 }, uScale: { value: 1 }, uOpacity: { value: 0 }, uBeat: U.uBeat, uClock: U.uClock, uEye: { value: new THREE.Vector2(0.451, 0.600) }, uEye2: { value: new THREE.Vector2(0.595, 0.598) }, uTw: { value: 0 }, uTwA: { value: 0 }, cCyan: U.cCyan };
   const tex = new THREE.TextureLoader().load(PORTRAIT, () => window.BOOT && BOOT.mark('portrait'), undefined, () => window.BOOT && BOOT.mark('portrait')); tex.minFilter = THREE.LinearFilter; PU.uTex.value = tex;
   const portrait = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 2.7), new THREE.ShaderMaterial({
     uniforms: PU, ...blend,
@@ -809,12 +809,13 @@ function buildScene() {
         float edge=uR+(0.007*sin(ang*7.0+uClock*1.8)+0.004*sin(ang*13.0-uClock*2.6))*(0.25+uR)/uScale;
         float m=smoothstep(edge,edge-0.02/uScale,d);
         vec3 col=texture2D(uTex,vUv).rgb;
-        float eye=exp(-pow(length(vUv-uEye)*62.0,2.0));
+        float eye=exp(-pow(length((vUv-uEye)*vec2(1.0,1.25))*95.0,2.0));
         float lum=dot(col,vec3(0.299,0.587,0.114));
         // the lit eye: a soft blue that deepens and glows when you hover the portrait
         vec3 iris=mix(vec3(0.30,0.62,0.95),vec3(0.20,0.62,1.0),uHover)*(lum*(1.25+uHover*0.45)+0.04);
-        col=mix(col,iris,eye*clamp(0.55+uBeat*0.12+uHover*0.35,0.0,0.92));
-        col+=cCyan*eye*uHover*0.16;
+        float irisOnly=1.0-smoothstep(0.38,0.6,lum);   // leave the whites of the eye and the skin alone
+        col=mix(col,iris,eye*irisOnly*clamp(0.55+uBeat*0.12+uHover*0.35,0.0,0.92));
+        col+=cCyan*eye*irisOnly*uHover*0.12;
         // the eye in shadow: a faint blue glint on hover, and now and then a twinkle
         vec2 q=vUv-uEye2; float ca=cos(uTwA), sa=sin(uTwA); q=vec2(ca*q.x-sa*q.y, sa*q.x+ca*q.y);
         float e2=exp(-pow(length(q)*70.0,2.0));
