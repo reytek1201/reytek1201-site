@@ -87,24 +87,24 @@ button{font:inherit;color:inherit}
 
 /* hero */
 .hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;text-align:center;padding:64px 16px 92px}
-.hero-inner{display:grid;justify-items:center;gap:16px;will-change:transform,opacity}
+.hero-inner{--face:min(24vh,46vw);display:grid;justify-items:center;gap:16px;will-change:transform,opacity}
 .eyebrow{font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--bone);opacity:0;transition:opacity 1s .2s;
   display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 12px;padding:10px 18px;border:1px solid rgba(237,235,230,.22);border-radius:999px;
   background:rgba(5,6,8,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(5,6,8,.6),0 8px 30px rgba(5,6,8,.6);
-  margin-bottom:calc(min(30vh,56vw) * .09 + clamp(10px,2.4vh,26px))}
+  margin-bottom:calc(var(--face) * .09 + clamp(10px,2.4vh,26px))}
 .eyebrow em{font-style:normal;color:var(--signal);text-shadow:0 0 12px rgba(34,211,238,.55)}
 .eyebrow .sep{color:var(--dim)}
 .eyebrow .live{display:inline-flex;align-items:center;gap:8px}
 .eyebrow .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 10px var(--signal);animation:pulse 2.4s ease-in-out infinite}
 .lit .eyebrow{opacity:1}
-.face{width:min(30vh,56vw);aspect-ratio:1;max-width:100%;border-radius:50%;position:relative;pointer-events:none}
+.face{width:var(--face);aspect-ratio:1;max-width:100%;border-radius:50%;position:relative;pointer-events:none}
 .face svg{position:absolute;inset:-9%;width:118%;height:118%;overflow:visible;opacity:0;transition:opacity 1.4s 1s}
 .lit .face svg{opacity:1}
 .face .spin{transform-origin:50% 50%;animation:orbit 26s linear infinite}
 .face .spin.rev{animation-duration:40s;animation-direction:reverse}
 @keyframes orbit{to{transform:rotate(360deg)}}
 .face text{font-family:var(--f-mono);font-size:3.1px;letter-spacing:.9px;fill:var(--ash);text-transform:uppercase}
-.mark-wrap{perspective:900px;margin-top:calc(min(30vh,56vw) * .09 + clamp(4px,1.2vh,12px));position:relative}
+.mark-wrap{perspective:900px;margin-top:calc(var(--face) * .09 + clamp(4px,1.2vh,12px));position:relative}
 .mark{font-family:var(--f-mark);font-size:clamp(54px,min(calc(10vw + 12px),17vh),164px);line-height:.86;margin:0;display:flex;justify-content:center;user-select:none;--b:0;--g:0;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
 .mark .L{position:relative;display:inline-block;isolation:isolate;font-weight:var(--wt,300);font-variation-settings:'wdth' var(--w,50),'wght' var(--wt,300);padding:0 .005em;opacity:0;transition:opacity .5s}
 .lit .mark .L{opacity:1}
@@ -1959,23 +1959,26 @@ function frame(now) {
     const fit = aspect < 1 ? Math.min(2.0, 1 / Math.pow(aspect, 0.8)) : 1;
     let z = lerp(4.4, 3.7, clamp(p / 0.34)); z = lerp(z, 2.25, b); z = lerp(z, 3.6, hubIn);
     camZ = lerp(camZ, z * fit, 0.12);
-    camera.position.set(mouse.x * 0.12, mouse.y * 0.08, camZ);
-    camera.lookAt(0, 0, 0); camera.updateMatrixWorld();
-
-    // hero: fit the face iris + vortex to the #face slot in the layout
+    // hero: the camera looks straight down the axis of the face, then a lens shift moves that axis onto the
+    // #face slot in the layout. The vortex rings (which have depth) stay concentric with the photo.
     const heroK = 1 - ease(clamp(scrollS / (vh * 0.85)));
-    let hc = { x: 0, y: 0 }, hr = 0.7, hover = 0;
+    const SW = VW(), SH = VH();
+    let fx = SW / 2, fy = SH / 2, frad = 0, hover = 0;
     if (heroK > 0.001) {
-      if (!gl.faceBox || scrollY < 2 || gl.faceBox.vw !== VW() || gl.faceBox.vh !== VH()) {
+      if (!gl.faceBox || scrollY < 2 || gl.faceBox.vw !== SW || gl.faceBox.vh !== SH) {
         const fr = faceEl.getBoundingClientRect();
-        if (scrollY < 2 || !gl.faceBox) gl.faceBox = { left: fr.left, top: fr.top + scrollY, width: fr.width, vw: VW(), vh: VH() };
+        if (scrollY < 2 || !gl.faceBox) gl.faceBox = { left: fr.left, top: fr.top + scrollY, width: fr.width, vw: SW, vh: SH };
       }
-      const r = gl.faceBox, fx = r.left + r.width / 2, fy = r.top + r.width / 2;
-      hc = toWorld(fx / VW() * 2 - 1, -fy / VH() * 2 + 1);
-      const e = toWorld((fx + r.width / 2) / VW() * 2 - 1, -fy / VH() * 2 + 1);
-      hr = Math.max(0.05, e.x - hc.x);
-      if (mouse.active) hover = clamp(1.4 - Math.hypot(mouse.px - fx, mouse.py - fy) / (r.width / 2));
+      const r = gl.faceBox; fx = r.left + r.width / 2; fy = r.top + r.width / 2; frad = r.width / 2;
+      if (mouse.active) hover = clamp(1.4 - Math.hypot(mouse.px - fx, mouse.py - fy) / frad);
     }
+    camera.position.set(mouse.x * 0.12 * (1 - heroK), mouse.y * 0.08 * (1 - heroK), camZ);
+    camera.lookAt(0, 0, 0);
+    if (heroK > 0.001) camera.setViewOffset(SW, SH, (SW / 2 - fx) * heroK, (SH / 2 - fy) * heroK, SW, SH);
+    else if (camera.view && camera.view.enabled) camera.clearViewOffset();
+    camera.updateMatrixWorld();
+    const ppu = SH / (2 * camZ * Math.tan(camera.fov * Math.PI / 360));   // screen px per world unit at the face plane
+    const hc = { x: 0, y: 0 }, hr = Math.max(0.05, frad / ppu);
     gl.hover = lerp(gl.hover || 0, hover, 0.08);
     const faceT = igniteAt >= 0 ? ease(clamp((clock - igniteAt - 0.4) / 1.8)) : 0;
     const sH = hr / (FACE_R * 2.7);
