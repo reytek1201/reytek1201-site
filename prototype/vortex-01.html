@@ -148,7 +148,7 @@ button{font:inherit;color:inherit}
 .origin{position:relative;height:460vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .counter{position:absolute;left:clamp(16px,max(6vw,112px),112px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
-.counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(96px,22vw,320px);line-height:.8;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(96px,22vw,320px);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .counter .meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);display:flex;gap:22px}
 .counter .meta b{color:var(--signal);font-weight:500}
 .caption{position:absolute;right:clamp(16px,6vw,96px);top:clamp(110px,22vh,240px);max-width:min(30ch,80vw);text-align:right;font-size:clamp(20px,2.6vw,34px);line-height:1.2;text-wrap:balance;opacity:0}
@@ -279,6 +279,48 @@ footer a:hover{color:var(--signal)}
 .pitch-zero:disabled{opacity:.3;border-color:var(--line);color:var(--ash);cursor:default;background:none}
 .sc-link{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);text-decoration:none;justify-self:start}
 .sc-link:hover{color:var(--signal)}
+
+/* ---------- life: buttons ---------- */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.btn,.hw,#sound{position:relative;overflow:hidden;isolation:isolate;transform:translate(var(--mgx,0px),var(--mgy,0px)) scale(var(--press,1));transition:border-color .25s,background .25s,box-shadow .25s,color .25s,transform .35s cubic-bezier(.2,.9,.3,1.3)}
+.btn::before,.hw::before,#sound::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.14) 48%,rgba(34,211,238,.18) 52%,transparent 70%);transform:translateX(-130%);transition:transform 0s}
+.btn:hover::before,.hw:hover::before,#sound:hover::before{transform:translateX(130%);transition:transform .75s cubic-bezier(.4,0,.2,1)}
+.btn::after,.hw::after,#sound::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;padding:1px;
+  background:conic-gradient(from var(--ang),transparent 0 62%,rgba(34,211,238,.25) 74%,var(--signal) 84%,#e6fdff 88%,transparent 90%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s}
+.btn:hover::after,.hw:hover::after,#sound:hover::after,.btn:focus-visible::after,.hw:focus-visible::after{opacity:1;animation:bspin 1.5s linear infinite}
+@keyframes bspin{to{--ang:360deg}}
+.btn.primary{animation:breathe 2.8s ease-in-out infinite}
+.btn.primary:hover{animation:none}
+@keyframes breathe{50%{box-shadow:0 0 26px -8px rgba(34,211,238,.55)}}
+.btn:active,.hw:active,#sound:active{--press:.96}
+.rip{position:absolute;border-radius:50%;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;background:radial-gradient(circle,rgba(230,253,255,.55),rgba(34,211,238,.25) 45%,transparent 70%);transform:scale(0);animation:rip .65s ease-out forwards;z-index:-1}
+@keyframes rip{to{transform:scale(var(--rs,30));opacity:0}}
+
+/* ---------- life: the year odometer ---------- */
+.counter{pointer-events:auto}
+.counter .yr{display:flex;line-height:.82;cursor:default}
+.counter .dg{display:inline-block;height:.82em;overflow:hidden;position:relative;transition:transform .35s cubic-bezier(.2,.9,.3,1.4),color .4s,text-shadow .4s}
+.counter .dg .strip{display:block;transition:transform .55s cubic-bezier(.2,.85,.25,1.12)}
+.counter .dg .strip span{display:block;height:.82em;line-height:.82em;text-align:center}
+.counter .dg.hit{color:var(--signal);text-shadow:0 0 28px rgba(34,211,238,.55);transition:color 0s,text-shadow 0s}
+.counter:hover .yr{text-shadow:-3px 0 rgba(34,211,238,.6),3px 0 rgba(224,56,143,.5)}
+.counter .dg:hover{transform:translateY(-.06em) scaleY(1.04);color:var(--signal)}
+.counter .meta b{display:inline-block;transition:transform .15s}
+.counter .meta b.tick{transform:scale(1.25);color:#e6fdff}
+.caption #capt{display:inline-block;transition:opacity .45s,transform .45s,filter .45s}
+.caption #capt.swap{opacity:0;transform:translateY(10px);filter:blur(6px);transition:none}
+
+/* ---------- life: the status pill docks into the top bar ---------- */
+.chip-dock{position:fixed!important;left:0;top:0;margin:0!important;z-index:33;transform-origin:0 0;will-change:transform,opacity;opacity:0;pointer-events:none;transition:none!important;cursor:pointer}
+.chip-dock.on{pointer-events:auto}
+.chip-dock::after,.eyebrow::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.1) 50%,transparent 65%);background-size:300% 100%;background-position:100% 0;animation:pillshine 6s ease-in-out infinite}
+.eyebrow{position:relative}
+@keyframes pillshine{0%,70%{background-position:100% 0}100%{background-position:0 0}}
+.dot.flare{animation:dotflare .7s ease-out}
+@keyframes dotflare{0%{transform:scale(1)}30%{transform:scale(2.6);box-shadow:0 0 22px var(--signal)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.btn.primary,.btn::after,.chip-dock::after,.eyebrow::after{animation:none!important}}
 
 /* channels: social icons */
 .ch{--s:46px;position:relative;display:inline-grid;place-items:center;width:var(--s);height:var(--s);border-radius:50%;color:var(--bone);text-decoration:none;outline-offset:4px;transition:transform .35s cubic-bezier(.16,1,.3,1);will-change:transform}
@@ -1068,7 +1110,31 @@ const CAPS = [
 let capIdx = 0, scrollS = 0, chapter = 0;
 function setCap(i) {
   if (i === capIdx) return; capIdx = i;
-  els.capk.textContent = CAPS[i][0]; els.capt.textContent = CAPS[i][1];
+  scrambleText(els.capk, CAPS[i][0]);
+  els.capt.classList.add('swap'); els.capt.textContent = CAPS[i][1];
+  requestAnimationFrame(() => requestAnimationFrame(() => els.capt.classList.remove('swap')));
+}
+// the year rolls like an odometer; a digit flashes cyan as it lands
+const yrDigits = [];
+(() => {
+  const host = $('#yr'); host.textContent = ''; host.setAttribute('aria-hidden', 'true');
+  for (let k = 0; k < 4; k++) {
+    const dg = document.createElement('span'); dg.className = 'dg';
+    const strip = document.createElement('span'); strip.className = 'strip';
+    for (let n = 0; n <= 9; n++) { const d = document.createElement('span'); d.textContent = n; strip.appendChild(d); }
+    dg.appendChild(strip); host.appendChild(dg); yrDigits.push({ dg, strip, v: -1, t: 0 });
+  }
+})();
+let shownYear = 0, shownEra = '', lastBpm = 0;
+function setYear(y) {
+  if (y === shownYear) return; shownYear = y;
+  String(y).padStart(4, '0').split('').forEach((ch, k) => {
+    const d = yrDigits[k], n = +ch;
+    if (d.v === n) return;
+    d.strip.style.transform = `translateY(${-n * 0.82}em)`;
+    if (d.v >= 0 && !reduce) { d.dg.classList.remove('hit'); void d.dg.offsetWidth; d.dg.classList.add('hit'); clearTimeout(d.t); d.t = setTimeout(() => d.dg.classList.remove('hit'), 140); }
+    d.v = n;
+  });
 }
 
 /* ---------- wordmark motion ---------- */
@@ -2082,6 +2148,49 @@ if ('IntersectionObserver' in window && !reduce) {
 /* ---------- the fixed icon bar steps aside when the footer (with the same links) is on screen ---------- */
 if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => document.body.classList.toggle('foot-in', en.isIntersecting)), { threshold: 0.25 }).observe(document.querySelector('footer'));
 
+/* ---------- life: magnetic buttons with a ripple ---------- */
+document.querySelectorAll('.btn, .hw, #sound').forEach(bt => {
+  bt.addEventListener('pointermove', e => {
+    if (reduce || e.pointerType !== 'mouse') return;
+    const r = bt.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    bt.style.setProperty('--mgx', clamp(dx * 0.18, -6, 6).toFixed(1) + 'px'); bt.style.setProperty('--mgy', clamp(dy * 0.3, -4, 4).toFixed(1) + 'px');
+  });
+  bt.addEventListener('pointerleave', () => { bt.style.setProperty('--mgx', '0px'); bt.style.setProperty('--mgy', '0px'); });
+  bt.addEventListener('pointerdown', e => {
+    if (reduce) return;
+    const r = bt.getBoundingClientRect(), rp = document.createElement('span'); rp.className = 'rip';
+    rp.style.left = (e.clientX - r.left) + 'px'; rp.style.top = (e.clientY - r.top) + 'px'; rp.style.setProperty('--rs', (Math.max(r.width, r.height) / 5).toFixed(1));
+    bt.appendChild(rp); setTimeout(() => rp.remove(), 700);
+  });
+});
+
+/* ---------- life: the status pill flies up and docks ---------- */
+const pill = $('.eyebrow'), chip = pill.cloneNode(true), logoDot = $('.hud-tl .dot');
+chip.classList.add('chip-dock'); chip.setAttribute('aria-hidden', 'true'); chip.title = 'Back to top';
+document.body.appendChild(chip);
+chip.addEventListener('click', () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+let pillBox = null, dockedFlare = false;
+function pillFrame() {
+  const entered = !root.classList.contains('locked');
+  if (!entered) { chip.style.opacity = 0; return; }
+  if (scrollY < 2 || !pillBox) { const r = pill.getBoundingClientRect(); if (r.width) pillBox = { x: r.left, y: r.top + scrollY, w: r.width, h: r.height }; }
+  if (!pillBox) return;
+  const k = reduce ? (scrollY > 40 ? 1 : 0) : ease(clamp(scrollY / (VH() * 0.55)));
+  const wide = VW() >= 1180, x0 = pillBox.x, y0 = pillBox.y - scrollY * (1 - k);
+  let x1, y1, s1, o1;
+  if (wide) { s1 = 0.78; x1 = VW() / 2 - pillBox.w * s1 / 2; y1 = 30 - pillBox.h * s1 / 2; o1 = 1; }
+  else { const d = logoDot.getBoundingClientRect(); s1 = 0.06; x1 = d.left + d.width / 2 - pillBox.w * s1 / 2; y1 = d.top + d.height / 2 - pillBox.h * s1 / 2; o1 = 0; }
+  // arc the flight upward instead of a straight line
+  const arc = Math.sin(k * Math.PI) * (wide ? -18 : -30);
+  const x = lerp(x0, x1, k), y = lerp(y0, y1, k) + arc, sc = lerp(1, s1, k);
+  chip.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${sc.toFixed(3)})`;
+  chip.style.opacity = wide ? 1 : (1 - Math.pow(k, 1.6)).toFixed(3);
+  pill.style.visibility = 'hidden';
+  chip.classList.toggle('on', wide && k > 0.95);
+  if (!wide && k > 0.97 && !dockedFlare) { dockedFlare = true; logoDot.classList.remove('flare'); void logoDot.offsetWidth; logoDot.classList.add('flare'); }
+  if (k < 0.8) dockedFlare = false;
+}
+
 /* ---------- main loop ---------- */
 const faceEl = $('#face');
 const FACE_R = 0.30, FACE_C = [0.495, 0.535];
@@ -2112,6 +2221,7 @@ function frame(now) {
   hubFrame(dt);
   if (D.built && D.visible) { const mr = dk.section.getBoundingClientRect(); D.render((VH() - mr.top) / (VH() * 0.85), mouse.x, mouse.y); }
   updateMark(dt);
+  pillFrame();
   { const sc = scrollY > 24; if (sc !== (document.body._sc || false)) { document.body._sc = sc; document.body.classList.toggle('scrolled', sc); } }
   if (!reduce && document.body.classList.contains('lit')) {
     if (A.on ? justBeat : clock > nextPing) { pingNext(); nextPing = clock + 1.6; }
@@ -2134,9 +2244,11 @@ function frame(now) {
   els.cap.style.opacity = inOrigin;
   els.counter.style.transform = `translateY(${(1 - clamp(p / 0.06)) * 40}px)`;
   const year = Math.round(1991 + a * 35);
-  els.yr.textContent = year;
-  els.bpm.textContent = Math.round(lerp(142, 126, a));
-  els.era.textContent = year < 1999 ? 'Warehouse era' : year < 2015 ? 'Club years' : 'Studio';
+  setYear(year);
+  const bpmNow = Math.round(lerp(142, 126, a));
+  if (bpmNow !== lastBpm) { lastBpm = bpmNow; els.bpm.textContent = bpmNow; els.bpm.classList.add('tick'); setTimeout(() => els.bpm.classList.remove('tick'), 120); }
+  const era = year < 1999 ? 'Warehouse era' : year < 2015 ? 'Club years' : 'Studio';
+  if (era !== shownEra) { shownEra = era; scrambleText(els.era, era); }
   setCap(a < 0.34 ? 0 : a < 0.7 ? 1 : 2);
   els.strobe.style.opacity = reduce ? 0 : (beat * 0.22 * inOrigin * (A.on ? 1 : 0.3)).toFixed(3);
   els.bioLbl.style.opacity = clamp(c * 4);
