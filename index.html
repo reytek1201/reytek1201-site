@@ -125,6 +125,8 @@ button{font:inherit;color:inherit}
 .mark .L::before,.mark .L::after{content:attr(data-c);position:absolute;left:.005em;top:0;z-index:-1;pointer-events:none;mix-blend-mode:screen}
 .mark .L::before{color:var(--signal);opacity:calc(.15 + var(--b)*.85);transform:translate(calc(var(--b)*-.05em - var(--g)*.06em),calc(var(--g)*-.02em));clip-path:inset(var(--c1,0%) 0 var(--c2,0%) 0)}
 .mark .L::after{color:var(--pulse);opacity:calc(.12 + var(--b)*.8);transform:translate(calc(var(--b)*.05em + var(--g)*.06em),calc(var(--g)*.02em));clip-path:inset(var(--c2,0%) 0 var(--c1,0%) 0)}
+.mark .L .o{position:absolute;left:.005em;top:0;z-index:-2;pointer-events:none;font-style:normal;color:transparent;
+  -webkit-text-stroke:.07em rgba(34,211,238,.95);paint-order:stroke;filter:drop-shadow(0 0 .07em rgba(34,211,238,.75));opacity:var(--o,0)}
 .mark-trail{display:block;height:1px;width:100%;margin-top:clamp(8px,1.2vw,16px);background:linear-gradient(90deg,transparent,var(--signal) 30%,var(--bone) 50%,var(--pulse) 70%,transparent);transform:scaleX(calc(.15 + var(--lt,0)*.85));opacity:calc(.25 + var(--b,0)*.75);filter:drop-shadow(0 0 6px var(--signal))}
 .tagline{font-size:clamp(15px,1.9vw,19px);color:var(--ash);margin:0;max-width:38ch;opacity:0;transform:translateY(10px);transition:opacity 1s .9s,transform 1s .9s}
 .lit .tagline{opacity:1;transform:none}
@@ -514,11 +516,12 @@ const mark = $('#mark');
 const WORD = 'REYTEK', GLYPHS = '#/\\=+X01<>*%';
 const letters = WORD.split('').map((ch, i) => {
   const s = document.createElement('span'); s.className = 'L'; s.setAttribute('aria-hidden', 'true'); s.style.setProperty('--i', i);
-  const b = document.createElement('b'); b.textContent = ch; s.dataset.c = ch; s.appendChild(b); mark.appendChild(s);
-  return { el: s, b, ch, w: 50, wt: 300, cx: 0, cy: 0, settle: 0 };
+  const b = document.createElement('b'); b.textContent = ch; s.dataset.c = ch; s.appendChild(b);
+  const o = document.createElement('i'); o.className = 'o'; o.textContent = ch; s.appendChild(o); mark.appendChild(s);
+  return { el: s, b, o, ch, w: 50, wt: 300, cx: 0, cy: 0, pw: 1, ol: 0, tap: -9, settle: 0 };
 });
 let markIntro = -1, rectsAt = -1, glitchUntil = 0, nextIdleGlitch = 4;
-function setGlyph(L, g) { if (L.b.textContent !== g) { L.b.textContent = g; L.el.dataset.c = g; } }
+function setGlyph(L, g) { if (L.b.textContent !== g) { L.b.textContent = g; L.o.textContent = g; L.el.dataset.c = g; } }
 
 /* ---------- WebGL vortex ---------- */
 let gl = null;
@@ -909,11 +912,15 @@ function setCap(i) {
 /* ---------- wordmark motion ---------- */
 const markWrap = mark.parentElement, trail = $('#trail');
 let glyphTick = 0;
+markWrap.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse') return;
+  letters.forEach(L => { const r = L.el.getBoundingClientRect(); if (e.clientX >= r.left && e.clientX <= r.right) L.tap = clock; });
+});
 function updateMark(dt) {
   if (markIntro < 0) return;
   const t = clock - markIntro;
   if (clock - rectsAt > 0.25) {
-    letters.forEach(L => { const r = L.el.getBoundingClientRect(); L.cx = r.left + r.width / 2; L.cy = r.top + r.height / 2; L.h = r.height || 1; });
+    letters.forEach(L => { const r = L.el.getBoundingClientRect(); L.pw = r.width || 1; L.cx = r.left + r.width / 2; L.cy = r.top + r.height / 2; L.h = r.height || 1; });
     rectsAt = clock;
   }
   glyphTick += dt;
@@ -940,6 +947,12 @@ function updateMark(dt) {
     const twt = lerp(260, 760 + 140 * prox + 60 * wave, settle);
     L.w = lerp(L.w, tw, reduce ? 1 : 0.16); L.wt = lerp(L.wt, twt, reduce ? 1 : 0.16);
     L.el.style.setProperty('--w', L.w.toFixed(1)); L.el.style.setProperty('--wt', L.wt.toFixed(0));
+    // outline: full on the letter under the cursor, faint on its neighbours, a brief glow where you tap
+    const on = near * Math.exp(-Math.pow((mouse.px - L.cx) / (L.pw * 0.62), 2));
+    const tapGlow = clamp(1 - (clock - L.tap) / 1.4);
+    const ot = Math.max(on, tapGlow) * settle;
+    L.ol = lerp(L.ol, ot, 1 - Math.exp(-dt * (ot > L.ol ? 14 : 5)));
+    L.el.style.setProperty('--o', L.ol < 0.01 ? '0' : L.ol.toFixed(3));
     total += settle;
   });
   trail.style.setProperty('--lt', (total / letters.length).toFixed(3));
