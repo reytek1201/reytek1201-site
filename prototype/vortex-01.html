@@ -204,7 +204,7 @@ footer a:hover{color:var(--signal)}
 .music-head p{margin:0;color:var(--ash);font-size:17px;max-width:58ch}
 .deck-wrap{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:28px;align-items:center}
 @media (max-width:1000px){.deck-wrap{grid-template-columns:minmax(0,1fr)}}
-.deck-stage{position:relative;width:100%;aspect-ratio:1.3;max-width:100%;background:radial-gradient(58% 55% at 42% 52%,rgba(34,211,238,.08),transparent 70%)}
+.deck-stage{position:relative;width:100%;aspect-ratio:1.3;max-width:100%;background:radial-gradient(55% 50% at 40% 45%,rgba(34,211,238,.05),transparent 70%)}
 @media (max-width:600px){.deck-stage{aspect-ratio:1.32}.deck-hint .l{display:none}}
 @media (min-width:601px){.deck-hint .s{display:none}}
 #deckGL{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
@@ -928,8 +928,8 @@ const D = {
   motor: false, rpm: 33, vel: 0, angle: 0, pitch: 0,
   phi: PHI_REST, lift: 0.85, needle: false, audible: false, armDrag: false, auto: null,
   grab: false, grabA: 0, grabT: 0, grabVel: 0, down: null,
-  t: -LEAD, sel: 0, beatIdx: 0, beatNo: 0, lastLocal: -99, hold: false, visible: false, near: false,
-  backspin: 0, pending: null, started: false, lastRate: 0, lockRev: 0, hover: -1, pitchDrag: false, sentNeedle: false
+  t: -LEAD, sel: 0, beatIdx: 0, beatNo: 0, lastLocal: -99, hold: false, visible: false, near: false, engage: 0, engageUntil: 0,
+  backspin: 0, pending: null, started: false, lastRate: 0, lockRev: 0, hover: false, pitchDrag: false, sentNeedle: false
 };
 
 // ---- side layout: lead-in, track bands (width by duration), gaps, run-out ----
@@ -1103,47 +1103,85 @@ function deckBuild() {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.setClearColor(0x000000, 0);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const small = Math.min(innerWidth, innerHeight) < 700;
   const scene = new THREE.Scene();
-  const cam = new THREE.PerspectiveCamera(30, 1.3, 0.1, 100);
+  const cam = new THREE.PerspectiveCamera(22, 1.3, 0.1, 100);
   const V = (x, y, z) => new THREE.Vector3(x, y, z);
 
 
+  // studio reflections painted onto a sphere (matcap): reads as real metal, same result on every GPU
+  function matcap(o) {
+    const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+    g.save(); g.beginPath(); g.arc(128, 128, 128, 0, 7); g.clip();
+    let rg = g.createRadialGradient(118, 108, 8, 128, 128, 132); rg.addColorStop(0, o.mid); rg.addColorStop(0.7, o.edge); rg.addColorStop(1, o.rim0);
+    g.fillStyle = rg; g.fillRect(0, 0, 256, 256);
+    const lg = g.createLinearGradient(0, 0, 0, 256);
+    lg.addColorStop(0, `rgba(255,255,255,${o.sky})`); lg.addColorStop(0.47, `rgba(255,255,255,${o.sky * 0.35})`);
+    lg.addColorStop(0.5, `rgba(0,0,0,${o.floor})`); lg.addColorStop(1, `rgba(0,0,0,${o.floor * 0.6})`);
+    g.fillStyle = lg; g.fillRect(0, 0, 256, 256);
+    const blob = (x, y, rx, ry, rot, a, col = '255,255,255') => {
+      g.save(); g.translate(x, y); g.rotate(rot); g.scale(1, ry / rx);
+      const b = g.createRadialGradient(0, 0, 0, 0, 0, rx); b.addColorStop(0, `rgba(${col},${a})`); b.addColorStop(o.hard, `rgba(${col},${a * 0.85})`); b.addColorStop(1, `rgba(${col},0)`);
+      g.fillStyle = b; g.beginPath(); g.arc(0, 0, rx, 0, 7); g.fill(); g.restore();
+    };
+    blob(82, 66, 56, 22, -0.55, o.key);            // softbox, upper left
+    blob(176, 92, 26, 10, 0.5, o.key * 0.45);      // second strip
+    blob(60, 200, 40, 9, 0.35, o.cyan, '34,211,238');   // cyan bounce, lower left
+    g.lineWidth = 7; g.strokeStyle = `rgba(34,211,238,${o.cyan * 0.8})`; g.beginPath(); g.arc(128, 128, 122, -0.75, 0.55); g.stroke();
+    g.restore();
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
+  }
+  const mcChrome = matcap({ mid: '#6d737d', edge: '#1b1d22', rim0: '#050506', sky: 0.32, floor: 0.55, key: 1.0, hard: 0.55, cyan: 0.75 });
+  const mcSatin = matcap({ mid: '#5b6069', edge: '#24272d', rim0: '#0b0c0e', sky: 0.18, floor: 0.35, key: 0.55, hard: 0.2, cyan: 0.4 });
+  const mcBlack = matcap({ mid: '#24262b', edge: '#0b0c0e', rim0: '#030304', sky: 0.1, floor: 0.4, key: 0.32, hard: 0.25, cyan: 0.35 });
   const M = {
-    chrome: new THREE.MeshStandardMaterial({ color: 0xd9dee6, metalness: 0.55, roughness: 0.22 }),
-    satin: new THREE.MeshStandardMaterial({ color: 0x9da3ad, metalness: 0.5, roughness: 0.38 }),
-    dark: new THREE.MeshStandardMaterial({ color: 0x15171b, metalness: 0.4, roughness: 0.45 }),
-    black: new THREE.MeshStandardMaterial({ color: 0x0b0c0f, metalness: 0.3, roughness: 0.5 }),
+    chrome: new THREE.MeshMatcapMaterial({ matcap: mcChrome }),
+    satin: new THREE.MeshMatcapMaterial({ matcap: mcSatin }),
+    gloss: new THREE.MeshMatcapMaterial({ matcap: mcBlack }),
+    dark: new THREE.MeshStandardMaterial({ color: 0x0c0d10, metalness: 0.35, roughness: 0.42 }),
+    black: new THREE.MeshStandardMaterial({ color: 0x08090b, metalness: 0.3, roughness: 0.5 }),
     rubber: new THREE.MeshStandardMaterial({ color: 0x07080a, metalness: 0, roughness: 0.92 }),
     cyan: new THREE.MeshStandardMaterial({ color: 0x0a3540, metalness: 0.2, roughness: 0.3, emissive: 0x22d3ee, emissiveIntensity: 0.4 }),
     led: new THREE.MeshStandardMaterial({ color: 0x041014, emissive: 0x22d3ee, emissiveIntensity: 0 })
   };
-  // lit directly (no reflection map) so it looks the same on every GPU
-  scene.add(new THREE.HemisphereLight(0x8f9bb3, 0x050506, 0.55));
-  const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(-3, 7, 4); scene.add(key);
-  const fill = new THREE.DirectionalLight(0xbfd9ff, 0.45); fill.position.set(5, 4, 6); scene.add(fill);
-  const back = new THREE.DirectionalLight(0x22d3ee, 0.9); back.position.set(2, 3, -6); scene.add(back);
-  const spec = new THREE.PointLight(0xffffff, 0.9, 14); spec.position.set(1.5, 5, 3); scene.add(spec);
-  const rim = new THREE.PointLight(0x22d3ee, 1.4, 8); rim.position.set(-1.62, 0.6, -1.0); scene.add(rim);
+  // one dramatic key from the upper left that falls off across the deck, a faint fill, a cyan rim from behind
+  const LIGHT = new THREE.Vector3(-3.2, 7.5, 3.0);
+  scene.add(new THREE.HemisphereLight(0x6f7a90, 0x020203, 0.14));
+  const key = new THREE.SpotLight(0xfff6ea, 2.6, 22, 0.5, 0.95, 1.1);
+  key.position.copy(LIGHT); key.target.position.set(0.7, 0, 0.1); scene.add(key, key.target);
+  key.castShadow = true; key.shadow.mapSize.set(small ? 512 : 1024, small ? 512 : 1024);
+  key.shadow.camera.near = 3; key.shadow.camera.far = 16; key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
+  const fill = new THREE.DirectionalLight(0xa8c4ff, 0.12); fill.position.set(6, 3, 6); scene.add(fill);
+  const back = new THREE.DirectionalLight(0x22d3ee, 0.9); back.position.set(1.5, 0.9, -7); scene.add(back);
+  const rim = new THREE.PointLight(0x22d3ee, 1.4, 6, 2); rim.position.set(-1.62, 0.6, -1.0); scene.add(rim);
 
   // plinth
   const X0 = -1.85, X1 = 2.95, Z0 = -1.9, Z1 = 1.9, PW = X1 - X0, PD = Z1 - Z0, PCX = (X0 + X1) / 2;
-  const body = new THREE.Mesh(new THREE.BoxGeometry(PW, 0.36, PD), M.dark); body.position.set(PCX, -0.18, 0); scene.add(body);
+  const body = new THREE.Mesh(new THREE.BoxGeometry(PW, 0.36, PD), M.dark); body.position.set(PCX, -0.18, 0); body.receiveShadow = true; scene.add(body);
+  // soft shadow under the whole deck so it sits on something
+  const floorCan = document.createElement('canvas'); floorCan.width = floorCan.height = 256;
+  (() => { const g = floorCan.getContext('2d'), rg = g.createRadialGradient(128, 128, 30, 128, 128, 128); rg.addColorStop(0, 'rgba(0,0,0,.85)'); rg.addColorStop(0.6, 'rgba(0,0,0,.45)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = rg; g.fillRect(0, 0, 256, 256); })();
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(PW * 1.55, PD * 1.7), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(floorCan), transparent: true, depthWrite: false }));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(PCX + 0.35, -0.37, -0.15); scene.add(floor);
   const topCan = document.createElement('canvas'); topCan.width = 2048; topCan.height = Math.round(2048 * PD / PW);
   const topTex = new THREE.CanvasTexture(topCan); topTex.encoding = THREE.sRGBEncoding; topTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const top = new THREE.Mesh(new THREE.PlaneGeometry(PW, PD), new THREE.MeshStandardMaterial({ map: topTex, metalness: 0.3, roughness: 0.5 }));
-  top.rotation.x = -Math.PI / 2; top.position.set(PCX, 0.001, 0); scene.add(top);
+  const top = new THREE.Mesh(new THREE.PlaneGeometry(PW, PD), new THREE.MeshStandardMaterial({ map: topTex, metalness: 0.45, roughness: 0.38 }));
+  top.rotation.x = -Math.PI / 2; top.position.set(PCX, 0.001, 0); top.receiveShadow = true; scene.add(top);
   const toCan = (x, z) => [(x - X0) / PW * topCan.width, (z - Z0) / PD * topCan.height];
   function drawTop() {
     const g = topCan.getContext('2d'), W = topCan.width, H = topCan.height, s = W / PW;
-    g.fillStyle = '#131519'; g.fillRect(0, 0, W, H);
-    for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.022})`; g.fillRect(0, Math.random() * H, W, 1); }
-    for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.05})`; g.fillRect(0, Math.random() * H, W, 1); }
-    g.strokeStyle = 'rgba(255,255,255,.14)'; g.lineWidth = 5; g.strokeRect(4, 4, W - 8, H - 8);
+    g.fillStyle = '#121317'; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`; g.fillRect(0, Math.random() * H, W, 1); }
+    for (let i = 0; i < 1400; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.08})`; g.fillRect(0, Math.random() * H, W, 1); }
+    g.strokeStyle = 'rgba(255,255,255,.18)'; g.lineWidth = 3; g.strokeRect(3, 3, W - 6, H - 6);
     let [cx, cy] = toCan(0, 0);
-    g.fillStyle = '#08090b'; g.beginPath(); g.arc(cx, cy, 1.64 * s, 0, 7); g.fill();
-    g.strokeStyle = 'rgba(255,255,255,.08)'; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, 1.67 * s, 0, 7); g.stroke();
+    const well = g.createRadialGradient(cx, cy, 1.5 * s, cx, cy, 1.95 * s); well.addColorStop(0, 'rgba(0,0,0,.85)'); well.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = well; g.beginPath(); g.arc(cx, cy, 1.95 * s, 0, 7); g.fill();
+    g.fillStyle = '#050506'; g.beginPath(); g.arc(cx, cy, 1.64 * s, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.1)'; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, 1.67 * s, 0, 7); g.stroke();
     const mono = px => `500 ${px}px "IBM Plex Mono", ui-monospace, monospace`;
     g.fillStyle = 'rgba(237,235,230,.5)'; g.font = mono(0.07 * s); g.textAlign = 'center';
     let [x, y] = toCan(-1.45, 1.83); g.fillText('START · STOP', x, y);
@@ -1174,12 +1212,12 @@ function deckBuild() {
   const maskCan = document.createElement('canvas'); maskCan.width = 2048; maskCan.height = 128;
   (() => {
     const g = dotsCan.getContext('2d'), m = maskCan.getContext('2d');
-    const grd = g.createLinearGradient(0, 0, 0, 128); grd.addColorStop(0, '#b7bcc4'); grd.addColorStop(0.5, '#8d929b'); grd.addColorStop(1, '#6d7179');
+    const grd = g.createLinearGradient(0, 0, 0, 128); grd.addColorStop(0, '#5d626b'); grd.addColorStop(0.5, '#3b3e45'); grd.addColorStop(1, '#25272c');
     g.fillStyle = grd; g.fillRect(0, 0, 2048, 128); m.fillStyle = '#000'; m.fillRect(0, 0, 2048, 128);
     [[180, 26, 9], [183, 52, 8], [216, 78, 7], [222, 102, 6]].forEach(([n, y, rr]) => {
       for (let i = 0; i < n; i++) {
         const x = (i + 0.5) / n * 2048;
-        g.fillStyle = '#2a2d33'; g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill();
+        g.fillStyle = '#c9ced6'; g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill();
         m.fillStyle = '#fff'; m.beginPath(); m.arc(x, y, rr * 0.8, 0, 7); m.fill();
       }
     });
@@ -1188,7 +1226,7 @@ function deckBuild() {
   dotsTex.encoding = THREE.sRGBEncoding; dotsTex.wrapS = maskTex.wrapS = THREE.RepeatWrapping;
   const sideMat = new THREE.MeshStandardMaterial({ map: dotsTex, emissiveMap: maskTex, emissive: 0x22d3ee, emissiveIntensity: 0.12, metalness: 0.5, roughness: 0.32 });
   const platter = new THREE.Mesh(new THREE.CylinderGeometry(1.58, 1.6, 0.16, 160, 1), [sideMat, M.rubber, M.rubber]);
-  platter.position.y = 0.08; scene.add(platter);
+  platter.position.y = 0.08; platter.castShadow = true; platter.receiveShadow = true; scene.add(platter);
 
   // the record: one shader draws grooves, gaps, sheen, label and the light-trail glow
   const labelCan = document.createElement('canvas'); labelCan.width = labelCan.height = 1024;
@@ -1219,7 +1257,8 @@ function deckBuild() {
   const RU = {
     uAngle: { value: 0 }, uBeat: { value: 0 }, uNeedleR: { value: -1 }, uPlayOuter: { value: 0 }, uHoverO: { value: 0 }, uHoverI: { value: 0 },
     uLight: { value: -0.75 }, uRLead: { value: R_LEAD }, uRRun: { value: R_RUN }, uBand: { value: bands }, uNB: { value: TRACKS.length },
-    uLabel: { value: labelTex }, cCyan: { value: new THREE.Color(0x22d3ee) }
+    uLabel: { value: labelTex }, cCyan: { value: new THREE.Color(0x22d3ee) },
+    uShA: { value: new THREE.Vector2() }, uShB: { value: new THREE.Vector2() }, uShW: { value: 0.04 }, uSpot: { value: new THREE.Vector2(-0.6, -0.4) }
   };
   const rec = new THREE.Mesh(new THREE.CircleGeometry(R_REC, 180), new THREE.ShaderMaterial({
     uniforms: RU, extensions: { derivatives: true },
@@ -1227,7 +1266,9 @@ function deckBuild() {
     fragmentShader: `
       uniform float uAngle,uBeat,uNeedleR,uPlayOuter,uHoverO,uHoverI,uLight,uRLead,uRRun;
       uniform vec2 uBand[4]; uniform int uNB; uniform sampler2D uLabel; uniform vec3 cCyan;
+      uniform vec2 uShA,uShB,uSpot; uniform float uShW;
       varying vec2 vW;
+      float segD(vec2 p, vec2 a, vec2 b){ vec2 ab=b-a; float t=clamp(dot(p-a,ab)/dot(ab,ab),0.0,1.0); return length(p-(a+ab*t)); }
       void main(){
         float r=length(vW); float aw=atan(vW.y,vW.x); float al=aw-uAngle;
         vec3 col=vec3(0.013,0.013,0.016);
@@ -1256,6 +1297,10 @@ function deckBuild() {
           if(r<0.035) col=vec3(0.55,0.57,0.6)*(0.6+0.7*lobe);
         }
         col+=vec3(0.06)*smoothstep(1.47,1.5,r)*lobe;
+        col*=mix(0.5,1.08,smoothstep(3.4,0.2,length(vW-uSpot)));
+        float sd=segD(vW,uShA,uShB), hd=length(vW-uShB);
+        float shade=max(smoothstep(uShW,uShW*0.3,sd)*0.6, smoothstep(uShW*2.6,uShW*0.8,hd)*0.7);
+        col*=1.0-shade;
         col*=smoothstep(1.5,1.494,r);
         gl_FragColor=vec4(col,1.0);
       }`
@@ -1289,6 +1334,9 @@ function deckBuild() {
   add(new THREE.BoxGeometry(0.3, 0.012, 0.082), M.cyan, 2.32, -0.066, 0, 0, 0, -0.3);
   add(new THREE.ConeGeometry(0.014, 0.06, 12), M.chrome, 2.45, -0.21, 0, Math.PI, 0, 0);
   const tipGlow = add(new THREE.SphereGeometry(0.02, 16, 12), M.led, 2.45, -0.235, 0);
+  pitchG.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  base.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  [post, cradle, skate].forEach(o => { o.castShadow = true; });
 
   // controls
   const ctrl = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); scene.add(m); return m; };
@@ -1305,6 +1353,7 @@ function deckBuild() {
   const target = ctrl(new THREE.CylinderGeometry(0.05, 0.055, 0.32, 20), M.dark, -1.62, 0.16, -1.0);
   ctrl(new THREE.SphereGeometry(0.045, 16, 12), M.cyan, -1.62, 0.33, -1.0);
   const controls = [startBtn, b33, b45, knob, slot, cueBtn];
+  [startBtn, b33, b45, knob, cueBtn, target].forEach(o => { o.castShadow = true; });
 
   // pointer: tonearm drag, scratching, tap-to-cue, hardware buttons
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hit = new THREE.Vector3();
@@ -1341,6 +1390,8 @@ function deckBuild() {
       canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing';
     }
   });
+  canvas.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') D.hover = true; });
+  canvas.addEventListener('pointerleave', () => { D.hover = false; D.engageUntil = clock + 1.2; });
   canvas.addEventListener('pointermove', e => {
     rayFrom(e);
     if (D.armDrag) {
@@ -1375,6 +1426,7 @@ function deckBuild() {
       }
     }
     D.pitchDrag = false; canvas.style.cursor = '';
+    D.engageUntil = clock + (e.pointerType === 'mouse' ? 1.2 : 4);
   }
   canvas.addEventListener('pointerup', release);
   canvas.addEventListener('pointercancel', release);
@@ -1390,13 +1442,41 @@ function deckBuild() {
   function screenOf(x, y, z) { proj.set(x, y, z).project(cam); return { x: (proj.x * 0.5 + 0.5) * W, y: (-proj.y * 0.5 + 0.5) * H }; }
 
   D.screen = (x, y, z) => screenOf(x, y, z);
+  // camera: a low three-quarter "hero" angle at rest, rising to a steadier top-down view while you play.
+  // It never moves mid-drag, so the arm and record stay exactly under your pointer.
+  const corners = []; [X0, X1].forEach(x => [Z0, Z1].forEach(z => [-0.36, 0.62].forEach(y => corners.push(new THREE.Vector3(x, y, z)))));
+  const cv = new THREE.Vector3();
+  let camDist = 12, el = 0.3, yawA = 0.36, fovA = 22;
+  function placeCam(d) {
+    const tx = PCX - 0.05, tz = 0.05;
+    cam.position.set(tx + Math.sin(yawA) * d * Math.cos(el), d * Math.sin(el), tz + Math.cos(yawA) * d * Math.cos(el));
+    cam.lookAt(tx, 0.05, tz); cam.updateMatrixWorld();
+  }
+  function fitCam() {
+    for (let k = 0; k < 3; k++) {
+      placeCam(camDist);
+      let m = 0; corners.forEach(c => { cv.copy(c).project(cam); m = Math.max(m, Math.abs(cv.x), Math.abs(cv.y)); });
+      camDist *= m / 0.9;
+    }
+    placeCam(camDist);
+  }
   D.render = (sp, mx, my) => {
-    const el = lerp(0.3, 0.98, ease(clamp(sp))), yawC = mx * 0.05;
-    const vf = cam.fov * Math.PI / 360, hf = Math.atan(Math.tan(vf) * cam.aspect);
-    const dist = Math.max((PW * 0.53) / Math.tan(hf), (PD * 0.5 * Math.sin(el) + 0.45 * Math.cos(el) + 0.3) / Math.tan(vf)) * 1.02;
-    const tx = PCX - 0.05, tz = 0.08;
-    cam.position.set(tx + Math.sin(yawC) * dist * Math.cos(el), dist * Math.sin(el) + my * 0.1, tz + Math.cos(yawC) * dist * Math.cos(el));
-    cam.lookAt(tx, 0, tz);
+    const busy = D.armDrag || D.grab || D.pitchDrag;
+    const want = (D.hover || busy || D.auto || clock < (D.engageUntil || 0)) ? 1 : 0;
+    if (!busy) D.engage = lerp(D.engage || 0, want, 0.045);
+    const e = ease(clamp(D.engage || 0)), intro = ease(clamp(sp));
+    if (!busy) {
+      el = lerp(lerp(0.2, 0.66, intro), 1.0, e);
+      yawA = lerp(0.36, 0.04, e) + mx * 0.025;
+      const f = lerp(22, 26, e); if (Math.abs(f - fovA) > 0.01) { fovA = f; cam.fov = f; cam.updateProjectionMatrix(); }
+      fitCam();
+    }
+    // arm shadow on the record, projected from the key light
+    const proj2 = (x, y, z) => { const t = (LIGHT.y - 0.182) / (LIGHT.y - y); return new THREE.Vector2(LIGHT.x + (x - LIGHT.x) * t, LIGHT.z + (z - LIGHT.z) * t); };
+    const la = D.lift * 0.075, armPt = (lx, ly) => { const x = lx * Math.cos(la) - ly * Math.sin(la), y = lx * Math.sin(la) + ly * Math.cos(la); return [PV.x + x * Math.cos(D.phi), ARM_Y + y, PV.z + x * Math.sin(D.phi)]; };
+    const pa = armPt(-0.6, 0), pb = armPt(2.32, -0.08);
+    RU.uShA.value.copy(proj2(...pa)); RU.uShB.value.copy(proj2(...pb));
+    RU.uShW.value = 0.035 + D.lift * 0.03;
     platter.rotation.y = -D.angle;
     RU.uAngle.value = D.angle; RU.uBeat.value = beat;
     const tr = D.loaded >= 0 ? TRACKS[D.loaded] : TRACKS[D.sel];
