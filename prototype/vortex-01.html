@@ -1,14 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>REYTEK · Coming soon</title>
-<meta name="description" content="REYTEK: electronic music with a memory. Music, art, projects and play, under one name. Coming soon.">
-<meta name="theme-color" content="#050608">
-<meta property="og:title" content="REYTEK · Coming soon">
-<meta property="og:description" content="Electronic music with a memory. Music, art, projects and play, under one name.">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@reytek1201">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%23050608%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2710%27 fill=%27none%27 stroke=%27%23EDEBE6%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M16 6a10 10 0 0 1 9.5 7%27 fill=%27none%27 stroke=%27%2322D3EE%27 stroke-width=%272.2%27 stroke-linecap=%27round%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%272.2%27 fill=%27%2322D3EE%27/%3E%3C/svg%3E">
+<title>REYTEK Vortex</title>
+<meta name="description" content="REYTEK hub prototype 01: the Vortex.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -134,7 +127,7 @@ button{font:inherit;color:inherit}
 /* origin + portrait (pinned) */
 .origin{position:relative;height:460vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-.counter{position:absolute;left:clamp(16px,max(6vw,112px),112px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
+.counter{position:absolute;left:clamp(16px,6vw,96px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
 .counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(96px,22vw,320px);line-height:.8;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .counter .meta{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);display:flex;gap:22px}
 .counter .meta b{color:var(--signal);font-weight:500}
@@ -151,7 +144,6 @@ button{font:inherit;color:inherit}
   .bio p{font-size:16px}
   .bio p.big{font-size:22px}
   .caption{left:16px;right:16px;text-align:left;max-width:none}
-  .counter{left:16px}
   .chapters{display:none}
 }
 
@@ -194,58 +186,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:20px}
 footer a{text-decoration:none;transition:color .2s}
 footer a:hover{color:var(--signal)}
 
-/* channels: social icons */
-.ch{--s:46px;position:relative;display:inline-grid;place-items:center;width:var(--s);height:var(--s);border-radius:50%;color:var(--bone);text-decoration:none;outline-offset:4px;transition:transform .35s cubic-bezier(.16,1,.3,1);will-change:transform}
-.ch svg{width:100%;height:100%;overflow:visible;display:block}
-.ch .ring{fill:rgba(5,6,8,.66);stroke:rgba(237,235,230,.2);stroke-width:1;transition:stroke .3s,fill .3s}
-.ch .arc{fill:none;stroke:var(--signal);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:24 118;transform-origin:24px 24px;opacity:0;transition:opacity .3s}
-.ch g *{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 1;stroke-dashoffset:0}
-.ch .glyph{color:var(--bone);opacity:.8;transition:opacity .3s}
-.ch .ghost{opacity:0;transition:opacity .2s,transform .25s}
-.ch .ghost.c{color:var(--signal)}
-.ch .ghost.m{color:var(--pulse)}
-.ch:hover .ring,.ch:focus-visible .ring{stroke:rgba(34,211,238,.5);fill:rgba(34,211,238,.07)}
-.ch:hover .arc,.ch:focus-visible .arc{opacity:1;animation:orbit 1.8s linear infinite}
-.ch:hover .glyph,.ch:focus-visible .glyph{opacity:1}
-.ch:hover g *,.ch:focus-visible g *{animation:draw .9s cubic-bezier(.6,0,.2,1) both}
-.ch:hover .ghost.c,.ch:focus-visible .ghost.c{opacity:.85;transform:translate(-1.3px,.3px)}
-.ch:hover .ghost.m,.ch:focus-visible .ghost.m{opacity:.75;transform:translate(1.3px,-.3px)}
-@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-.ch::after{content:'';position:absolute;inset:0;border-radius:50%;border:1px solid var(--signal);opacity:0;pointer-events:none}
-.ch.ping::after{animation:ping .9s ease-out}
-@keyframes ping{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.75)}}
-.ch .tip{position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);white-space:nowrap;display:grid;gap:3px;text-align:left;pointer-events:none;
-  clip-path:inset(0 100% 0 0);transition:clip-path .45s cubic-bezier(.16,1,.3,1);padding:7px 12px 7px 11px;background:rgba(5,6,8,.82);border-left:1px solid var(--signal)}
-.ch:hover .tip,.ch:focus-visible .tip{clip-path:inset(0 0 0 0)}
-.ch .tip b{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:15px;line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--bone)}
-.ch .tip i{font-style:normal;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
-.rail{position:fixed;z-index:32;left:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;opacity:0;transition:opacity 1s 1.8s}
-.lit .rail{opacity:1}
-.rail::before{content:'';position:absolute;left:50%;top:-48px;bottom:-48px;width:1px;background:linear-gradient(transparent,rgba(237,235,230,.18) 18%,rgba(237,235,230,.18) 82%,transparent);z-index:-1}
-.rail .spark{position:absolute;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:var(--signal);box-shadow:0 0 8px 2px rgba(34,211,238,.8);z-index:-1;animation:spark 3.4s linear infinite}
-@keyframes spark{0%{top:-48px;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:calc(100% + 48px);opacity:0}}
-.rail .lbl{position:absolute;left:50%;bottom:calc(100% + 56px);transform:translateX(-50%);writing-mode:vertical-rl;rotate:180deg;font-family:var(--f-mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ash)}
-.foot-ch{display:grid;gap:22px}
-.foot-ch .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--signal)}
-.dock{display:flex;flex-wrap:wrap;gap:46px 52px;padding-bottom:42px}
-.dock .ch{--s:60px}
-.dock .ch .tip{left:50%;top:calc(100% + 12px);transform:translateX(-50%);clip-path:none;background:none;border:0;padding:0;text-align:center;opacity:.6;transition:opacity .3s}
-.dock .ch:hover .tip,.dock .ch:focus-visible .tip{opacity:1}
-.dock .ch .tip b{font-size:12px}
-.dock .ch .tip i{font-size:9px;opacity:0;transition:opacity .3s}
-.dock .ch:hover .tip i,.dock .ch:focus-visible .tip i{opacity:1}
-@media (max-width:820px){
-  .rail{left:16px;top:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:none;flex-direction:row;gap:8px}
-  .rail::before{left:-8px;right:-8px;top:50%;bottom:auto;width:auto;height:1px;background:linear-gradient(90deg,transparent,rgba(237,235,230,.18) 15%,rgba(237,235,230,.18) 85%,transparent)}
-  .rail .spark,.rail .lbl,.rail .ch .tip{display:none}
-  .rail .ch{--s:38px}
-  .dock{gap:44px 36px}
-  .dock .ch{--s:54px}
-  footer{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-}
-@media (max-width:640px){#soundlbl{display:none}#sound{padding:11px 12px}}
-@media (prefers-reduced-motion:reduce){.ch *, .ch::after, .rail .spark{animation:none!important}}
-
 /* cursor */
 #cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid rgba(237,235,230,.6);border-radius:50%;pointer-events:none;z-index:70;transition:width .25s,height .25s,margin .25s,border-color .25s,opacity .3s;opacity:0}
 #cur.on{opacity:1}
@@ -278,8 +218,7 @@ footer a:hover{color:var(--signal)}
 <div class="hud hud-tr chapters" aria-hidden="true">
   <span data-ch="0" class="on">Signal</span><span data-ch="1">Origin</span><span data-ch="2">Portrait</span><span data-ch="3">Hub</span>
 </div>
-<div class="hud hud-bl">Hub v0.1 · Coming soon</div>
-<nav class="rail" id="rail" aria-label="Reytek on social media"><span class="lbl" aria-hidden="true">Channels</span><span class="spark" aria-hidden="true"></span></nav>
+<div class="hud hud-bl">Prototype 01 · Vortex</div>
 <div class="hud hud-br"><button id="sound" type="button" aria-pressed="false" aria-label="Toggle sound"><span class="bars"><i></i><i></i><i></i><i></i></span><span id="soundlbl">Sound off</span></button></div>
 
 <div id="boot" role="status" aria-live="polite">
@@ -333,11 +272,11 @@ footer a:hover{color:var(--signal)}
       <p>Everything Reytek makes will live here: the music, the visual work, the apps and the games.</p>
     </div>
     <div class="doors">
-      <a class="door live" href="https://soundcloud.com/reytek1201" target="_blank" rel="noopener">
+      <div class="door">
         <div class="idx"><span>D/01</span><span>Audio</span></div>
         <div><h3>Music</h3><p>Releases, previews and late-night sets.</p></div>
-        <div class="status">Live on SoundCloud</div>
-      </a>
+        <div class="status">Status: soon</div>
+      </div>
       <div class="door">
         <div class="idx"><span>D/02</span><span>Visual</span></div>
         <div><h3>Art</h3><p>Visual work, covers and experiments in light.</p></div>
@@ -370,10 +309,12 @@ footer a:hover{color:var(--signal)}
 </main>
 
 <footer>
-  <div class="foot-ch">
-    <span class="lbl">› Tune in</span>
-    <nav class="dock" id="dock" aria-label="Reytek on social media (footer)"></nav>
-  </div>
+  <nav aria-label="Social">
+    <a href="https://www.instagram.com/reytek.1201/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@reytek1201" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://x.com/reytek1201" target="_blank" rel="noopener">X</a>
+    <a href="https://www.facebook.com/profile.php?id=61580613560322" target="_blank" rel="noopener">Facebook</a>
+  </nav>
   <span>Designed &amp; built by <a href="https://rayburgos.com" target="_blank" rel="noopener">rayburgos.com</a></span>
 </footer>
 
@@ -700,66 +641,6 @@ function toWorld(nx, ny) {
   return { x: c.x + dir.x * t, y: c.y + dir.y * t };
 }
 
-/* ---------- channels: social icons ---------- */
-const CHANNELS = [
-  { name: 'SoundCloud', handle: 'reytek1201', verb: 'Listen', url: 'https://soundcloud.com/reytek1201', note: 440,
-    g: '<path d="M2.5 15.5v-2.5"/><path d="M5 16.5V11"/><path d="M7.5 16.5V9"/><path d="M10 16.5V7.5"/><path d="M12.5 16.5V6.8a5.6 5.6 0 0 1 7 4.4 2.7 2.7 0 0 1 .3 5.3h-7.3"/>' },
-  { name: 'X', handle: 'reytek1201', verb: 'Follow', url: 'https://x.com/reytek1201', note: 523.25,
-    g: '<path d="M4 4h4.6L20 20h-4.6z"/><path d="M19.5 4l-6.4 7.2"/><path d="M10.9 12.8L4.5 20"/>' },
-  { name: 'Instagram', handle: 'reytek.1201', verb: 'See the art', url: 'https://www.instagram.com/reytek.1201/', note: 587.33,
-    g: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r=".5"/>' },
-  { name: 'TikTok', handle: 'reytek1201', verb: 'Watch', url: 'https://www.tiktok.com/@reytek1201', note: 659.25,
-    g: '<path d="M14 3.5v11a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3.5c.5 2.7 2.4 4.4 5 4.6"/>' },
-  { name: 'Facebook', handle: 'Reytek', verb: 'Connect', url: 'https://www.facebook.com/profile.php?id=61580613560322', note: 783.99,
-    g: '<path d="M15.5 3.5h-2a3.5 3.5 0 0 0-3.5 3.5v13.5"/><path d="M7.5 10.5h7.5"/>' }
-];
-const railIcons = [];
-function blip(freq, vol = 0.07) {
-  if (!A.on || !A.ctx) return;
-  const c = A.ctx, t = c.currentTime, f = c.createBiquadFilter(), g = c.createGain();
-  f.type = 'lowpass'; f.frequency.setValueAtTime(3800, t); f.frequency.exponentialRampToValueAtTime(700, t + 0.4);
-  env(g, t, vol, 0.55); f.connect(g); g.connect(A.master); g.connect(A.send);
-  [[freq, 'triangle'], [freq * 2.005, 'sine']].forEach(([fr, type]) => { const o = c.createOscillator(); o.type = type; o.frequency.value = fr; o.connect(f); o.start(t); o.stop(t + 0.6); });
-}
-function scrambleText(el, text) {
-  if (reduce) { el.textContent = text; return; }
-  let f = 0; clearInterval(el._sc);
-  el._sc = setInterval(() => {
-    f++;
-    el.textContent = text.split('').map((ch, i) => (i < f / 1.6 || ch === ' ') ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]).join('');
-    if (f / 1.6 >= text.length) { clearInterval(el._sc); el.textContent = text; }
-  }, 28);
-}
-function makeChannel(c, i) {
-  const a = document.createElement('a');
-  a.className = 'ch'; a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
-  a.setAttribute('aria-label', `${c.name}, @${c.handle} (opens in a new tab)`);
-  const g = c.g.replace(/<(path|rect|circle) /g, '<$1 pathLength="1" ');
-  a.innerHTML = `<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="ring" cx="24" cy="24" r="22.5"/><circle class="arc" cx="24" cy="24" r="22.5"/>` +
-    `<g transform="translate(12 12)"><g class="ghost c">${g}</g><g class="ghost m">${g}</g><g class="glyph">${g}</g></g></svg>` +
-    `<span class="tip" aria-hidden="true"><b>${c.name}</b><i>ch.0${i + 1} · ${c.verb}</i></span>`;
-  const label = a.querySelector('.tip b');
-  a.addEventListener('pointerenter', () => { blip(c.note); scrambleText(label, c.name); });
-  a.addEventListener('focus', () => scrambleText(label, c.name));
-  a.addEventListener('pointermove', e => {
-    if (reduce || e.pointerType !== 'mouse') return;
-    const r = a.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-    a.style.transform = `translate(${clamp(dx * 0.3, -7, 7)}px,${clamp(dy * 0.3, -7, 7)}px)`;
-  });
-  a.addEventListener('pointerleave', () => { a.style.transform = ''; });
-  a.addEventListener('click', () => {
-    const r = a.getBoundingClientRect(), w = toWorld((r.left + r.width / 2) / VW() * 2 - 1, -(r.top + r.height / 2) / VH() * 2 + 1);
-    shock(w.x, w.y); blip(c.note / 2, 0.12);
-  });
-  return a;
-}
-CHANNELS.forEach((c, i) => { const a = makeChannel(c, i); $('#rail').appendChild(a); railIcons.push(a); $('#dock').appendChild(makeChannel(c, i)); });
-let pingIdx = 0, nextPing = 3;
-function pingNext() {
-  const a = railIcons[pingIdx++ % railIcons.length];
-  a.classList.remove('ping'); void a.offsetWidth; a.classList.add('ping');
-}
-
 /* ---------- hub doors glow ---------- */
 document.querySelectorAll('.door').forEach(d => d.addEventListener('pointermove', e => {
   const r = d.getBoundingClientRect(); d.style.setProperty('--mx', (e.clientX - r.left) + 'px'); d.style.setProperty('--my', (e.clientY - r.top) + 'px');
@@ -858,9 +739,6 @@ function frame(now) {
   els.bars.forEach((b, i) => b.style.height = (A.on ? 3 + Math.min(9, (i % 2 ? highV * 14 : bassV * 14) + beat * (6 - i)) : 3) + 'px');
   mark.parentElement.style.setProperty('--b', reduce ? 0 : (beat * (A.on ? 1 : 0.4)).toFixed(3));
   updateMark(dt);
-  if (!reduce && document.body.classList.contains('lit')) {
-    if (A.on ? justBeat : clock > nextPing) { pingNext(); nextPing = clock + 1.6; }
-  }
   justBeat = false;
 
   // scroll
