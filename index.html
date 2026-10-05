@@ -832,7 +832,7 @@ const CHANNELS = [
 ];
 const railIcons = [];
 function blip(freq, vol = 0.07) {
-  if (!A.on || !A.ctx) return;
+  if (!A.on || !A.ctx || D.hold) return;   // only over the generated loop: the scale is tuned to it, not to Reytek's tracks
   const c = A.ctx, t = c.currentTime, f = c.createBiquadFilter(), g = c.createGain();
   f.type = 'lowpass'; f.frequency.setValueAtTime(3800, t); f.frequency.exponentialRampToValueAtTime(700, t + 0.4);
   env(g, t, vol, 0.55); f.connect(g); g.connect(A.master); g.connect(A.send);
