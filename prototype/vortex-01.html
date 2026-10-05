@@ -1181,6 +1181,80 @@ function deckBuild() {
   (() => { const g = floorCan.getContext('2d'), rg = g.createRadialGradient(128, 128, 30, 128, 128, 128); rg.addColorStop(0, 'rgba(0,0,0,.85)'); rg.addColorStop(0.6, 'rgba(0,0,0,.45)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = rg; g.fillRect(0, 0, 256, 256); })();
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(PW * 1.55, PD * 1.7), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(floorCan), transparent: true, depthWrite: false }));
   floor.rotation.x = -Math.PI / 2; floor.position.set(PCX + 0.35, -0.37, -0.15); scene.add(floor);
+
+  // ---- light runner: a bright head racing the plinth edge, leaving a wall of light behind it ----
+  const RX0 = X0 + 0.035, RX1 = X1 - 0.035, RZ0 = Z0 + 0.035, RZ1 = Z1 - 0.035;
+  const RW = RX1 - RX0, RD = RZ1 - RZ0, PER = 2 * (RW + RD);
+  const wrapS = s => ((s % PER) + PER) % PER;
+  function perim(s) {           // point on the edge + inward normal, hard 90° corners
+    s = wrapS(s);
+    if (s < RW) return [RX0 + s, RZ1, 0, -1];
+    s -= RW; if (s < RD) return [RX1, RZ1 - s, -1, 0];
+    s -= RD; if (s < RW) return [RX1 - s, RZ0, 0, 1];
+    s -= RW; return [RX0, RZ0 + s, 1, 0];
+  }
+  const segOf = s => { s = wrapS(s); return s < RW ? 0 : s < RW + RD ? 1 : s < 2 * RW + RD ? 2 : 3; };
+  const TN = 240, TSTEP = 0.028;               // trail ≈ 6.7 units, about 40% of a lap
+  const hist = new Float32Array(TN); for (let i = 0; i < TN; i++) hist[i] = -i * TSTEP;
+  const run = { s: 0, v: 0, travel: 0, flare: 0, seg: 0, last: 0 };
+  const ribbonMat = (alpha, pw) => new THREE.ShaderMaterial({
+    uniforms: { uBeat: { value: 0 }, uFlare: { value: 0 }, uA: { value: alpha }, uP: { value: pw }, cCol: { value: new THREE.Color(0x22d3ee) }, cHot: { value: new THREE.Color(0xd9fbff) } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: 'attribute float aT; attribute float aV; varying float vT; varying float vV; void main(){ vT=aT; vV=aV; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }',
+    fragmentShader: `uniform float uBeat,uFlare,uA,uP; uniform vec3 cCol,cHot; varying float vT; varying float vV;
+      void main(){
+        float tail=pow(1.0-vT,uP);
+        float hot=pow(1.0-vT,14.0);
+        float edge=1.0-vV*0.75;
+        vec3 c=mix(cCol,cHot,hot*0.85)*tail*edge*uA*(1.0+uBeat*0.9+uFlare*hot*1.5);
+        gl_FragColor=vec4(c,1.0);
+      }`
+  });
+  function ribbon(mat, kind) {
+    const g = new THREE.BufferGeometry(), pos = new Float32Array(TN * 2 * 3), aT = new Float32Array(TN * 2), aV = new Float32Array(TN * 2), idx = [];
+    for (let i = 0; i < TN; i++) { aT[i * 2] = aT[i * 2 + 1] = i / (TN - 1); aV[i * 2] = 0; aV[i * 2 + 1] = 1; if (i < TN - 1) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute('aT', new THREE.BufferAttribute(aT, 1)); g.setAttribute('aV', new THREE.BufferAttribute(aV, 1)); g.setIndex(idx);
+    const m = new THREE.Mesh(g, mat); m.frustumCulled = false; m.renderOrder = 5; m.userData.kind = kind; scene.add(m); return m;
+  }
+  const wall = ribbon(ribbonMat(1.15, 1.4), { h: 0.075 });
+  const halo = ribbon(ribbonMat(0.22, 2.2), { h: 0.24 });
+  const glowFloor = ribbon(ribbonMat(0.32, 1.8), { w: 0.18 });
+  const spriteCan = document.createElement('canvas'); spriteCan.width = spriteCan.height = 128;
+  (() => { const g = spriteCan.getContext('2d'), rg = g.createRadialGradient(64, 64, 0, 64, 64, 64); rg.addColorStop(0, 'rgba(235,253,255,1)'); rg.addColorStop(0.18, 'rgba(120,235,250,.85)'); rg.addColorStop(0.5, 'rgba(34,211,238,.25)'); rg.addColorStop(1, 'rgba(34,211,238,0)'); g.fillStyle = rg; g.fillRect(0, 0, 128, 128); })();
+  const headSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(spriteCan), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
+  headSprite.renderOrder = 6; scene.add(headSprite);
+  const headLight = new THREE.PointLight(0x22d3ee, 2.4, 2.6, 2); scene.add(headLight);
+  function writeRibbon(m) {
+    const p = m.geometry.attributes.position.array, k = m.userData.kind, y0 = 0.006;
+    for (let i = 0; i < TN; i++) {
+      const [x, z, nx, nz] = perim(i === 0 ? run.s : hist[i]), o = i * 6;
+      p[o] = x; p[o + 1] = y0; p[o + 2] = z;
+      if (k.w) { p[o + 3] = x + nx * k.w; p[o + 4] = y0; p[o + 5] = z + nz * k.w; }
+      else { p[o + 3] = x; p[o + 4] = y0 + k.h; p[o + 5] = z; }
+    }
+    m.geometry.attributes.position.needsUpdate = true;
+  }
+  function runnerUpdate() {
+    const dt = Math.min(0.05, Math.max(0, clock - (run.last || clock))); run.last = clock;
+    const ti = trackAt(D.t), rate = D.vel / NOM;
+    let target;
+    if (reduce) target = PER / 30;
+    else if (D.audible && ti >= 0) target = PER * TRACKS[ti].bpm * rate / 240;   // one lap per bar, signed with the record
+    else target = (PER / 14) * (D.motor ? 1.6 : 1) * (D.audible ? Math.max(-6, Math.min(6, rate)) : 1);
+    target = clamp(target, -PER * 1.6, PER * 1.6);
+    run.v = lerp(run.v, target, 1 - Math.exp(-dt * (D.grab || D.backspin > 0 ? 16 : 3.5)));
+    const ds = run.v * dt, dir = Math.sign(ds) || 1;
+    run.s += ds; run.travel += Math.abs(ds);
+    while (run.travel >= TSTEP) { run.travel -= TSTEP; hist.copyWithin(1, 0, TN - 1); hist[0] = run.s - dir * run.travel; }
+    const seg = segOf(run.s);
+    if (seg !== run.seg) { run.seg = seg; if (!reduce) run.flare = 1; }
+    run.flare *= Math.exp(-dt * 5);
+    [wall, halo, glowFloor].forEach(m => { writeRibbon(m); m.material.uniforms.uBeat.value = beat; m.material.uniforms.uFlare.value = run.flare; });
+    const [hx, hz] = perim(run.s);
+    headSprite.position.set(hx, 0.05, hz); const sc = 0.32 * (1 + run.flare * 0.9 + beat * 0.35); headSprite.scale.set(sc, sc, 1);
+    headLight.position.set(hx, 0.16, hz); headLight.intensity = 2.0 + run.flare * 2.5 + beat * 1.5;
+  }
   const topCan = document.createElement('canvas'); topCan.width = 2048; topCan.height = Math.round(2048 * PD / PW);
   const topTex = new THREE.CanvasTexture(topCan); topTex.encoding = THREE.sRGBEncoding; topTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const top = new THREE.Mesh(new THREE.PlaneGeometry(PW, PD), new THREE.MeshStandardMaterial({ map: topTex, metalness: 0.45, roughness: 0.38 }));
@@ -1510,6 +1584,7 @@ function deckBuild() {
     knob.position.z = knobLine.position.z = 0.95 + D.pitch / 8 * 0.6;
     D.press = (D.press || 0) * 0.85; startBtn.position.y = 0.035 - D.press * 0.02;
     rim.intensity = 1.2 + beat * 2.2;
+    runnerUpdate();
     renderer.render(scene, cam);
     // hint + tooltip anchored to the headshell
     const s = stylusAt(D.phi), sp2 = screenOf(s.x, ARM_Y + D.lift * 0.18 - 0.1, s.z);
