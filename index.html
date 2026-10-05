@@ -377,7 +377,8 @@ window.BOOT = (() => {
   const el = document.getElementById('boot'), cv = document.getElementById('bootRec'), g = cv.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let visited = false; try { visited = !!localStorage.getItem('rt-visited'); localStorage.setItem('rt-visited', '1'); } catch (e) {}
-  const MIN = visited ? 0.55 : 1.7;                 // seconds, so it never just flickers
+  const SHORT_FOR_RETURNING = false;                 // turn on at launch: returning visitors get a quick version
+  const MIN = (SHORT_FOR_RETURNING && visited) ? 0.55 : 2.2;   // seconds, so it never just flickers
   const STEPS = { shell: [0.1, 'warming up the platter'], engine: [0.35, '3D engine loaded'], fonts: [0.15, 'type set'], portrait: [0.2, 'portrait developed'], assets: [0.2, 'signal found'] };
   const done = {}; let target = 0, shown = 0, label = 'cold start';
   let angle = 0, dotA = 0, rpm = 0, phase = 'load', pt = 0, t0 = performance.now() / 1000, last = t0, onDone = null, flash = 0, W = 0, H = 0, dpr = 1;
