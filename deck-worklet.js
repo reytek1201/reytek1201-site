@@ -1,13 +1,15 @@
 // REYTEK deck: a turntable voice. Plays one decoded track at any signed rate
 // (forward, slowed, stopped, reversed) so scratching, backspins and power-downs
 // come from the same physics that turns the platter.
+// Clean playback: 4-point Hermite resampling, no added surface noise, and a
+// short fade whenever the needle lands or lifts so it never clicks.
 class DeckProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.L = null; this.R = null; this.len = 0; this.bufRate = sampleRate;
     this.pos = 0; this.rate = 0; this.cur = 0; this.k = 0.0016;
-    this.gain = 1; this.needle = false; this.id = -1; this.seq = 0;
-    this.count = 0; this.pop = 0; this.hiss = 0;
+    this.gain = 1; this.needle = false; this.amp = 0; this.id = -1; this.seq = 0;
+    this.count = 0;
     this.port.onmessage = (e) => {
       const m = e.data;
       if (m.t === 'load') {
@@ -22,35 +24,33 @@ class DeckProcessor extends AudioWorkletProcessor {
       }
     };
   }
+  sample(B, i0, f) {
+    const n = this.len;
+    const xm = B[i0 > 0 ? i0 - 1 : 0], x0 = B[i0], x1 = B[i0 + 1 < n ? i0 + 1 : n - 1], x2 = B[i0 + 2 < n ? i0 + 2 : n - 1];
+    const c1 = 0.5 * (x1 - xm), c2 = xm - 2.5 * x0 + 2 * x1 - 0.5 * x2, c3 = 0.5 * (x2 - xm) + 1.5 * (x0 - x1);
+    return ((c3 * f + c2) * f + c1) * f + x0;
+  }
   process(inputs, outputs) {
     const out = outputs[0], oL = out[0], oR = out[1] || out[0], n = oL.length;
     const L = this.L, R = this.R, len = this.len, step = this.bufRate / sampleRate, g = this.gain;
+    const ampTarget = this.needle ? 1 : 0, ampK = 1 / (sampleRate * 0.006);   // ~6 ms fade in/out
     for (let i = 0; i < n; i++) {
       this.cur += (this.rate - this.cur) * this.k;
-      const r = this.cur;
+      this.amp += Math.max(-ampK, Math.min(ampK, ampTarget - this.amp));
       let sl = 0, sr = 0;
-      if (this.needle) {
-        if (L) {
-          const p = this.pos, i0 = Math.floor(p);
-          if (i0 >= 0 && i0 < len - 1) {
-            const f = p - i0;
-            sl = (L[i0] + (L[i0 + 1] - L[i0]) * f) * g;
-            sr = (R[i0] + (R[i0 + 1] - R[i0]) * f) * g;
-          }
+      if (L && this.amp > 0) {
+        const p = this.pos, i0 = Math.floor(p);
+        if (i0 >= 0 && i0 < len - 1) {
+          const f = p - i0, a = g * this.amp;
+          sl = this.sample(L, i0, f) * a;
+          sr = this.sample(R, i0, f) * a;
         }
-        // surface noise: soft hiss and the odd pop, scaled by how fast the groove moves
-        const a = Math.min(1.5, Math.abs(r));
-        this.hiss = this.hiss * 0.6 + (Math.random() - 0.5) * 0.4;
-        const h = this.hiss * 0.0028 * a;
-        if (Math.random() < 0.000035 * (0.25 + a)) this.pop = (Math.random() * 0.08 + 0.03) * (Math.random() < 0.5 ? -1 : 1);
-        const pp = this.pop; this.pop *= 0.8;
-        sl += h + pp; sr += h + pp * 0.85;
-        this.pos += r * step;
       }
+      if (this.needle) this.pos += this.cur * step;
       oL[i] = sl; oR[i] = sr;
     }
     this.count += n;
-    if (this.count >= 1024) {
+    if (this.count >= 4096) {   // ~11 position reports a second: enough to sync, light on the audio thread
       this.count = 0;
       this.port.postMessage({ pos: this.pos / this.bufRate, id: this.id, seq: this.seq });
     }
