@@ -1299,8 +1299,8 @@ function needleSound(down) {
   const c = A.ctx, t = c.currentTime;
   const n = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
   n.buffer = A.noise; f.type = 'bandpass'; f.frequency.value = down ? 1400 : 2600; f.Q.value = 0.8;
-  env(g, t, down ? 0.09 : 0.05, down ? 0.07 : 0.03); n.connect(f); f.connect(g); g.connect(A.deckOut); n.start(t); n.stop(t + 0.1);
-  if (down) { const o = c.createOscillator(), og = c.createGain(); o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.08); env(og, t, 0.25, 0.12); o.connect(og); og.connect(A.deckOut); o.start(t); o.stop(t + 0.14); }
+  env(g, t, down ? 0.035 : 0.018, down ? 0.06 : 0.025); n.connect(f); f.connect(g); g.connect(A.deckOut); n.start(t); n.stop(t + 0.1);
+  if (down) { const o = c.createOscillator(), og = c.createGain(); o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.08); env(og, t, 0.09, 0.1); o.connect(og); og.connect(A.deckOut); o.start(t); o.stop(t + 0.14); }
 }
 function resetBeats() {
   const tr = TRACKS[D.loaded]; if (!tr) return;
@@ -1337,7 +1337,7 @@ function cueTo(t, fast) { liftNeedle(); D.auto = { phi: phiForR(tToR(t)), t, dro
 function playTrack(i) {
   D.sel = i; updateCrate();
   if (D.audible && D.vel > NOM * 0.5 && !reduce) {
-    D.backspin = 0.72; D.vel = -NOM * 4.2; D.pending = i; shock(0, 0, true);
+    D.backspin = 0.6; D.vel = -NOM * 3.2; D.pending = i; shock(0, 0, true);
     return;
   }
   setSound(true); ensureWorklet().catch(() => {}); loadTrack(i);
@@ -1936,8 +1936,8 @@ function deckFrame(dt) {
   if (D.node) {
     if (D.fxLp) {
       const over = Math.max(0, Math.abs(rate) - 1.15), spin = D.backspin > 0 ? 1 : 0;
-      const gTarget = 1 / (1 + 0.55 * Math.pow(over, 1.15) + spin * 0.6);
-      const fTarget = over > 0 ? Math.max(1400, 16000 / (1 + over * 2.2)) : 20000;
+      const gTarget = (D.grab ? 0.8 : 1) / (1 + 0.9 * Math.pow(over, 1.15) + spin * 1.4);
+      const fTarget = over > 0 ? Math.max(900, 14000 / (1 + over * 3.5)) : (D.grab ? 9000 : 20000);
       const t = A.ctx.currentTime;
       // only touch the audio graph when the target really changes (automation events pile up otherwise)
       if (Math.abs(gTarget - (D.fxG || 1)) > 0.01 || Math.abs(fTarget - (D.fxF || 20000)) > 50) {
