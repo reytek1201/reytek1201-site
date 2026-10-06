@@ -237,7 +237,7 @@ footer a{text-decoration:none;transition:color .2s}
 footer a:hover{color:var(--signal)}
 
 /* music: the deck */
-.music{position:relative;overflow:hidden;overflow:clip;padding-block:16vh 10vh;background:linear-gradient(transparent,rgba(5,6,8,.84) 14vh,rgba(5,6,8,.84) calc(100% - 14vh),transparent)}
+.music{position:relative;overflow:hidden;overflow:clip;padding-block:16vh 10vh;background:linear-gradient(transparent,rgba(5,6,8,.6) 14vh,rgba(5,6,8,.6) calc(100% - 14vh),transparent)}
 .music-in{max-width:1440px;margin:0 auto;padding-inline:clamp(16px,6vw,96px);display:grid;gap:30px}
 @media (min-width:821px){.music-in{padding-left:max(clamp(16px,6vw,96px),112px)}}
 .music-head{display:grid;gap:12px;max-width:62ch}
@@ -2360,13 +2360,31 @@ function frame(now) {
     vortex.position.x = portrait.position.x + (PU.uC.value.x - 0.5) * 2.7 * ps;
     vortex.position.y = portrait.position.y + (PU.uC.value.y - 0.5) * 2.7 * ps;
     vortex.rotation.z = -p * 1.4 - hubIn * 0.6;
+    // music: the vortex slides over and sits concentric behind the record, sized to the platter
+    let dkK = 0;
+    if (D.screen && dk.stage) {
+      const sr = dk.stage.getBoundingClientRect();
+      if (sr.bottom > -SH * 0.5 && sr.top < SH * 1.5) {
+        const c0 = D.screen(0, 0.18, 0), e0 = D.screen(1.6, 0.18, 0);
+        const sx = sr.left + c0.x, sy = sr.top + c0.y, srad = Math.abs(e0.x - c0.x);
+        dkK = ease(clamp(1.35 - Math.abs(sy - SH / 2) / (SH * 0.6)));
+        if (dkK > 0) {
+          const wx = camera.position.x + (sx - SW / 2) / ppu, wy = camera.position.y - (sy - SH / 2) / ppu;
+          vortex.position.x = lerp(vortex.position.x, wx, dkK);
+          vortex.position.y = lerp(vortex.position.y, wy, dkK);
+          const dvs = (srad * 1.05 / ppu) / 0.62;
+          vortex.scale.setScalar(lerp(vs, dvs, dkK));
+        }
+      }
+    }
+    gl.dkK = dkK;
     // hovering the portrait in the bio section counts too
     if (b > 0.5 && mouse.active && fine) {
       const hx = SW / 2 + (vortex.position.x - camera.position.x) * ppu, hy = SH / 2 - (vortex.position.y - camera.position.y) * ppu;
       gl.bioHover = clamp(1.4 - Math.hypot(mouse.px - hx, mouse.py - hy) / (0.2 * 2.7 * ps * ppu)) * clamp((b - 0.5) * 2) * (1 - clamp(hubIn * 2));
     } else gl.bioHover = 0;
     const w = toWorld(mouse.x, mouse.y), lm = toLocal(w.x, w.y); U.uMouse.value.set(lm.x, lm.y);
-    U.uFade.value = lerp(1, 0.5, b * 0.6) * lerp(1, 0.4, hubIn);
+    U.uFade.value = lerp(1, 0.5, b * 0.6) * lerp(1, 0.4, hubIn) * lerp(1, 1.5, gl.dkK || 0);
     renderer.render(gl.scene, camera);
   }
   requestAnimationFrame(frame);
