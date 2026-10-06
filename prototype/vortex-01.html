@@ -261,7 +261,7 @@ footer a:hover{color:var(--signal)}
 .ro-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase}
 .ro-stats b{display:block;margin-top:2px;color:var(--bone);font-weight:500;font-size:14px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .crate{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.crate button{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.02);border:1px solid var(--line);padding:8px 12px 8px 8px;border-radius:var(--r);color:var(--bone);transition:border-color .25s,background .25s}
+.crate button{width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) auto auto;gap:12px;align-items:center;text-align:left;background:rgba(255,255,255,.02);border:1px solid var(--line);padding:8px 12px 8px 8px;border-radius:var(--r);color:var(--bone);transition:border-color .25s,background .25s}
 .crate button:hover{border-color:rgba(var(--sig-rgb),.55);background:rgba(var(--sig-rgb),.05)}
 .crate button[aria-current="true"]{border-color:var(--signal);box-shadow:inset 3px 0 0 var(--signal)}
 .crate img{width:44px;height:44px;object-fit:cover;border-radius:var(--r-sm);display:block}
@@ -269,6 +269,13 @@ footer a:hover{color:var(--signal)}
 .crate .t{font-weight:500;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .crate .m{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--ash);text-transform:uppercase}
 .crate .n{font-family:var(--f-mono);font-size:11px;color:var(--dim);display:flex;align-items:center;gap:8px}
+.crate .pl{width:32px;height:32px;border-radius:50%;border:1px solid rgba(var(--sig-rgb),.45);display:grid;place-items:center;color:var(--signal);transition:background .25s,color .25s,border-color .25s,transform .3s cubic-bezier(.2,.9,.3,1.4),box-shadow .3s}
+.crate .pl svg{width:12px;height:12px;display:block;fill:currentColor}
+.crate .pl .pa{display:none}
+.crate button:hover .pl{transform:scale(1.08);border-color:var(--signal);box-shadow:0 0 14px rgba(var(--sig-rgb),.35)}
+.crate button.playing .pl{background:var(--signal);color:#041014;border-color:var(--signal);box-shadow:0 0 16px rgba(var(--sig-rgb),.5)}
+.crate button.playing .pl .py{display:none}
+.crate button.playing .pl .pa{display:block}
 .crate .new{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#041014;background:var(--signal);padding:3px 6px;border-radius:var(--r-sm);box-shadow:0 0 12px rgba(var(--sig-rgb),.45)}
 .deck-ctl{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:10px;align-items:center}
 .hw{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:12px 14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:var(--r);color:var(--bone);transition:border-color .25s,color .25s}
@@ -1421,12 +1428,28 @@ function finishBackspin() {
 // ---- panel ----
 TRACKS.forEach((t, i) => {
   const li = document.createElement('li');
-  li.innerHTML = `<button type="button"><img src="${t.cover}" alt="" width="44" height="44"><span class="tx"><span class="t">${t.title}</span><span class="m">${Math.round(t.bpm)} BPM · ${fmt(t.dur)}</span></span><span class="n">${t.isNew ? '<span class="new">New</span>' : ''}A${i + 1}</span></button>`;
+  li.innerHTML = `<button type="button"><img src="${t.cover}" alt="" width="44" height="44"><span class="tx"><span class="t">${t.title}</span><span class="m">${Math.round(t.bpm)} BPM · ${fmt(t.dur)}</span></span><span class="n">${t.isNew ? '<span class="new">New</span>' : ''}A${i + 1}</span><span class="pl" aria-hidden="true"><svg class="py" viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg><svg class="pa" viewBox="0 0 12 12"><path d="M2.5 1.5h2.6v9H2.5zM6.9 1.5h2.6v9H6.9z"/></svg></span></button>`;
   const b = li.querySelector('button');
-  b.addEventListener('click', () => playTrack(i));
+  b.addEventListener('click', () => toggleTrack(i));
   b.setAttribute('aria-label', `Play ${t.title}, ${fmt(t.dur)}`);
   dk.crate.appendChild(li);
 });
+// play / pause from the track list, for anyone who'd rather not drag the arm
+function toggleTrack(i) {
+  const here = D.loaded === i && trackAt(D.t) === i && D.pending == null;
+  if (here && (D.needle || (D.auto && D.auto.drop))) { D.auto = null; liftNeedle(); D.userPaused = true; return; }
+  if (here && D.started && !D.needle) { setSound(true); ensureWorklet().catch(() => {}); D.userPaused = false; cueTo(D.t, true); return; }
+  D.userPaused = false; playTrack(i);
+}
+let playIcon = '';
+function updatePlayIcons() {
+  const ti = trackAt(D.t), on = (D.needle || (D.auto && D.auto.drop)) && D.pending == null ? (D.auto && D.auto.drop ? trackAt(D.auto.t) : ti) : -1;
+  const key = on + '|' + D.sel; if (key === playIcon) return; playIcon = key;
+  [...dk.crate.querySelectorAll('button')].forEach((b, k) => {
+    b.classList.toggle('playing', k === on);
+    b.setAttribute('aria-label', `${k === on ? 'Pause' : 'Play'} ${TRACKS[k].title}, ${fmt(TRACKS[k].dur)}`);
+  });
+}
 function updateCrate() { [...dk.crate.querySelectorAll('button')].forEach((b, i) => b.setAttribute('aria-current', i === D.sel ? 'true' : 'false')); }
 updateCrate();
 dk.start.addEventListener('click', () => { setSound(true); ensureWorklet().catch(() => {}); setMotor(!D.motor); });
@@ -2003,6 +2026,7 @@ function deckFrame(dt) {
   if (audible && !D.audible) { needleSound(true); seekWorklet(); resetBeats(); }
   if (!audible && D.audible) needleSound(false);
   D.audible = audible;
+  updatePlayIcons();
 
   // playback position: follow the worklet when it has the track, else integrate
   const rate = D.audible ? D.vel / NOM : 0;
