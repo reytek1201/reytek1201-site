@@ -1399,7 +1399,7 @@ function seekWorklet() {
   D.node.port.postMessage({ t: 'seek', at: D.t - TRACKS[D.loaded].start, seq: D.seq });
 }
 function needleSound(down) {
-  if (!A.ctx || !A.on) return;
+  if (!A.ctx || !A.on || down) return;   // no sound when the needle lands; only a faint tick on lift
   const c = A.ctx, t = c.currentTime;
   const n = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
   n.buffer = A.noise; f.type = 'bandpass'; f.frequency.value = down ? 1400 : 2600; f.Q.value = 0.8;
@@ -1442,7 +1442,7 @@ function cueTo(t, fast) { liftNeedle(); D.auto = { phi: phiForR(tToR(t)), t, dro
 function playTrack(i) {
   D.sel = i; updateCrate();
   if (D.audible && D.vel > NOM * 0.5 && !reduce) {
-    D.backspin = 0.6; D.vel = -NOM * 3.2; D.pending = i; shock(0, 0, true);
+    D.backspin = 0.45; D.vel = -NOM * 2.4; D.pending = i; shock(0, 0, true);
     return;
   }
   setSound(true); ensureWorklet().catch(() => {}); loadTrack(i);
@@ -2075,8 +2075,8 @@ function deckFrame(dt) {
   if (D.node) {
     if (D.fxLp) {
       const over = Math.max(0, Math.abs(rate) - 1.15), spin = D.backspin > 0 ? 1 : 0;
-      const gTarget = (D.grab ? 0.8 : 1) / (1 + 0.9 * Math.pow(over, 1.15) + spin * 1.4);
-      const fTarget = over > 0 ? Math.max(900, 14000 / (1 + over * 3.5)) : (D.grab ? 9000 : 20000);
+      const gTarget = (D.grab ? 0.8 : 1) / (1 + 0.9 * Math.pow(over, 1.15) + spin * 2.6);
+      const fTarget = spin ? 2200 : over > 0 ? Math.max(900, 14000 / (1 + over * 3.5)) : (D.grab ? 9000 : 20000);
       const t = A.ctx.currentTime;
       // only touch the audio graph when the target really changes (automation events pile up otherwise)
       if (Math.abs(gTarget - (D.fxG || 1)) > 0.01 || Math.abs(fTarget - (D.fxF || 20000)) > 50) {
