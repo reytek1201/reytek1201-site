@@ -247,7 +247,7 @@ footer a:hover{color:var(--signal)}
 #deckGL{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .no-deck::after{content:'The 3D deck needs WebGL. Use the tracks beside it to play.';position:absolute;inset:0;display:grid;place-items:center;color:var(--ash);font-family:var(--f-mono);font-size:12px;text-align:center;padding:16px}
 .deck-hint{position:absolute;left:0;top:0;pointer-events:none;font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#041014;background:var(--signal);padding:7px 11px;border-radius:var(--r);white-space:nowrap;box-shadow:0 0 26px rgba(var(--sig-rgb),.55);transition:opacity .4s}
-.deck-hint::after{content:'';position:absolute;left:50%;top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:var(--signal)}
+.deck-hint::after{content:'';position:absolute;left:var(--ax,50%);top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:var(--signal)}
 .deck-tip{position:absolute;left:0;top:0;pointer-events:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:rgba(5,6,8,.85);border-left:2px solid var(--signal);padding:7px 10px;white-space:nowrap}
 .deck-panel{display:grid;gap:16px;border:1px solid var(--line);background:rgba(5,6,8,.82);padding:18px;border-radius:var(--r-lg);min-width:0}
 .readout{display:grid;gap:12px;padding:14px;border:1px solid rgba(var(--sig-rgb),.28);border-radius:10px;
@@ -1985,15 +1985,22 @@ function deckBuild() {
     renderer.render(scene, cam);
     // hint + tooltip anchored to the headshell
     const s = stylusAt(D.phi), sp2 = screenOf(s.x, ARM_Y + D.lift * 0.18 - 0.1, s.z);
-    dk.hint.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(-50%,-150%)`;
+    // keep both labels inside the stage: the hint slides along the edge, the tip flips to the other side of the needle
+    const PAD = 6, clampX = (x, w) => Math.min(Math.max(x, PAD), Math.max(PAD, W - w - PAD)), clampY = (y, h) => Math.min(Math.max(y, PAD), Math.max(PAD, H - h - PAD));
+    const hw = dk.hint.offsetWidth, hh = dk.hint.offsetHeight;
+    const hx = clampX(sp2.x - hw / 2, hw), hy = clampY(sp2.y - hh * 1.5, hh);
+    dk.hint.style.transform = `translate(${hx}px,${hy}px)`;
+    dk.hint.style.setProperty('--ax', `${Math.min(Math.max(sp2.x - hx, 12), hw - 12)}px`);
     dk.hint.style.opacity = D.started || D.armDrag || D.auto ? 0 : 1;
-    if (D.armDrag && ht >= 0) {
+    let tipText = null;
+    if (D.armDrag && ht >= 0) tipText = `A${ht + 1} · ${TRACKS[ht].title} · ${fmt(rToT(hr) - TRACKS[ht].start)}`;
+    else if (D.armDrag) tipText = hr > R_LEAD ? 'Off the record · release to rest' : hr > R_OUT ? 'Lead-in' : 'Run-out';
+    if (tipText !== null) {
       dk.tip.hidden = false;
-      dk.tip.textContent = `A${ht + 1} · ${TRACKS[ht].title} · ${fmt(rToT(hr) - TRACKS[ht].start)}`;
-      dk.tip.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(18px,-50%)`;
-    } else if (D.armDrag) {
-      dk.tip.hidden = false; dk.tip.textContent = hr > R_LEAD ? 'Off the record · release to rest' : hr > R_OUT ? 'Lead-in' : 'Run-out';
-      dk.tip.style.transform = `translate(${sp2.x}px,${sp2.y}px) translate(18px,-50%)`;
+      if (dk.tip.textContent !== tipText) dk.tip.textContent = tipText;
+      const tw = dk.tip.offsetWidth, th = dk.tip.offsetHeight;
+      let tx = sp2.x + 18; if (tx + tw > W - PAD) tx = sp2.x - 18 - tw;
+      dk.tip.style.transform = `translate(${clampX(tx, tw)}px,${clampY(sp2.y - th / 2, th)}px)`;
     } else dk.tip.hidden = true;
   };
   D.built = true;
