@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /prototype/
 
-Sitemap: https://reytek1201.com/sitemap.xml
+Sitemap: https://www.reytek1201.com/sitemap.xml
