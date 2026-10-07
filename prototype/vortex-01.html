@@ -477,6 +477,7 @@ window.THEME = (() => {
   T.set = i => {
     i = ((i % LIST.length) + LIST.length) % LIST.length; if (i === idx) return;
     idx = i; try { localStorage.setItem('rt-theme', LIST[i].id); } catch (e) {}
+    try { if (window.gtag) window.gtag('event', 'theme_change', { theme: LIST[i].id }); } catch (e) {}
     marks();
     const from = { s: cur.s.slice(), p: cur.p.slice() }, to = LIST[i], t0 = performance.now(), id = ++anim;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, DUR = reduce ? 1 : 700;
@@ -1399,12 +1400,13 @@ function setPitch(v, raw) {
   const z = $('#pitchZero'); if (z) z.disabled = D.pitch === 0 && !D.pitchGlide;
 }
 function zeroPitch() { if (D.pitch !== 0) D.pitchGlide = true; }
+const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
 function dropAt(t) {
   setSound(true);
   ensureWorklet().catch(() => {});
   D.t = clamp(t, -LEAD, D.tMax); D.needle = true; D.started = true; D.auto = null;
   if (!D.motor) setMotor(true);
-  const ti = trackAt(D.t); if (ti >= 0) { D.sel = ti; loadTrack(ti); }
+  const ti = trackAt(D.t); if (ti >= 0) { if (D.lastPlayed !== ti) { D.lastPlayed = ti; track('play_track', { track_title: TRACKS[ti].title }); } D.sel = ti; loadTrack(ti); }
   if (D.loaded >= 0) seekWorklet();
   resetBeats();
 }
