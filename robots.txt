@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /prototype/
+
+Sitemap: https://reytek1201.com/sitemap.xml
