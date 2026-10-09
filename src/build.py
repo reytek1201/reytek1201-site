@@ -182,7 +182,7 @@ SCR = ['theme.js', 'shell.js', 'pages.js', 'lightbox.js']
 PAGES = {
   'origin/': ('Origin · REYTEK', "From Puerto Rico to Fort Lauderdale's rave scene and three decades in kitchens: Reytek's story across four lanes, kitchen, sound, code and play.",
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
-  'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Dawn on the Loading Dock to The Light Was Plain.',
+  'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
              P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, a meal planner with a kitchen brain, SlidePress for social posting, the FunkHarp site and this hub.',
                 P('projects'), SCR, 'Projects'),
