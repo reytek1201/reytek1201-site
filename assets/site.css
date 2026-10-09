@@ -504,7 +504,7 @@ footer a:hover{color:var(--signal)}
 .moments-head h2{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 128;font-size:clamp(30px,4.6vw,64px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
 .moments-head p{margin:0;color:var(--ash);max-width:56ch}
 .moments-head .lbl,.page-head .lbl,.page-next .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--signal)}
-.mo-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.mo-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
 .mo a{position:relative;display:grid;grid-template-rows:auto auto auto auto 1fr;gap:6px;height:100%;padding:12px 12px 18px;border:1px solid var(--line);border-radius:var(--r);background:rgba(11,13,18,.72);color:inherit;text-decoration:none;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),border-color .3s,box-shadow .3s}
 .mo a::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:2px;border-radius:2px;background:rgb(var(--mc))}
 .mo a:hover,.mo a:focus-visible{transform:translateY(-4px);border-color:rgba(var(--mc),.55);box-shadow:0 14px 40px -18px rgba(var(--mc),.55);outline:none}
@@ -521,7 +521,7 @@ footer a:hover{color:var(--signal)}
 .mo-cta .btn{opacity:1;transform:none}
 a.btn{display:inline-flex;align-items:center;justify-content:center;color:var(--bone);text-decoration:none}
 .mo-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
-@media (max-width:980px){.mo-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.mo-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){
   .mo-list{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:clamp(16px,6vw,96px);gap:12px;margin:0 calc(-1 * clamp(16px,6vw,96px));padding:4px clamp(16px,6vw,96px) 10px;scrollbar-width:none}
   .mo-list::-webkit-scrollbar{display:none}
