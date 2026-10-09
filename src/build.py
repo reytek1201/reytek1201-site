@@ -165,8 +165,10 @@ PLAY = '<svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2
 rel = []
 for i, t in enumerate(TR):
     w = wave(t['peaks']); title = t['title']
+    label = t.get('label')
     rel.append(f'        <li class="rel" data-src="{t["file"]}" data-title="{title}" data-dur="{t["dur"]}">'
-               f'<span class="rel-disc"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async"></span>'
+               f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
+               + (f'<img class="rel-label" src="{label}" alt="" width="1024" height="1024">' if label else '') + '</span>'
                f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + '</div>'
                f'<span class="rel-meta">A{i+1} · {round(t["bpm"])} BPM · {fmt(t["dur"])}</span>'
                f'<div class="rel-wave" title="Seek"><svg viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg><svg class="hi" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg></div></div>'
