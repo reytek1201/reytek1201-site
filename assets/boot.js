@@ -130,7 +130,7 @@ window.BOOT = (() => {
   }
 
   function frame(nowMs) {
-    const now = nowMs / 1000, dt = Math.min(0.05, now - last); last = now;
+    const now = nowMs / 1000, dt = Math.max(0, Math.min(0.05, now - last)); last = now;
     const el2 = now - t0;
     // progress eases toward what has really loaded, but never faster than the minimum duration allows
     const cap = reduce ? 1 : clamp(el2 / MIN);
@@ -159,6 +159,7 @@ window.BOOT = (() => {
   return {
     mark,
     ready(fn) { onDone = fn; if (phase === 'drop' && pt > 0.42) go(); },
-    skip() { target = 1; shown = 1; rpm = 33.333; phase = 'drop'; pt = 0.42; go(); }
+    skip() { target = 1; shown = 1; rpm = 33.333; phase = 'drop'; pt = 0.42; go(); },
+    instant() { target = 1; shown = 1; rpm = 33.333; phase = 'release'; pt = 9; el.classList.add('releasing', 'gone'); el.hidden = true; const f = onDone; onDone = null; if (f) f(); }
   };
 })();

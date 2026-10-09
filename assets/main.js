@@ -260,10 +260,11 @@ function finishBoot() {
   igniteAt = clock;
   setTimeout(() => { document.body.classList.add('lit'); markIntro = clock; }, 500);
   if (inSite) setTimeout(() => {
+    document.body.classList.add('lit');
     enter(false);
     const go = HASH_GO[location.hash];
     if (go) setTimeout(() => scrollTo({ top: sectionTop(go), behavior: 'auto' }), 60);
-  }, 520);
+  }, 0);
 }
 BOOT.mark('engine');
 if (document.readyState === 'complete') BOOT.mark('assets'); else addEventListener('load', () => BOOT.mark('assets'));
@@ -272,7 +273,7 @@ BOOT.ready(finishBoot);
 $('#skip').addEventListener('click', () => BOOT.skip());
 let inSite = false; try { inSite = sessionStorage.getItem('rt-in') === '1'; } catch (e) {}
 const HASH_GO = { '#portrait': 2, '#music': 3, '#hub': 4 };
-if (inSite) setTimeout(() => BOOT.skip(), 0);   // after the engine below has initialised
+if (inSite) setTimeout(() => BOOT.instant(), 0);   // after the engine below has initialised
 addEventListener('keydown', e => { if (!booted && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) BOOT.skip(); });
 
 /* ---------- gate ---------- */
@@ -297,7 +298,7 @@ addEventListener('pointermove', e => {
   const nx = (e.clientX / VW()) * 2 - 1, ny = -(e.clientY / VH()) * 2 + 1;
   mouse.vel = Math.min(1, mouse.vel + Math.hypot(nx - mouse.tx, ny - mouse.ty) * 6);
   mouse.tx = nx; mouse.ty = ny; mouse.px = e.clientX; mouse.py = e.clientY; mouse.active = 1;
-  if (fine && e.pointerType === 'mouse') { cur.classList.add('on'); dot.classList.add('on'); }
+  if (fine && e.pointerType === 'mouse') { cur.classList.add('on'); dot.classList.add('on'); dot.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; }
 }, { passive: true });
 document.addEventListener('pointerleave', () => { mouse.active = 0; cur.classList.remove('on'); dot.classList.remove('on'); });
 document.addEventListener('pointerover', e => cur.classList.toggle('hot', !!e.target.closest('a,button,input')));
@@ -1555,7 +1556,7 @@ function setCorner(k) { const on = CORNER_ORDER[k]; CORNERS.forEach((el, i) => e
 let justBeat = false, clock = 0, last = performance.now(), igniteAt = -1, spinT = 0, beat = 0, bassV = 0, highV = 0, camZ = 4.4, ignite = 0;
 const narrow = () => VW() < 820;
 function frame(now) {
-  const dt = Math.min(0.05, (now - last) / 1000); last = now; clock += dt;
+  const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now; clock += dt;   // a frame stamped before the script ran must not run the clock backwards
 
   // audio reactive values
   let tb = 0, th = 0;
@@ -1628,7 +1629,7 @@ function frame(now) {
   }
 
   // cursor
-  cx = lerp(cx, mouse.px, 0.2); cy = lerp(cy, mouse.py, 0.2);
+  const ck = 1 - Math.exp(-dt * 32); cx = lerp(cx, mouse.px, ck); cy = lerp(cy, mouse.py, ck);
   if (fine) { cur.style.transform = `translate(${cx}px,${cy}px) scale(${1 + beat * 0.25})`; dot.style.transform = `translate(${mouse.px}px,${mouse.py}px)`; }
 
   if (gl) {

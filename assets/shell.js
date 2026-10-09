@@ -15,13 +15,15 @@
     document.body.classList.add('has-cursor');
     let px = innerWidth / 2, py = innerHeight / 2, cx = px, cy = py;
     addEventListener('pointermove', e => {
-      px = e.clientX; py = e.clientY;
+      px = e.clientX; py = e.clientY; dot.style.transform = `translate(${px}px,${py}px)`;
       if (e.pointerType === 'mouse') { cur.classList.add('on'); dot.classList.add('on'); }
     }, { passive: true });
     document.addEventListener('pointerleave', () => { cur.classList.remove('on'); dot.classList.remove('on'); });
     document.addEventListener('pointerover', e => cur.classList.toggle('hot', !!e.target.closest('a,button,input,.ev-media img,[data-zoom] img')));
-    const tick = () => {
-      cx += (px - cx) * 0.2; cy += (py - cy) * 0.2;
+    let lastT = performance.now();
+    const tick = now => {
+      const k = 1 - Math.exp(-Math.max(0, Math.min(0.05, (now - lastT) / 1000)) * 32); lastT = now;
+      cx += (px - cx) * k; cy += (py - cy) * k;
       cur.style.transform = `translate(${cx}px,${cy}px)`; dot.style.transform = `translate(${px}px,${py}px)`;
       requestAnimationFrame(tick);
     };
