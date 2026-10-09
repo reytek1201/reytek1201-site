@@ -15,6 +15,7 @@
       <ol class="rel-list" id="relList">
 __RELEASES__
       </ol>
+      <script type="application/json" id="lyrData">__LYRICS_JSON__</script>
     </div>
   </section>
 
@@ -45,3 +46,23 @@ __RELEASES__
       <div class="page-cta"><a class="btn primary" href="https://soundcloud.com/reytek1201" target="_blank" rel="noopener">Follow on SoundCloud</a><a class="btn" href="../#music">Drop the needle</a></div>
     </div>
   </section>
+
+  <div id="lyrics" class="lyr" hidden>
+    <div class="lyr-card" role="dialog" aria-modal="true" aria-labelledby="lyrTitle">
+      <span class="lyr-glow" aria-hidden="true"></span>
+      <span class="lyr-trail" aria-hidden="true"></span>
+      <div class="lyr-head">
+        <button type="button" class="lyr-disc" aria-label="Pause"><img id="lyrArt" alt=""></button>
+        <div class="lyr-id">
+          <p class="lyr-kicker" id="lyrTitle"></p>
+          <p class="lyr-sec"><span id="lyrSec"></span><span class="lyr-beat" aria-hidden="true"><i></i><i></i><i></i><i></i></span></p>
+        </div>
+        <button type="button" class="lyr-x" aria-label="Close lyrics">×</button>
+      </div>
+      <div class="lyr-stack">
+        <p class="lyr-line prev" id="lyrPrev"></p>
+        <p class="lyr-line now" id="lyrNow" aria-live="polite"></p>
+        <p class="lyr-line next" id="lyrNext"></p>
+      </div>
+    </div>
+  </div>

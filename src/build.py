@@ -140,12 +140,19 @@ def inner_page(slug, title, desc, content, scripts, label):
             '<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:site" content="@reytek1201">\n'
             '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n'
             + FONTS + f'\n<link rel="stylesheet" href="{up}{ASSET["site.css"]}">\n</head><body>\n')
+    content = content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/')
+    extra = ''
+    mark = '<div id="lyrics"'
+    if mark in content:
+        i = content.index(mark)
+        extra = content[i:].strip() + '\n'
+        content = content[:i].rstrip() + '\n'
     body = ('<div id="grain" aria-hidden="true"></div>\n<div class="frame" id="frame" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></div>\n'
             '<div class="topscrim" aria-hidden="true"></div><div class="botscrim" aria-hidden="true"></div>\n'
             f'<div class="hud hud-tl"><a href="{up}" aria-label="REYTEK home"><span class="dot"></span><b>REYTEK</b><span>/ {label}</span></a></div>\n'
             f'<nav class="hud hud-tr chapters" aria-label="Pages">{nav}</nav>\n<div class="hud hud-bl">Hub v0.1 · {label}</div>\n'
             + RAIL + '\n' + guide(slug, up) + '\n<div class="hud hud-br">' + THEMES + '</div>\n\n<main>\n'
-            + content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/') + '</main>\n\n' + FOOTER + '\n\n<div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>\n'
+            + content + '</main>\n\n' + extra + FOOTER + '\n\n<div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>\n'
             + LB + '\n' + ''.join(f'<script src="{up}{ASSET[n]}"></script>\n' for n in scripts) + '</body></html>\n')
     html = head + body
     os.makedirs(f'{OUT}/{slug}', exist_ok=True)
@@ -162,14 +169,22 @@ def wave(peaks, n=120):
         bars.append(f'M{i+0.15:.2f} {12-h/2:.2f}h0.7v{h:.2f}h-0.7z')
     return ''.join(bars)
 PLAY = '<svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg>'
+LYR = {}
+if os.path.isdir('lyrics'):
+    for name in sorted(os.listdir('lyrics')):
+        if name.endswith('.json'):
+            data = json.load(open(os.path.join('lyrics', name)))
+            data['beats'] = next(t['beats'] for t in TR if t['title'] == data['title'])
+            LYR[data['title']] = data
 rel = []
 for i, t in enumerate(TR):
     w = wave(t['peaks']); title = t['title']
     label = t.get('label')
+    lyr_btn = f'<button class="rel-lyrics" type="button" aria-expanded="false" aria-controls="lyrics" aria-label="Lyrics for {title}">Lyrics</button>' if title in LYR else ''
     rel.append(f'        <li class="rel" data-src="{t["file"]}" data-title="{title}" data-dur="{t["dur"]}">'
                f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
                + (f'<img class="rel-label" src="{label}" alt="" width="1024" height="1024">' if label else '') + '</span>'
-               f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + '</div>'
+               f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + lyr_btn + '</div>'
                f'<span class="rel-meta">A{i+1} · {round(t["bpm"])} BPM · {fmt(t["dur"])}</span>'
                f'<div class="rel-wave" title="Seek"><svg viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg><svg class="hi" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg></div></div>'
                f'<span class="rel-t">{fmt(t["dur"])}</span><button class="rel-play" type="button" aria-pressed="false" aria-label="Play {title}">{PLAY}</button></li>')
@@ -185,7 +200,7 @@ PAGES = {
   'origin/': ('Origin · REYTEK', "From Puerto Rico to Fort Lauderdale's rave scene and three decades in kitchens: Reytek's story across four lanes, kitchen, sound, code and play.",
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
-             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))), SCR, 'Music'),
+             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, a meal planner with a kitchen brain, SlidePress for social posting, the FunkHarp site and this hub.',
                 P('projects'), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From his dad\'s arcades in Puerto Rico to POE Source, a Path of Exile 2 companion launching with POE2 1.0 on December 11.',
