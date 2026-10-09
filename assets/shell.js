@@ -19,7 +19,7 @@
       if (e.pointerType === 'mouse') { cur.classList.add('on'); dot.classList.add('on'); }
     }, { passive: true });
     document.addEventListener('pointerleave', () => { cur.classList.remove('on'); dot.classList.remove('on'); });
-    document.addEventListener('pointerover', e => cur.classList.toggle('hot', !!e.target.closest('a,button,input,.ev-media img')));
+    document.addEventListener('pointerover', e => cur.classList.toggle('hot', !!e.target.closest('a,button,input,.ev-media img,[data-zoom] img')));
     const tick = () => {
       cx += (px - cx) * 0.2; cy += (py - cy) * 0.2;
       cur.style.transform = `translate(${cx}px,${cy}px)`; dot.style.transform = `translate(${px}px,${py}px)`;

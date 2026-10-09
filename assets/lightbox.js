@@ -1,7 +1,7 @@
 (() => {
   const lb = document.getElementById('lb'); if (!lb || !lb.showModal) return;
   const big = document.getElementById('lbImg'), cap = document.getElementById('lbCap'), n = document.getElementById('lbN');
-  const imgs = [...document.querySelectorAll('#lanes .ev-media img')];
+  const imgs = [...document.querySelectorAll('#lanes .ev-media img, [data-zoom] img')];
   let i = 0, list = imgs;
   const vis = () => { const v = imgs.filter(im => im.offsetParent !== null); return v.length ? v : imgs; };
   const show = k => {
