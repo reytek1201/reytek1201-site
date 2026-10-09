@@ -196,3 +196,27 @@ Each phase ends deployed to a Vercel preview, with a short checklist.
 3. Do you have (or can you export) track audio files for the audio-reactive layer?
 4. Keep violet from the old page, or go to the monochrome + cyan + magenta palette?
 5. Domain for the hub?
+
+---
+
+## Multi-page plan (Oct 9, 2026)
+
+The single page reached about 14 screens on desktop and 18 on a phone, so long content is moving onto its own pages inside one shared frame.
+
+**Decisions:** music keeps playing between pages; the homepage keeps the origin year counter plus a few key moments (to be picked); the pages are Origin, Music, Projects, Gaming and Art.
+
+| Page | Content |
+|---|---|
+| Home `/` | Vortex hero, year counter with key moments and a "Read the whole story" link, turntable, four doors, signup |
+| Origin `/origin/` | Full bio and the four-lane timeline |
+| Music `/music/` | All releases and the full deck |
+| Projects `/projects/` | KeyMacro, SlidePress, FunkHarp, link to rayburgos.com |
+| Gaming `/gaming/` | Gaming lane, POE Source countdown |
+| Art `/art/` | "Soon" page |
+
+**Phases**
+1. **Foundation** (done Oct 9): CSS and JS live in `/assets` and are shared by every page. Asset paths resolve from the site root (`rtUrl()`), so pages at any depth work.
+2. **Origin page:** move the bio and timeline to `/origin/` and shorten the homepage.
+3. **Door pages:** Music, Projects, Gaming, Art.
+4. **Music that keeps playing:** a router that swaps page content while the audio keeps running, a mini player and a warp transition.
+5. **Later:** Next.js, rayburgos.com as `/work`, Supabase signup.
