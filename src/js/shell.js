@@ -82,6 +82,21 @@
   const foot = document.querySelector('footer');
   if (foot && 'IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => document.body.classList.toggle('foot-in', en.isIntersecting)), { threshold: 0.25 }).observe(foot);
 
+  /* project marks: on a phone the color trail runs while the card is on screen */
+  const plates = document.querySelectorAll('.proj-logo');
+  const phone = matchMedia('(max-width:820px)');
+  if (plates.length && 'IntersectionObserver' in window) {
+    const seen = new IntersectionObserver(es => {
+      if (!phone.matches) return;
+      es.forEach(en => en.target.classList.toggle('on', en.isIntersecting));
+    }, { threshold: 0.55 });
+    plates.forEach(p => seen.observe(p));
+    phone.addEventListener('change', () => {
+      plates.forEach(p => p.classList.remove('on'));
+      if (phone.matches) plates.forEach(p => { seen.unobserve(p); seen.observe(p); });
+    });
+  }
+
   /* buttons: the same magnetic pull and ripple as the homepage */
   document.querySelectorAll('.btn').forEach(bt => {
     bt.addEventListener('pointermove', e => {
