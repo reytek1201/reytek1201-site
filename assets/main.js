@@ -259,12 +259,20 @@ function finishBoot() {
   if (booted) return; booted = true;
   igniteAt = clock;
   setTimeout(() => { document.body.classList.add('lit'); markIntro = clock; }, 500);
+  if (inSite) setTimeout(() => {
+    enter(false);
+    const go = HASH_GO[location.hash];
+    if (go) setTimeout(() => scrollTo({ top: sectionTop(go), behavior: 'auto' }), 60);
+  }, 520);
 }
 BOOT.mark('engine');
 if (document.readyState === 'complete') BOOT.mark('assets'); else addEventListener('load', () => BOOT.mark('assets'));
 if (!gl) BOOT.mark('portrait');
 BOOT.ready(finishBoot);
 $('#skip').addEventListener('click', () => BOOT.skip());
+let inSite = false; try { inSite = sessionStorage.getItem('rt-in') === '1'; } catch (e) {}
+const HASH_GO = { '#portrait': 2, '#music': 3, '#hub': 4 };
+if (inSite) setTimeout(() => BOOT.skip(), 0);   // after the engine below has initialised
 addEventListener('keydown', e => { if (!booted && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) BOOT.skip(); });
 
 /* ---------- gate ---------- */
@@ -272,6 +280,7 @@ function enter(withSound) {
   $('#gate').classList.add('done');
   document.body.classList.add('entered');
   root.classList.remove('locked');
+  try { sessionStorage.setItem('rt-in', '1'); } catch (e) {}
   if (withSound) setSound(true);
   shock(0, 0, true);
   setTimeout(() => $('#sound').focus({ preventScroll: true }), 50);
@@ -385,7 +394,7 @@ $('#signup').addEventListener('submit', e => {
 /* ---------- scroll story ---------- */
 const els = {
   heroInner: $('#heroInner'), origin: $('#origin'), hub: $('#hub'), counter: $('#counter'), yr: $('#yr'), bpm: $('#bpm'), era: $('#era'),
-  lanes: $('#lanes'), cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioBox: $('#bio'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
+  lanes: $('#moments') || $('#lanes'), cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioBox: $('#bio'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
   chapters: [...document.querySelectorAll('.chapters a')], bars: [...document.querySelectorAll('#sound .bars i')]
 };
 // milestones the year counter rolls through: [from year, label, lane, line]
@@ -1728,28 +1737,3 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setT
 setTimeout(runBoot, 1500);
 })();
 
-// ---- four lanes: reveal, rail progress, lane filter ----
-(() => {
-  const tl = document.getElementById('tl'); if (!tl) return;
-  const evs = [...tl.querySelectorAll('.ev')];
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
-    evs.forEach(el => io.observe(el));
-  } else evs.forEach(el => el.classList.add('in'));
-  let lastP = -1;
-  const tick = () => {
-    const r = tl.getBoundingClientRect(), vh = innerHeight;
-    const p = Math.min(1, Math.max(0, (vh * 0.62 - r.top) / r.height));
-    if (Math.abs(p - lastP) > 0.001) { lastP = p; tl.style.setProperty('--prog', p.toFixed(4)); }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-  const btns = [...document.querySelectorAll('.lane-filter button')];
-  btns.forEach(b => b.addEventListener('click', () => {
-    const lane = b.dataset.lane, on = lane === 'all' || b.getAttribute('aria-pressed') !== 'true' ? lane : 'all';
-    btns.forEach(x => x.setAttribute('aria-pressed', x.dataset.lane === on ? 'true' : 'false'));
-    tl.dataset.show = on;
-    evs.forEach(el => el.classList.toggle('match', el.dataset.lane === on));
-    try { if (window.gtag) window.gtag('event', 'lane_filter', { lane: on }); } catch (e) {}
-  }));
-})();
