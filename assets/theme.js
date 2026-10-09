@@ -29,7 +29,7 @@ window.THEME = (() => {
   T.index = () => idx;
   function marks() {
     root.dataset.theme = LIST[idx].id;
-    document.querySelectorAll('#themes button').forEach((b, i) => b.setAttribute('aria-checked', i === idx ? 'true' : 'false'));
+    document.querySelectorAll('#themes button, .cg-themes button').forEach(b => b.setAttribute('aria-checked', +b.dataset.t === idx ? 'true' : 'false'));
   }
   let anim = 0;
   T.set = i => {
@@ -52,11 +52,68 @@ window.THEME = (() => {
   document.addEventListener('DOMContentLoaded', () => {
     marks();
     document.querySelectorAll('#themes button').forEach((b, i) => b.addEventListener('click', () => T.set(i === idx && matchMedia('(max-width:640px)').matches ? idx + 1 : i)));
-    const g = document.getElementById('themes');
-    if (g) g.addEventListener('keydown', e => {
+    document.querySelectorAll('.cg-themes button').forEach(b => b.addEventListener('click', () => T.set(+b.dataset.t)));
+    document.querySelectorAll('#themes, .cg-themes').forEach(g => g.addEventListener('keydown', e => {
       const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
       if (d) { e.preventDefault(); T.set(idx + d); g.querySelectorAll('button')[idx].focus(); }
-    });
+    }));
+    guide();
   });
+
+  /* channel guide (phones): the strip's key opens a full-screen list of the six channels */
+  function guide() {
+    const cg = document.getElementById('guide'), key = document.getElementById('guideKey');
+    if (!cg || !key) return;
+    const body = document.body, st = document.getElementById('guideStatic');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const names = [...cg.querySelectorAll('.cg-chan .name b')];
+    names.forEach(b => { b.dataset.name = b.textContent; });
+    const isOpen = () => body.classList.contains('cg-open');
+    const set = on => {
+      if (on === isOpen()) return;
+      body.classList.toggle('cg-open', on);
+      key.setAttribute('aria-expanded', on ? 'true' : 'false');
+      key.setAttribute('aria-label', on ? 'Close the channel guide' : 'Open the channel guide');
+      document.querySelectorAll('main, footer, .hud').forEach(el => { el.inert = on; });
+      if (!on) { key.focus({ preventScroll: true }); return; }
+      if (window.rtScramble && !reduce) names.forEach((b, i) => {
+        b.textContent = b.dataset.name.replace(/\S/g, ' ');
+        setTimeout(() => window.rtScramble(b, b.dataset.name), i * 40);
+      });
+      if (window.rtShock) {
+        const r = key.getBoundingClientRect();
+        window.rtShock((r.left + r.width / 2) / innerWidth * 2 - 1, -((r.top + r.height / 2) / innerHeight * 2 - 1));
+      }
+      const here = cg.querySelector('.cg-chan a[aria-current="page"]') || cg.querySelector('.cg-chan a');
+      setTimeout(() => here.focus({ preventScroll: true }), 60);
+    };
+    key.addEventListener('click', () => set(!isOpen()));
+    const ro = document.getElementById('readout');
+    if (ro) ro.addEventListener('click', () => set(true));
+    cg.addEventListener('click', e => {
+      const a = e.target.closest('.cg-chan a');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      e.preventDefault();
+      if (st && !reduce) { st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }
+      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') location.href = a.href; };
+      if (reduce) go(); else setTimeout(go, 160);
+    });
+    document.addEventListener('keydown', e => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { e.preventDefault(); set(false); return; }
+      if (e.key !== 'Tab') return;
+      const list = [...cg.querySelectorAll('a[href], button'), key], i = list.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); list[list.length - 1].focus(); }
+      else if (!e.shiftKey && (i === -1 || i === list.length - 1)) { e.preventDefault(); list[0].focus(); }
+    });
+    matchMedia('(max-width:820px)').addEventListener('change', e => { if (!e.matches) set(false); });
+    const snd = document.getElementById('sound'), gs = document.getElementById('guideSound');
+    if (snd && gs) {
+      const sync = () => { const on = snd.getAttribute('aria-pressed') === 'true'; gs.setAttribute('aria-pressed', on ? 'true' : 'false'); gs.textContent = on ? 'Sound on' : 'Sound off'; };
+      gs.addEventListener('click', () => snd.click());
+      new MutationObserver(sync).observe(snd, { attributes: true, attributeFilter: ['aria-pressed'] });
+      sync();
+    }
+  }
   return T;
 })();

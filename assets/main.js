@@ -320,6 +320,7 @@ function toWorld(nx, ny) {
   const c = gl.camera.position, dir = tmpV.sub(c).normalize(), t = -c.z / dir.z;
   return { x: c.x + dir.x * t, y: c.y + dir.y * t };
 }
+window.rtShock = (nx, ny) => { if (reduce) return; const w = toWorld(nx, ny); shock(w.x, w.y); };
 
 /* ---------- channels: social icons ---------- */
 const CHANNELS = [
@@ -353,6 +354,7 @@ function scrambleText(el, text) {
     if (f / 1.6 >= text.length) { clearInterval(el._sc); el.textContent = text; }
   }, 28);
 }
+window.rtScramble = scrambleText;
 function makeChannel(c, i) {
   const a = document.createElement('a');
   a.className = 'ch'; a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
@@ -376,7 +378,7 @@ function makeChannel(c, i) {
   });
   return a;
 }
-CHANNELS.forEach((c, i) => { const a = makeChannel(c, i); $('#rail').appendChild(a); railIcons.push(a); $('#dock').appendChild(makeChannel(c, i)); });
+CHANNELS.forEach((c, i) => { const a = makeChannel(c, i); $('#rail').appendChild(a); railIcons.push(a); $('#dock').appendChild(makeChannel(c, i)); const gc = $('#guideCh'); if (gc) gc.appendChild(makeChannel(c, i)); });
 let pingIdx = 0, nextPing = 3;
 function pingNext() {
   const a = railIcons[pingIdx++ % railIcons.length];

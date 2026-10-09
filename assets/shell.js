@@ -54,6 +54,7 @@
       if (f / 1.6 >= text.length) { clearInterval(el._sc); el.textContent = text; }
     }, 28);
   }
+  window.rtScramble = scrambleText;
   function makeChannel(c, i) {
     const a = document.createElement('a');
     a.className = 'ch'; a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
@@ -74,7 +75,8 @@
     return a;
   }
   const rail = $('#rail'), dock = $('#dock'), railIcons = [];
-  CHANNELS.forEach((c, i) => { if (rail) { const a = makeChannel(c, i); rail.appendChild(a); railIcons.push(a); } if (dock) dock.appendChild(makeChannel(c, i)); });
+  const gc = $('#guideCh');
+  CHANNELS.forEach((c, i) => { if (rail) { const a = makeChannel(c, i); rail.appendChild(a); railIcons.push(a); } if (dock) dock.appendChild(makeChannel(c, i)); if (gc) gc.appendChild(makeChannel(c, i)); });
   let pingIdx = 0;
   if (railIcons.length && !reduce) setInterval(() => { const a = railIcons[pingIdx++ % railIcons.length]; a.classList.remove('ping'); void a.offsetWidth; a.classList.add('ping'); }, 1600);
   const foot = document.querySelector('footer');

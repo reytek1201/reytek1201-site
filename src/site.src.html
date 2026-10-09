@@ -62,7 +62,7 @@ button{font:inherit;color:inherit}
 @keyframes pulse{50%{opacity:.25}}
 .hud b{color:var(--bone);font-weight:500}
 .botscrim{display:none}
-@media (max-width:820px){.botscrim{display:block;position:fixed;left:0;right:0;bottom:0;height:calc(96px + env(safe-area-inset-bottom,0px));z-index:29;pointer-events:none;background:linear-gradient(transparent,rgba(5,6,8,.7) 45%,rgba(5,6,8,.92))}}
+@media (max-width:820px){.botscrim{display:block;position:fixed;left:0;right:0;bottom:0;height:calc(128px + env(safe-area-inset-bottom,0px));z-index:29;pointer-events:none;background:linear-gradient(transparent,rgba(5,6,8,.7) 45%,rgba(5,6,8,.92))}}
 .topscrim{position:fixed;left:0;right:0;top:0;height:calc(60px + env(safe-area-inset-top,0px));z-index:29;pointer-events:none;
   background:rgba(5,6,8,.9);border-bottom:1px solid rgba(237,235,230,.08);box-shadow:0 10px 30px -18px rgba(0,0,0,.9);opacity:0;transition:opacity .35s ease}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.topscrim{background:rgba(5,6,8,.6);-webkit-backdrop-filter:blur(16px) saturate(140%);backdrop-filter:blur(16px) saturate(140%)}}
@@ -160,7 +160,8 @@ button{font:inherit;color:inherit}
 .bio p.big{font-size:clamp(24px,2.4vw,34px);line-height:1.2;text-wrap:balance}
 .bio p.dim{color:var(--ash)}
 @media (max-width:820px){
-  .bio{left:16px;right:16px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:none;width:auto;gap:12px;padding-top:56px}
+  .bio{left:16px;right:16px;top:auto;bottom:calc(118px + env(safe-area-inset-bottom,0px));transform:none;width:auto;gap:12px;padding-top:56px}
+  .scrollcue{bottom:calc(118px + env(safe-area-inset-bottom,0px))}
   .bio::before{inset:0 -16px -90px;background:linear-gradient(transparent,rgba(5,6,8,.88) 70px)}
   .bio p{font-size:16px}
   .bio p.big{font-size:22px}
@@ -372,16 +373,94 @@ footer a:hover{color:var(--signal)}
 .dock .ch .tip b{font-size:12px}
 .dock .ch .tip i{font-size:9px;opacity:0;transition:opacity .3s}
 .dock .ch:hover .tip i,.dock .ch:focus-visible .tip i{opacity:1}
+/* phone: the side rail steps aside. A channel strip sits at the bottom and opens the channel guide. */
+.cg-strip,.cg,.cg-static{display:none}
 @media (max-width:820px){
-  .rail{left:16px;top:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:none;flex-direction:row;gap:8px}
-  .rail::before{left:-8px;right:-8px;top:50%;bottom:auto;width:auto;height:1px;background:linear-gradient(90deg,transparent,rgba(237,235,230,.18) 15%,rgba(237,235,230,.18) 85%,transparent)}
-  .rail .spark,.rail .lbl,.rail .ch .tip{display:none}
-  .rail .ch{--s:38px}
+  .rail{display:none}
+  .chapters{display:none}
+  .hud-bl{display:none}
+  #soundlbl{display:none}
+  #sound{padding:11px 12px}
+  .hud-br{top:calc(14px + env(safe-area-inset-top,0px));bottom:auto;right:16px}
   .dock{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px 0;justify-items:center;width:100%;padding-bottom:30px}
   .dock .ch{--s:50px}
   .dock .ch .tip b{font-size:10px;letter-spacing:.02em}
   .foot-ch{width:100%}
-  footer{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  footer{padding-bottom:calc(108px + env(safe-area-inset-bottom,0px))}
+  .page-next{padding-bottom:calc(128px + env(safe-area-inset-bottom,0px))}
+  /* the strip: a HUD readout of the channel you're on, plus one key */
+  .cg-strip{position:fixed;z-index:46;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));height:60px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:0 8px 0 16px;border-radius:16px;background:rgba(5,6,8,.82);border:1px solid var(--line);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 18px 40px -22px #000;opacity:0;pointer-events:none}
+  .lit .cg-strip{opacity:1;pointer-events:auto;transition:opacity .6s .3s}
+  .cg-strip::before{content:'';position:absolute;left:14px;right:14px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--sig-rgb),.85),transparent);opacity:.7}
+  .cg-readout{display:flex;align-items:center;gap:12px;min-width:0;height:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cg-tag{display:grid;gap:2px;min-width:0}
+  .cg-tag small{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);white-space:nowrap}
+  .cg-tag strong{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:17px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bone)}
+  .cg-tag .num{color:rgb(var(--sig-rgb))}
+  .cg-meter{display:flex;align-items:flex-end;gap:2px;height:18px;flex:none}
+  .cg-meter i{width:3px;height:100%;border-radius:1px;background:rgb(var(--sig-rgb));opacity:.85;transform-origin:50% 100%;transform:scaleY(.2);animation:cgMeter 2.4s ease-in-out infinite alternate}
+  .cg-meter i:nth-child(2){transform:scaleY(.28);animation-duration:1.9s;animation-delay:-.6s}
+  .cg-meter i:nth-child(3){transform:scaleY(.24);animation-duration:2.8s;animation-delay:-1.3s}
+  .cg-meter i:nth-child(4){transform:scaleY(.3);animation-duration:1.6s;animation-delay:-.2s}
+  .cg-meter i:nth-child(5){transform:scaleY(.22);animation-duration:2.2s;animation-delay:-1.8s}
+  @keyframes cgMeter{from{transform:scaleY(.18)}to{transform:scaleY(.32)}}
+  .cg-key{position:relative;width:48px;height:44px;padding:0;border-radius:12px;border:1px solid rgba(var(--sig-rgb),.5);background:rgba(var(--sig-rgb),.08);color:var(--bone);display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s,border-color .2s}
+  .cg-key:focus-visible{outline:2px solid rgb(var(--sig-rgb));outline-offset:2px}
+  .cg-key svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+  .cg-key .x{display:none}
+  .cg-open .cg-key .lines{display:none}
+  .cg-open .cg-key .x{display:block}
+  .cg-open .cg-key{background:rgb(var(--sig-rgb));color:#041014;border-color:rgb(var(--sig-rgb))}
+  /* the guide: a full-screen channel list over the page */
+  main,footer{transition:opacity .35s}
+  .cg-open main,.cg-open footer{opacity:.12}
+  .cg{--c0:255,159,28;--c1:34,211,238;--c2:255,61,184;--c3:139,255,90;display:flex;flex-direction:column;gap:6px;position:fixed;inset:0;z-index:44;padding:calc(64px + env(safe-area-inset-top,0px)) 18px calc(92px + env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(180deg,rgba(5,6,8,.55),rgba(5,6,8,.86) 60%,rgba(5,6,8,.95));opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+  .cg-open .cg{opacity:1;visibility:visible;transition:opacity .25s}
+  .cg-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 8px 8px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+  .cg-head span:first-child{color:rgb(var(--sig-rgb))}
+  .cg-list{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+  .cg-chan{--cc:237,235,230}
+  .cg-chan a{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:6px;min-height:44px;padding:9px 10px 9px 8px;border-radius:12px;color:var(--bone);text-decoration:none;transform:translateY(8px);opacity:0;-webkit-tap-highlight-color:transparent}
+  .cg-open .cg-chan a{animation:cgIn .45s cubic-bezier(.16,1,.3,1) forwards}
+  .cg-open .cg-chan:nth-child(2) a{animation-delay:.03s}
+  .cg-open .cg-chan:nth-child(3) a{animation-delay:.06s}
+  .cg-open .cg-chan:nth-child(4) a{animation-delay:.09s}
+  .cg-open .cg-chan:nth-child(5) a{animation-delay:.12s}
+  .cg-open .cg-chan:nth-child(6) a{animation-delay:.15s}
+  @keyframes cgIn{to{transform:none;opacity:1}}
+  .cg-chan a:hover,.cg-chan a:focus-visible{background:rgba(var(--cc),.08);outline:none}
+  .cg-chan a:focus-visible{box-shadow:inset 0 0 0 1px rgba(var(--cc),.55)}
+  .cg-chan .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:rgb(var(--cc));opacity:.9}
+  .cg-chan .name{display:grid;gap:1px;min-width:0}
+  .cg-chan .name b{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:31px;line-height:.98;text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cg-chan .name i{font-style:normal;font-size:12.5px;color:var(--ash)}
+  .cg-chan .tick{width:26px;height:2px;border-radius:2px;background:rgba(var(--cc),.55)}
+  .cg-chan.on .tick{width:auto;height:auto;padding:4px 7px;border-radius:5px;background:rgb(var(--cc));box-shadow:0 0 14px -2px rgba(var(--cc),.9);font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#041014}
+  .cg-chan.on .name b{color:rgb(var(--cc));text-shadow:0 0 22px rgba(var(--cc),.45)}
+  .cg-foot{margin-top:auto;display:grid;gap:12px;padding:12px 8px 0;border-top:1px solid var(--line)}
+  .cg-ch{display:flex;justify-content:space-between}
+  .cg-ch .ch{--s:44px}
+  .cg-ch .ch .tip{display:none}
+  .cg-ctl{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+  .cg-themes{display:flex;align-items:center;margin-left:-11px}
+  .cg-themes button{position:relative;width:44px;height:44px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cg-themes button::before{content:'';position:absolute;left:11px;top:11px;width:22px;height:22px;box-sizing:border-box;border-radius:50%;border:1px solid var(--line);transition:border-color .25s,box-shadow .25s}
+  .cg-themes button i{width:10px;height:10px;border-radius:50%;background:rgb(var(--c))}
+  .cg-themes button[aria-checked="true"]::before{border-color:rgb(var(--c));box-shadow:0 0 10px -2px rgb(var(--c))}
+  .cg-themes button:focus-visible{outline:none}
+  .cg-themes button:focus-visible::before{outline:2px solid rgb(var(--c));outline-offset:2px}
+  .cg-snd{position:relative;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--bone);background:none;border:1px solid var(--line);border-radius:999px;padding:7px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .cg-snd::after{content:'';position:absolute;inset:-8px -2px}
+  .cg-snd[aria-pressed="true"]{border-color:rgb(var(--sig-rgb));color:rgb(var(--sig-rgb))}
+  .cg-snd:focus-visible{outline:2px solid rgb(var(--sig-rgb));outline-offset:2px}
+  .cg-static{display:block;position:fixed;inset:0;z-index:45;pointer-events:none;opacity:0;background:repeating-linear-gradient(0deg,rgba(237,235,230,.08) 0 1px,transparent 1px 3px)}
+  .cg-static.go{animation:cgTune .38s ease-out}
+  @keyframes cgTune{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+}
+@media (max-width:820px) and (prefers-reduced-motion:reduce){
+  .cg-meter i,.cg-open .cg-chan a,.cg-static.go{animation:none!important}
+  .cg-chan a{transform:none;opacity:1}
+  .lit .cg-strip,.cg,.cg-open .cg,main,footer,.cg-key{transition:none}
 }
 @media (max-width:640px){#soundlbl{display:none}#sound{padding:11px 12px}}
 @media (prefers-reduced-motion:reduce){.ch *, .ch::after, .rail .spark{animation:none!important}.doors.pre .door{opacity:1;transform:none}}
@@ -400,7 +479,7 @@ footer a:hover{color:var(--signal)}
   .hud-bl{display:none}
   .eyebrow{letter-spacing:.1em;font-size:10px;padding:8px 13px;gap:4px 7px;flex-wrap:nowrap;white-space:nowrap}
   .eyebrow .live{gap:6px}
-  .hud-br{right:22px;bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  .hud-br{top:calc(14px + env(safe-area-inset-top,0px));bottom:auto;right:16px}
   .frame{inset:12px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -692,6 +771,7 @@ body.page::before{content:'';position:fixed;inset:-20vmax;z-index:-1;pointer-eve
 </nav>
 <div class="hud hud-bl">Prototype 01 · Vortex</div>
 <nav class="rail" id="rail" aria-label="Reytek on social media"><span class="lbl" aria-hidden="true">Channels</span><span class="spark" aria-hidden="true"></span></nav>
+__GUIDE__
 <div class="hud hud-br"><div class="themes" id="themes" role="radiogroup" aria-label="Color theme"><button type="button" role="radio" data-t="0" aria-label="Cyan theme" style="--c:34,211,238"><i></i></button><button type="button" role="radio" data-t="1" aria-label="Magenta theme" style="--c:255,61,184"><i></i></button><button type="button" role="radio" data-t="2" aria-label="Amber theme" style="--c:255,159,28"><i></i></button></div><button id="sound" type="button" aria-pressed="false" aria-label="Toggle sound"><span class="bars"><i></i><i></i><i></i><i></i></span><span id="soundlbl">Sound off</span></button></div>
 
 <div id="boot" role="status" aria-label="Loading">
@@ -727,7 +807,7 @@ window.THEME = (() => {
   T.index = () => idx;
   function marks() {
     root.dataset.theme = LIST[idx].id;
-    document.querySelectorAll('#themes button').forEach((b, i) => b.setAttribute('aria-checked', i === idx ? 'true' : 'false'));
+    document.querySelectorAll('#themes button, .cg-themes button').forEach(b => b.setAttribute('aria-checked', +b.dataset.t === idx ? 'true' : 'false'));
   }
   let anim = 0;
   T.set = i => {
@@ -750,12 +830,69 @@ window.THEME = (() => {
   document.addEventListener('DOMContentLoaded', () => {
     marks();
     document.querySelectorAll('#themes button').forEach((b, i) => b.addEventListener('click', () => T.set(i === idx && matchMedia('(max-width:640px)').matches ? idx + 1 : i)));
-    const g = document.getElementById('themes');
-    if (g) g.addEventListener('keydown', e => {
+    document.querySelectorAll('.cg-themes button').forEach(b => b.addEventListener('click', () => T.set(+b.dataset.t)));
+    document.querySelectorAll('#themes, .cg-themes').forEach(g => g.addEventListener('keydown', e => {
       const d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
       if (d) { e.preventDefault(); T.set(idx + d); g.querySelectorAll('button')[idx].focus(); }
-    });
+    }));
+    guide();
   });
+
+  /* channel guide (phones): the strip's key opens a full-screen list of the six channels */
+  function guide() {
+    const cg = document.getElementById('guide'), key = document.getElementById('guideKey');
+    if (!cg || !key) return;
+    const body = document.body, st = document.getElementById('guideStatic');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const names = [...cg.querySelectorAll('.cg-chan .name b')];
+    names.forEach(b => { b.dataset.name = b.textContent; });
+    const isOpen = () => body.classList.contains('cg-open');
+    const set = on => {
+      if (on === isOpen()) return;
+      body.classList.toggle('cg-open', on);
+      key.setAttribute('aria-expanded', on ? 'true' : 'false');
+      key.setAttribute('aria-label', on ? 'Close the channel guide' : 'Open the channel guide');
+      document.querySelectorAll('main, footer, .hud').forEach(el => { el.inert = on; });
+      if (!on) { key.focus({ preventScroll: true }); return; }
+      if (window.rtScramble && !reduce) names.forEach((b, i) => {
+        b.textContent = b.dataset.name.replace(/\S/g, ' ');
+        setTimeout(() => window.rtScramble(b, b.dataset.name), i * 40);
+      });
+      if (window.rtShock) {
+        const r = key.getBoundingClientRect();
+        window.rtShock((r.left + r.width / 2) / innerWidth * 2 - 1, -((r.top + r.height / 2) / innerHeight * 2 - 1));
+      }
+      const here = cg.querySelector('.cg-chan a[aria-current="page"]') || cg.querySelector('.cg-chan a');
+      setTimeout(() => here.focus({ preventScroll: true }), 60);
+    };
+    key.addEventListener('click', () => set(!isOpen()));
+    const ro = document.getElementById('readout');
+    if (ro) ro.addEventListener('click', () => set(true));
+    cg.addEventListener('click', e => {
+      const a = e.target.closest('.cg-chan a');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      e.preventDefault();
+      if (st && !reduce) { st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }
+      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') location.href = a.href; };
+      if (reduce) go(); else setTimeout(go, 160);
+    });
+    document.addEventListener('keydown', e => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { e.preventDefault(); set(false); return; }
+      if (e.key !== 'Tab') return;
+      const list = [...cg.querySelectorAll('a[href], button'), key], i = list.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); list[list.length - 1].focus(); }
+      else if (!e.shiftKey && (i === -1 || i === list.length - 1)) { e.preventDefault(); list[0].focus(); }
+    });
+    matchMedia('(max-width:820px)').addEventListener('change', e => { if (!e.matches) set(false); });
+    const snd = document.getElementById('sound'), gs = document.getElementById('guideSound');
+    if (snd && gs) {
+      const sync = () => { const on = snd.getAttribute('aria-pressed') === 'true'; gs.setAttribute('aria-pressed', on ? 'true' : 'false'); gs.textContent = on ? 'Sound on' : 'Sound off'; };
+      gs.addEventListener('click', () => snd.click());
+      new MutationObserver(sync).observe(snd, { attributes: true, attributeFilter: ['aria-pressed'] });
+      sync();
+    }
+  }
   return T;
 })();
 </script>
@@ -1397,6 +1534,7 @@ function toWorld(nx, ny) {
   const c = gl.camera.position, dir = tmpV.sub(c).normalize(), t = -c.z / dir.z;
   return { x: c.x + dir.x * t, y: c.y + dir.y * t };
 }
+window.rtShock = (nx, ny) => { if (reduce) return; const w = toWorld(nx, ny); shock(w.x, w.y); };
 
 /* ---------- channels: social icons ---------- */
 const CHANNELS = [
@@ -1430,6 +1568,7 @@ function scrambleText(el, text) {
     if (f / 1.6 >= text.length) { clearInterval(el._sc); el.textContent = text; }
   }, 28);
 }
+window.rtScramble = scrambleText;
 function makeChannel(c, i) {
   const a = document.createElement('a');
   a.className = 'ch'; a.href = c.url; a.target = '_blank'; a.rel = 'noopener';
@@ -1453,7 +1592,7 @@ function makeChannel(c, i) {
   });
   return a;
 }
-CHANNELS.forEach((c, i) => { const a = makeChannel(c, i); $('#rail').appendChild(a); railIcons.push(a); $('#dock').appendChild(makeChannel(c, i)); });
+CHANNELS.forEach((c, i) => { const a = makeChannel(c, i); $('#rail').appendChild(a); railIcons.push(a); $('#dock').appendChild(makeChannel(c, i)); const gc = $('#guideCh'); if (gc) gc.appendChild(makeChannel(c, i)); });
 let pingIdx = 0, nextPing = 3;
 function pingNext() {
   const a = railIcons[pingIdx++ % railIcons.length];

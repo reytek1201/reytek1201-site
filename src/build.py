@@ -66,6 +66,46 @@ ASSET['shell.js'] = put('shell.js', js['shell'])
 js['pages'] = open('js/pages.js').read()
 ASSET['pages.js'] = put('pages.js', js['pages'])
 
+# phone channel guide: the bottom strip and the full-screen guide. Same markup on the homepage and every inner page.
+N_TRACKS = len(json.loads(re.search(r'const TRACKS = (\[.*?\]);\n', js['main']).group(1)))
+WORDS = 'zero one two three four five six seven eight nine ten eleven twelve'.split()
+GUIDE = [  # number, name, href, one line, lane color
+    ('00', 'Signal', '', 'Home · the vortex and the turntable', '237,235,230'),
+    ('01', 'Origin', 'origin/', '1976 to now, on four lanes', '237,235,230'),
+    ('02', 'Music', 'music/', f'Side A · {WORDS[N_TRACKS] if N_TRACKS < len(WORDS) else N_TRACKS} tracks', 'var(--c1)'),
+    ('03', 'Projects', 'projects/', 'KeyMacro, SlidePress, FunkHarp', 'var(--c2)'),
+    ('04', 'Gaming', 'gaming/', 'POE Source · Dec 11', 'var(--c3)'),
+    ('05', 'Art', 'art/', 'Covers and experiments in light', 'var(--c0)'),
+]
+GUIDE_THEMES = [('Cyan', '34,211,238'), ('Magenta', '255,61,184'), ('Amber', '255,159,28')]
+
+def guide(slug, up):
+    n, name = next((c[0], c[1]) for c in GUIDE if c[2] == slug)
+    rows = ''
+    for num, nm, href, sub, cc in GUIDE:
+        on = href == slug
+        dest = (up or './') if href == '' else up + href
+        label = f'Channel {num}, {nm}: {sub}' + (', on air' if on else '')
+        rows += (f'<li class="cg-chan{" on" if on else ""}" style="--cc:{cc}"><a href="{dest}" aria-label="{label}"' + (' aria-current="page"' if on else '')
+                 + f'><span class="n">CH.{num}</span><span class="name"><b>{nm}</b><i>{sub}</i></span><span class="tick">{"On air" if on else ""}</span></a></li>')
+    themes = ('<div class="cg-themes" role="radiogroup" aria-label="Color theme">'
+              + ''.join(f'<button type="button" role="radio" data-t="{i}" aria-label="{t} theme" style="--c:{c}"><i></i></button>' for i, (t, c) in enumerate(GUIDE_THEMES))
+              + '</div>')
+    sound = '<button class="cg-snd" type="button" id="guideSound" aria-pressed="false">Sound off</button>' if slug == '' else ''
+    return (f'<div class="cg" id="guide" role="dialog" aria-modal="true" aria-label="Channel guide">'
+            f'<div class="cg-head"><span>› Channel guide</span><span>{len(GUIDE):02d} channels</span></div>'
+            f'<ul class="cg-list">{rows}</ul>'
+            f'<div class="cg-foot"><div class="cg-ch" id="guideCh"></div><div class="cg-ctl">{themes}{sound}</div></div></div>\n'
+            '<div class="cg-static" id="guideStatic" aria-hidden="true"></div>\n'
+            f'<div class="cg-strip"><div class="cg-readout" id="readout"><span class="cg-tag"><small>Now on</small><strong><span class="num">CH.{n}</span> · {name}</strong></span>'
+            '<span class="cg-meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>'
+            '<button class="cg-key" type="button" id="guideKey" aria-expanded="false" aria-controls="guide" aria-label="Open the channel guide">'
+            '<svg class="lines" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h13"/><circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>'
+            '<svg class="x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>')
+
+assert s.count('__GUIDE__') == 1
+s = s.replace('__GUIDE__', guide('', ''))
+
 # 3. page document + SEO/GA head, same replacements as build.py
 SK = '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
 i = s.index('<canvas id="gl"')
@@ -104,7 +144,7 @@ def inner_page(slug, title, desc, content, scripts, label):
             '<div class="topscrim" aria-hidden="true"></div><div class="botscrim" aria-hidden="true"></div>\n'
             f'<div class="hud hud-tl"><a href="{up}" aria-label="REYTEK home"><span class="dot"></span><b>REYTEK</b><span>/ {label}</span></a></div>\n'
             f'<nav class="hud hud-tr chapters" aria-label="Pages">{nav}</nav>\n<div class="hud hud-bl">Hub v0.1 · {label}</div>\n'
-            + RAIL + '\n<div class="hud hud-br">' + THEMES + '</div>\n\n<main>\n'
+            + RAIL + '\n' + guide(slug, up) + '\n<div class="hud hud-br">' + THEMES + '</div>\n\n<main>\n'
             + content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/') + '</main>\n\n' + FOOTER + '\n\n<div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>\n'
             + LB + '\n' + ''.join(f'<script src="{up}{ASSET[n]}"></script>\n' for n in scripts) + '</body></html>\n')
     html = head + body
