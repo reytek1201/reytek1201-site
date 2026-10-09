@@ -494,6 +494,13 @@ footer a:hover{color:var(--signal)}
 .ev-media img + img{transform:rotate(1.4deg)}
 .ev-media img:hover{transform:rotate(0) scale(1.03);filter:none}
 .tl[data-show]:not([data-show="all"]) .ev{opacity:.22;filter:saturate(.3)}
+.ev-life{--lc:237,235,230}
+.ev-life .ev-dot{left:calc(var(--rw) / 2 - 3px);width:calc(var(--rw) * 3 + 6px);height:6px;margin-left:0;top:27px;border-radius:3px;border:0;background:rgba(237,235,230,.35)}
+.ev-life.in .ev-dot{background:rgb(237,235,230);box-shadow:0 0 12px rgba(237,235,230,.6)}
+.ev-life::before{left:calc(var(--rw) * 3.5 + 4px);width:calc(var(--rw) / 2 + 8px)}
+.ev-life .ev-tag{color:var(--bone)}
+@media (max-width:640px){.ev-life .ev-dot{top:21px}}
+.tl[data-show]:not([data-show="all"]) .ev-life{opacity:.5}
 .tl[data-show]:not([data-show="all"]) .ev.match{opacity:1;filter:none}
 .tl[data-show]:not([data-show="all"]) .ev:not(.match) .ev-media{display:none}
 @media (max-width:640px){
@@ -809,6 +816,7 @@ window.BOOT = (() => {
         <li class="rails" aria-hidden="true"><i style="--li:0"></i><i style="--li:1"></i><i style="--li:2"></i><i style="--li:3"></i></li>
         <li class="ev" data-lane="play" style="--li:3"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1980s</span><div class="ev-card"><span class="ev-tag">Play</span><h3>Born in Puerto Rico</h3><p>Computers and games were part of my life from the very beginning.</p></div></li>
         <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1986</span><div class="ev-card"><span class="ev-tag">Code</span><h3>A cheap Radio Shack computer</h3><p>My first one. I always found my way around computers easily.</p></div></li>
+        <li class="ev ev-life" data-lane="life" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1988</span><div class="ev-card"><span class="ev-tag">Life</span><h3>Puerto Rico to North Miami</h3><p>We moved to the US and settled in North Miami, Florida. South Florida became home.</p></div></li>
         <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1991</span><div class="ev-card"><span class="ev-tag">Code</span><h3>My first real PC</h3><p>Computers came first. The rave was two years away.</p></div></li>
         <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1992</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Dishwasher, Boston Market</h3><p>Hollywood, Florida. My first kitchen job, and the start of more than three decades on the line.</p></div></li>
         <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1993</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>The Edge, Fort Lauderdale</h3><p>My first rave. The music took me over and I started dancing to the beats. That day changed my life.</p></div></li>
