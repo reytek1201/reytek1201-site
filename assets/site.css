@@ -156,12 +156,12 @@ button{font:inherit;color:inherit}
 .bio p.dim{color:var(--ash)}
 @media (max-width:820px){
   .bio{left:16px;right:16px;top:auto;bottom:calc(118px + env(safe-area-inset-bottom,0px));transform:none;width:auto;gap:12px;padding-top:56px}
-  /* the Safari bar and the home indicator eat the bottom, so the hero sits up under the top bar and the scroll cue keeps the space above the channel strip */
-  .hero{place-items:start center;padding-top:calc(72px + env(safe-area-inset-top,0px));padding-bottom:calc(210px + env(safe-area-inset-bottom,0px))}
-  .hero-inner{--face:clamp(120px,32vw,156px);gap:12px}
-  .eyebrow{margin-bottom:16px}
-  .mark-wrap{margin-top:16px}
-  .scrollcue{bottom:calc(112px + env(safe-area-inset-bottom,0px));z-index:2}
+  /* a tall portrait, centered above the scroll cue */
+  .hero{height:100svh;max-height:100svh;place-items:center;padding-top:calc(48px + env(safe-area-inset-top,0px));padding-bottom:calc(148px + env(safe-area-inset-bottom,0px))}
+  .hero-inner{--face:clamp(168px,min(34vh,46vw),260px);min-height:0;gap:12px}
+  .eyebrow{margin-bottom:12px}
+  .mark-wrap{margin-top:28px}
+  .scrollcue{bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:2}
   .bio::before{inset:0 -16px -90px;background:linear-gradient(transparent,rgba(5,6,8,.88) 70px)}
   .bio p{font-size:16px}
   .bio p.big{font-size:22px}
