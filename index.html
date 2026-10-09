@@ -449,6 +449,63 @@ footer a:hover{color:var(--signal)}
   .themes button{width:30px;height:30px}
   .themes button[aria-checked="false"]{display:none}
 }
+
+/* four lanes: the timeline */
+.lanes{position:relative;padding:18vh clamp(16px,6vw,96px) 8vh;background:linear-gradient(transparent,rgba(5,6,8,.82) 12vh,rgba(5,6,8,.82) calc(100% - 10vh),transparent)}
+.lanes-in{max-width:1080px;margin:0 auto;display:grid;gap:28px}
+@media (min-width:821px){.lanes-in{padding-left:max(0px,calc(112px - clamp(16px,6vw,96px)))}}
+.lanes-head{display:grid;gap:12px;max-width:62ch}
+.lanes-head .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--signal)}
+.lanes-head h2{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 128;font-size:clamp(30px,4.6vw,64px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+.lanes-head p{margin:0;color:var(--ash);font-size:17px}
+.lanes{--c0:255,159,28;--c1:34,211,238;--c2:255,61,184;--c3:139,255,90;--rw:15px}
+.lane-filter{display:flex;flex-wrap:wrap;gap:8px}
+.lane-filter button{--lc:var(--c0);font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);background:rgba(5,6,8,.6);border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 12px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:color .25s,border-color .25s,background .25s}
+.lane-filter button[style*="--li:1"]{--lc:var(--c1)}.lane-filter button[style*="--li:2"]{--lc:var(--c2)}.lane-filter button[style*="--li:3"]{--lc:var(--c3)}
+.lane-filter button::before{content:'';width:8px;height:8px;border-radius:50%;background:rgb(var(--lc));box-shadow:0 0 8px rgba(var(--lc),.8)}
+.lane-filter button[data-lane="all"]::before{background:conic-gradient(rgb(var(--c0)) 0 25%,rgb(var(--c1)) 0 50%,rgb(var(--c2)) 0 75%,rgb(var(--c3)) 0);box-shadow:none}
+.lane-filter button:hover{color:var(--bone);border-color:rgba(237,235,230,.3)}
+.lane-filter button[aria-pressed="true"]{color:var(--bone);border-color:rgba(var(--lc),.7);background:rgba(var(--lc),.08)}
+.lane-filter button[data-lane="all"][aria-pressed="true"]{border-color:rgba(237,235,230,.5);background:rgba(237,235,230,.06)}
+.tl{position:relative;list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;--prog:0}
+.tl .rails{position:absolute;left:0;top:0;bottom:0;width:calc(var(--rw) * 4);pointer-events:none}
+.tl .rails i{--lc:var(--c0);position:absolute;top:0;bottom:0;left:calc(var(--li) * var(--rw) + var(--rw) / 2);width:2px;margin-left:-1px;border-radius:2px;
+  background:linear-gradient(rgba(var(--lc),.95),rgba(var(--lc),.95)) top/100% calc(var(--prog) * 100%) no-repeat,rgba(var(--lc),.13);transition:opacity .4s}
+.tl .rails i[style*="--li:1"]{--lc:var(--c1)}.tl .rails i[style*="--li:2"]{--lc:var(--c2)}.tl .rails i[style*="--li:3"]{--lc:var(--c3)}
+.tl .rails i::after{content:'';position:absolute;left:50%;top:calc(var(--prog) * 100%);width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:rgb(var(--lc));box-shadow:0 0 14px 3px rgba(var(--lc),.9);opacity:calc(min(1, var(--prog) * 30))}
+.tl[data-show]:not([data-show="all"]) .rails i{opacity:.25}
+.tl[data-show="kitchen"] .rails i[style*="--li:0"],.tl[data-show="sound"] .rails i[style*="--li:1"],.tl[data-show="code"] .rails i[style*="--li:2"],.tl[data-show="play"] .rails i[style*="--li:3"]{opacity:1}
+.ev{--lc:var(--c0);position:relative;display:grid;grid-template-columns:calc(var(--rw) * 4 + 18px) 92px minmax(0,1fr);align-items:start;padding:14px 0;opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.ev[data-lane="sound"]{--lc:var(--c1)}.ev[data-lane="code"]{--lc:var(--c2)}.ev[data-lane="play"]{--lc:var(--c3)}
+.ev.in{opacity:1;transform:none}
+.ev-dot{position:absolute;left:calc(var(--li) * var(--rw) + var(--rw) / 2);top:24px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--void);border:2px solid rgb(var(--lc));transition:background .3s,box-shadow .3s,transform .3s}
+.ev.in .ev-dot{background:rgb(var(--lc));box-shadow:0 0 12px rgba(var(--lc),.85)}
+.ev::before{content:'';position:absolute;top:29px;height:1px;left:calc(var(--li) * var(--rw) + var(--rw) / 2 + 8px);width:calc((3 - var(--li)) * var(--rw) + 8px);background:linear-gradient(90deg,rgba(var(--lc),.6),transparent)}
+.ev-yr{grid-column:2;font-family:var(--f-num);font-weight:800;font-size:26px;line-height:1;padding-top:14px;color:var(--bone);letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ev-card{grid-column:3;position:relative;max-width:760px;border:1px solid var(--line);background:rgba(5,6,8,.72);border-radius:var(--r-lg);padding:14px 18px 16px;display:grid;gap:6px;transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.2,.9,.3,1.2)}
+.ev-card::before{content:'';position:absolute;left:-1px;top:14px;bottom:14px;width:2px;border-radius:2px;background:rgb(var(--lc));box-shadow:0 0 10px rgba(var(--lc),.7)}
+.ev:hover .ev-card{border-color:rgba(var(--lc),.45);box-shadow:0 0 30px -14px rgba(var(--lc),.9);transform:translateX(4px)}
+.ev:hover .ev-dot{transform:scale(1.35)}
+.ev-tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgb(var(--lc))}
+.ev-card h3{margin:0;font-size:19px;font-weight:500;line-height:1.25;color:var(--bone)}
+.ev-card p{margin:0;color:var(--ash);font-size:15.5px;line-height:1.5;max-width:62ch;text-wrap:pretty}
+.ev-media{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.ev-media img{width:min(300px,100%);height:auto;border-radius:var(--r);border:1px solid var(--line);filter:grayscale(.15) contrast(1.05);transition:transform .35s cubic-bezier(.2,.9,.3,1.2),filter .35s;transform:rotate(-1.2deg)}
+.ev-media img + img{transform:rotate(1.4deg)}
+.ev-media img:hover{transform:rotate(0) scale(1.03);filter:none}
+.tl[data-show]:not([data-show="all"]) .ev{opacity:.22;filter:saturate(.3)}
+.tl[data-show]:not([data-show="all"]) .ev.match{opacity:1;filter:none}
+.tl[data-show]:not([data-show="all"]) .ev:not(.match) .ev-media{display:none}
+@media (max-width:640px){
+  .lanes{--rw:11px}
+  .ev{grid-template-columns:calc(var(--rw) * 4 + 12px) minmax(0,1fr);row-gap:6px}
+  .ev-yr{grid-column:2;padding-top:12px;font-size:22px}
+  .ev-card{grid-column:2}
+  .ev-dot{top:18px}.ev::before{top:23px}
+  .ev-card h3{font-size:17px}.ev-card p{font-size:15px}
+  .ev-media img{width:calc(50% - 5px)}
+}
+@media (prefers-reduced-motion:reduce){.ev{opacity:1;transform:none;transition:none}}
 </style>
 
 </head><body>
@@ -724,16 +781,56 @@ window.BOOT = (() => {
     <div class="pin">
       <div class="counter" id="counter" aria-hidden="true">
         <div class="yr" id="yr">1991</div>
-        <div class="meta"><span>Year</span><span>BPM <b id="bpm">140</b></span><span id="era">Warehouse era</span></div>
+        <div class="meta"><span>Year</span><span>BPM <b id="bpm">140</b></span><span id="era">Sound</span></div>
       </div>
-      <div class="caption" id="cap"><small id="capk">1991</small><span id="capt">Warehouses. Borrowed sound systems. Strangers moving as one.</span></div>
+      <div class="caption" id="cap"><small id="capk">1991</small><span id="capt">The Edge, Fort Lauderdale. The night that changed my life.</span></div>
       <div class="bio" id="bio">
         <div class="lbl">› Bio</div>
-        <p class="big">Reytek learned electronic music on the dancefloor.</p>
-        <p>The early-'90s rave scene, with its warehouses, borrowed sound systems and rooms full of strangers moving as one, showed him what a kick drum can do to people. That's still the standard he works to.</p>
-        <p>His sound has grown darker and more deliberate since: cinematic in scale, exact in its synthesis, made with the patience of someone who has been listening for a long time.</p>
-        <p class="dim">Built for the big speaker stack, and for the drive home after.</p>
+        <p class="big">The kitchen and the dancefloor. My parallel double life, to this day.</p>
+        <p>I walked into The Edge in Fort Lauderdale in 1991 and it changed my life. A year later I was washing dishes at Boston Market by day and DJing by night.</p>
+        <p>Since then I've run kitchens from San Antonio to Los Angeles to St. Augustine, studied audio engineering at Full Sail, and never once worked a line without music. It's a necessity, not a want.</p>
+        <p>In 2024 I told myself it was now or never. I bought my time and started building.</p>
+        <p class="dim">Born in Puerto Rico, raised around my dad's arcades. Music always calls me back.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="lanes" id="lanes" aria-label="Timeline">
+    <div class="lanes-in">
+      <div class="lanes-head">
+        <span class="lbl">› Four lanes · 1980s to now</span>
+        <h2>Two worlds colliding since the beginning.</h2>
+        <p>Kitchen, sound, code and play have run side by side my whole life. Tap a lane to follow one.</p>
+      </div>
+      <div class="lane-filter" role="group" aria-label="Show a lane">
+        <button type="button" data-lane="all" aria-pressed="true">All</button><button type="button" data-lane="kitchen" aria-pressed="false" style="--li:0">Kitchen</button><button type="button" data-lane="sound" aria-pressed="false" style="--li:1">Sound</button><button type="button" data-lane="code" aria-pressed="false" style="--li:2">Code</button><button type="button" data-lane="play" aria-pressed="false" style="--li:3">Play</button>
+      </div>
+      <ol class="tl" id="tl">
+        <li class="rails" aria-hidden="true"><i style="--li:0"></i><i style="--li:1"></i><i style="--li:2"></i><i style="--li:3"></i></li>
+        <li class="ev" data-lane="play" style="--li:3"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1980s</span><div class="ev-card"><span class="ev-tag">Play</span><h3>Born in Puerto Rico</h3><p>My dad owned arcades, so computers and games were part of my life from the beginning.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1986</span><div class="ev-card"><span class="ev-tag">Code</span><h3>A cheap Radio Shack computer</h3><p>My first one. I always found my way around computers easily.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1991</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>The Edge, Fort Lauderdale</h3><p>My first rave. The music took me over and I started dancing to the beats. That day changed my life.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1991</span><div class="ev-card"><span class="ev-tag">Code</span><h3>My first real PC</h3><p>Same year as the rave. Two obsessions, one bedroom.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1992</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Dishwasher, Boston Market</h3><p>Hollywood, Florida. My first kitchen job, and the start of more than three decades on the line.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1992</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>Behind the decks</h3><p>I started DJing, mostly private parties. And I was at The Edge every weekend for years.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1994</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>First synths</h3><p>A Nord Lead and a Quasimidi Rave-O-Lution 309. I spent every penny I had on that thing.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1994</span><div class="ev-card"><span class="ev-tag">Code</span><h3>My first website</h3><p>It looked good on my computer. On a friend’s it took about 30 minutes to load.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1995</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>Winter Music Conference at The Edge</h3><p>Rabbit in the Moon leading the gathering. Nights with DJ Icey and DJ Sharpe. My friends from the club ate at my restaurants; my crews came out to The Edge.</p><div class="ev-media"><img src="img/edge-flyer-1995.webp" alt="The Edge flyer, March 25, 1995, during Winter Music Conference: Rabbit in the Moon, Spacetime Continuum, Mixmaster Morris" width="320" height="250" loading="lazy" decoding="async"><img src="img/edge-flyer-icey.webp" alt="The Edge flyer: DJ Icey, DJ Mot, Flux and the resident DJ Sharpe" width="320" height="250" loading="lazy" decoding="async"></div></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">1998</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Corporate trainer, J. Alexander’s</h3><p>San Antonio, Texas. Teaching kitchens how to run.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2005</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Sous chef, Cateechee Golf Club</h3><p>Hartwell, Georgia.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2007</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>Full Sail University</h3><p>Audio engineering in Orlando.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2007</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Lead line cook, Houston’s</h3><p>Full Sail by day, the line at night.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2009</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Sous chef, J Lounge</h3><p>Los Angeles.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">One night</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>1,000 covers. Four cooks.</h3><p>At Wolfgang Puck’s. The night I’ll never forget.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2011</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Back to South Florida</h3><p>Geronimo’s Bar and Grill: line cook, assistant manager, bartender.</p></div></li>
+        <li class="ev" data-lane="kitchen" style="--li:0"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2016</span><div class="ev-card"><span class="ev-tag">Kitchen</span><h3>Executive chef, St. Augustine</h3><p>Three successful restaurants. There is not one kitchen I will work in without music. It’s a necessity, not a want.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2024</span><div class="ev-card"><span class="ev-tag">Code</span><h3>Now or never</h3><p>I always wanted to build apps and never had the time. So I saved up and bought my time.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2024</span><div class="ev-card"><span class="ev-tag">Code</span><h3>KeyMacro</h3><p>My kitchen brain in an app. It takes a meal plan and breaks it into stations, hot, cold and prep, in order of what takes longest. Seven months from concept to first sale.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2025</span><div class="ev-card"><span class="ev-tag">Code</span><h3>SlidePress</h3><p>Built out of necessity: social posts used to take me three apps and hours. Now it’s ten minutes, everywhere at once. In production in two months.</p></div></li>
+        <li class="ev" data-lane="sound" style="--li:1"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2026</span><div class="ev-card"><span class="ev-tag">Sound</span><h3>Back in the studio</h3><p>Threshold of Sound, Sonic Illusion, Dawn on the Loading Dock. I’ve stopped many times, but music always calls me back.</p></div></li>
+        <li class="ev" data-lane="code" style="--li:2"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">2026</span><div class="ev-card"><span class="ev-tag">Code</span><h3>This hub</h3><p>Every lane in one place.</p></div></li>
+        <li class="ev" data-lane="play" style="--li:3"><span class="ev-dot" aria-hidden="true"></span><span class="ev-yr">Dec 2026</span><div class="ev-card"><span class="ev-tag">Play</span><h3>POE Source</h3><p>Gaming is another parallel highway in my life. POE Source is built to launch with Path of Exile 2 1.0 on December 11.</p></div></li>
+      </ol>
     </div>
   </section>
 
@@ -1214,19 +1311,24 @@ $('#signup').addEventListener('submit', e => {
 /* ---------- scroll story ---------- */
 const els = {
   heroInner: $('#heroInner'), origin: $('#origin'), hub: $('#hub'), counter: $('#counter'), yr: $('#yr'), bpm: $('#bpm'), era: $('#era'),
-  cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioBox: $('#bio'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
+  lanes: $('#lanes'), cap: $('#cap'), capk: $('#capk'), capt: $('#capt'), bioLbl: $('#bio .lbl'), bioBox: $('#bio'), bioP: [...document.querySelectorAll('#bio p')], strobe: $('#strobe'),
   chapters: [...document.querySelectorAll('.chapters a')], bars: [...document.querySelectorAll('#sound .bars i')]
 };
+// milestones the year counter rolls through: [from year, label, lane, line]
 const CAPS = [
-  ['1991', 'Warehouses. Borrowed sound systems. Strangers moving as one.'],
-  ['2000s', 'The rooms changed. The kick drum stayed.'],
-  ['Now', 'Darker. Cinematic. Precise.']
+  [1991, '1991', 'Sound', 'The Edge, Fort Lauderdale. The night that changed my life.'],
+  [1992, '1992', 'Kitchen', 'Dishwasher by day. DJ by night.'],
+  [1994, '1994', 'Sound', 'First synth, first website. Every penny I had.'],
+  [1998, '1998', 'Kitchen', 'Training kitchens across the country.'],
+  [2007, '2007', 'Sound', 'Full Sail by day, the line at night.'],
+  [2016, '2016', 'Kitchen', 'Executive chef. Three restaurants. Music on in every one.'],
+  [2024, '2024', 'Code', 'Now or never. I bought my time.']
 ];
 let capIdx = 0, scrollS = 0, chapter = 0;
 function setCap(i) {
   if (i === capIdx) return; capIdx = i;
-  scrambleText(els.capk, CAPS[i][0]);
-  els.capt.classList.add('swap'); els.capt.textContent = CAPS[i][1];
+  scrambleText(els.capk, CAPS[i][1]);
+  els.capt.classList.add('swap'); els.capt.textContent = CAPS[i][3];
   requestAnimationFrame(() => requestAnimationFrame(() => els.capt.classList.remove('swap')));
 }
 // the year rolls like an odometer; a digit flashes cyan as it lands
@@ -2421,9 +2523,10 @@ function frame(now) {
   setYear(year);
   const bpmNow = Math.round(lerp(142, 126, a));
   if (bpmNow !== lastBpm) { lastBpm = bpmNow; els.bpm.textContent = bpmNow; els.bpm.classList.add('tick'); setTimeout(() => els.bpm.classList.remove('tick'), 120); }
-  const era = year < 1999 ? 'Warehouse era' : year < 2015 ? 'Club years' : 'Studio';
+  let ci = 0; for (let k = 0; k < CAPS.length; k++) if (year >= CAPS[k][0]) ci = k;
+  const era = CAPS[ci][2];
   if (era !== shownEra) { shownEra = era; scrambleText(els.era, era); }
-  setCap(a < 0.34 ? 0 : a < 0.7 ? 1 : 2);
+  setCap(ci);
   els.strobe.style.opacity = reduce ? 0 : (beat * 0.22 * inOrigin * (A.on ? 1 : 0.3)).toFixed(3);
   els.bioLbl.style.opacity = clamp(c * 4);
   els.bioBox.style.setProperty('--bioBg', clamp(c * 3).toFixed(3));
@@ -2432,7 +2535,8 @@ function frame(now) {
     el.style.opacity = t; el.style.transform = `translateY(${(1 - t) * 14}px)`; el.style.filter = `blur(${(1 - t) * 6}px)`;
   });
   const musicTop = dk.section.offsetTop, hubTop = els.hub.offsetTop;
-  const ch = scrollS < oTop + vh * 0.2 ? 0 : p < 0.38 ? 1 : scrollS + vh * 0.5 < musicTop ? 2 : scrollS + vh * 0.5 < hubTop ? 3 : 4;
+  const lanesTop = els.lanes ? els.lanes.offsetTop : musicTop;
+  const ch = scrollS < oTop + vh * 0.2 ? 0 : p < 0.38 ? 1 : scrollS + vh * 0.5 < lanesTop ? 2 : scrollS + vh * 0.5 < musicTop ? 1 : scrollS + vh * 0.5 < hubTop ? 3 : 4;
   if (ch !== chapter) {
     chapter = ch; document.body.classList.toggle('in-hub', ch === 4);
     els.chapters.forEach((s, i) => { s.classList.toggle('on', i === ch); if (i === ch) s.setAttribute('aria-current', 'true'); else s.removeAttribute('aria-current'); });
@@ -2546,6 +2650,32 @@ requestAnimationFrame(frame);
 scrollTo(0, 0);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(runBoot, 150)); else setTimeout(runBoot, 300);
 setTimeout(runBoot, 1500);
+})();
+
+// ---- four lanes: reveal, rail progress, lane filter ----
+(() => {
+  const tl = document.getElementById('tl'); if (!tl) return;
+  const evs = [...tl.querySelectorAll('.ev')];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
+    evs.forEach(el => io.observe(el));
+  } else evs.forEach(el => el.classList.add('in'));
+  let lastP = -1;
+  const tick = () => {
+    const r = tl.getBoundingClientRect(), vh = innerHeight;
+    const p = Math.min(1, Math.max(0, (vh * 0.62 - r.top) / r.height));
+    if (Math.abs(p - lastP) > 0.001) { lastP = p; tl.style.setProperty('--prog', p.toFixed(4)); }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  const btns = [...document.querySelectorAll('.lane-filter button')];
+  btns.forEach(b => b.addEventListener('click', () => {
+    const lane = b.dataset.lane, on = lane === 'all' || b.getAttribute('aria-pressed') !== 'true' ? lane : 'all';
+    btns.forEach(x => x.setAttribute('aria-pressed', x.dataset.lane === on ? 'true' : 'false'));
+    tl.dataset.show = on;
+    evs.forEach(el => el.classList.toggle('match', el.dataset.lane === on));
+    try { if (window.gtag) window.gtag('event', 'lane_filter', { lane: on }); } catch (e) {}
+  }));
 })();
 </script>
 
