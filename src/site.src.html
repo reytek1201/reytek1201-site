@@ -717,13 +717,13 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .lyr-line.prev{min-height:1.4em;font-size:clamp(14px,1.8vw,16px);color:var(--ash);opacity:.45}
 .lyr-line.now{min-height:2.3em;font-size:clamp(28px,6.4vw,44px);font-weight:500;line-height:1.12;letter-spacing:-.02em}
 .lyr-line.now.in{animation:lyrIn .45s cubic-bezier(.2,.9,.3,1) both}
-.lyr-line.next{min-height:1.4em;font-size:clamp(15px,2vw,19px);color:var(--ash);opacity:.6}
+.lyr-line.next{--near:0;min-height:1.5em;font-size:clamp(17px,2.3vw,22px);color:color-mix(in srgb,#B4B6BC calc((1 - var(--near)) * 100%),color-mix(in srgb,rgb(var(--lc)) 46%,#E8E6E1) calc(var(--near) * 100%));opacity:calc(.12 + .66 * var(--near));transform:translateY(calc(10px * (1 - var(--near))));text-shadow:0 0 calc(14px * var(--near) * var(--near)) rgba(var(--lc),calc(.28 * var(--near)))}
 .lw{--f:0;background:linear-gradient(90deg,rgb(var(--lc)) calc(var(--f) * 100%),rgba(237,235,230,.3) calc(var(--f) * 100%));-webkit-background-clip:text;background-clip:text;color:transparent}
 .lw.on{filter:drop-shadow(0 0 14px rgba(var(--lc),.55))}@keyframes lyrIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes lyrFade{from{opacity:0}}
 @keyframes lyrRise{from{opacity:0;transform:translateY(18px) scale(.97)}}
 @media (max-width:640px){.lyr-card{padding:16px 16px 28px;border-radius:18px}.lyr-head{grid-template-columns:44px minmax(0,1fr) 44px;gap:12px;margin-bottom:24px}.lyr-disc{width:44px;height:44px}.lyr-kicker{font-size:16px}}
-@media (prefers-reduced-motion:reduce){.lyr,.lyr-card,.lyr.spin .lyr-disc{animation:none}.lyr-trail{display:none}.lyr-glow{opacity:.5;transform:none}}
+@media (prefers-reduced-motion:reduce){.lyr,.lyr-card,.lyr.spin .lyr-disc{animation:none}.lyr-trail{display:none}.lyr-glow,.lyr-line.next{opacity:.5;transform:none}}
 .facts-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .fact{display:grid;gap:8px;align-content:start;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:rgba(11,13,18,.6)}
 .fact h3{margin:0;font-weight:500;font-size:18px;line-height:1.3}

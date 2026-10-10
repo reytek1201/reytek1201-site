@@ -79,6 +79,12 @@
         s.style.setProperty('--f', f.toFixed(3));
         s.classList.toggle('on', f > 0 && f < 1);
       });
+      let near = 0;
+      if (view.next) {
+        const raw = 1 - Math.min(1, Math.max(0, (view.next.t - t) / 3.6));
+        near = raw * raw;
+      }
+      $('lyrNext').style.setProperty('--near', near.toFixed(3));
       const beat = beatAt(t);
       const sec = sectionAt(t, beat.gap);
       const pos = (((beat.i - song.downbeat) % 4) + 4) % 4;
