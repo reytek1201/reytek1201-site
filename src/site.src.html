@@ -800,6 +800,47 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
   .rel-t{display:none}
 }
 @media (max-width:640px){.facts-grid,.path-list{grid-template-columns:minmax(0,1fr)}.gal-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- router: inner pages over a sleeping homepage, the warp between pages, now playing ---------- */
+.page #gl,.page #strobe,.page .chip-dock{opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+html:not(.rt-engine) #sound,html:not(.rt-engine) #guideSound{display:none}
+html.rt-out main,html.rt-out #lyrics{opacity:0;transition:opacity .17s ease-in,transform .17s ease-in,filter .17s ease-in}
+html.rt-out .page main{transform:translateY(10px) scale(.99);filter:blur(4px)}
+html.rt-in .page main{animation:rtIn .36s cubic-bezier(.2,.8,.2,1) both}
+html.rt-in body:not(.page) main{animation:rtFade .36s ease-out both}
+@keyframes rtIn{from{opacity:0;transform:translateY(-8px) scale(1.01);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes rtFade{from{opacity:0}to{opacity:1}}
+#warp{position:fixed;inset:0;z-index:38;pointer-events:none;opacity:0;overflow:hidden}
+#warp::before{content:'';position:absolute;left:var(--x,50%);top:var(--y,50%);width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:1px solid rgba(var(--sig-rgb),.9);box-shadow:0 0 34px rgba(var(--sig-rgb),.6),inset 0 0 22px rgba(var(--sig-rgb),.35);transform:scale(0)}
+#warp::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(237,235,230,.06) 0 1px,transparent 1px 3px)}
+#warp.go{animation:warpFlash .55s ease-out}
+#warp.go::before{animation:warpRing .55s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes warpFlash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+@keyframes warpRing{from{transform:scale(0);opacity:1}to{transform:scale(70);opacity:0}}
+.np{position:fixed;z-index:32;left:34px;bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;max-width:min(340px,calc(100vw - 260px));padding:8px 14px 8px 8px;border-radius:999px;background:rgba(5,6,8,.78);border:1px solid var(--line);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:0 14px 34px -20px #000;animation:npIn .4s cubic-bezier(.16,1,.3,1)}
+.np[hidden]{display:none}
+.np-on .hud-bl{opacity:0;pointer-events:none}
+@keyframes npIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.np-disc{position:relative;flex:none;width:40px;height:40px;padding:0;border:0;border-radius:50%;cursor:pointer;background:none}
+.np-rec,.cg-disc{display:block;border-radius:50%;background:repeating-radial-gradient(circle,#0d0f13 0 1.4px,#1a1d23 1.4px 2.2px);box-shadow:0 0 0 1px #2a2d34}
+.np-rec{width:40px;height:40px}
+.np-rec::after,.cg-disc::after{content:'';position:absolute;inset:34%;border-radius:50%;background:radial-gradient(circle,var(--void) 0 18%,rgb(var(--sig-rgb)) 22% 100%)}
+.np.on .np-rec,.cg-disc.spin{animation:npSpin 1.8s linear infinite}
+@keyframes npSpin{to{transform:rotate(360deg)}}
+.np-disc::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(var(--sig-rgb),.0);transition:border-color .2s}
+.np-disc:hover::before,.np-disc:focus-visible::before{border-color:rgba(var(--sig-rgb),.8)}
+.np-disc:focus-visible{outline:none}
+.np:not(.on) .np-disc::after{content:'';position:absolute;left:50%;top:50%;margin:-6px 0 0 -4px;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent var(--bone);filter:drop-shadow(0 0 4px #000)}
+.np-tx{display:grid;gap:1px;min-width:0;color:var(--bone);text-decoration:none}
+.np-tx small{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgb(var(--sig-rgb))}
+.np-tx b{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-tx:hover b,.np-tx:focus-visible b{text-decoration:underline;text-underline-offset:3px}
+.np-t{font-family:var(--f-mono);font-size:11px;color:var(--ash);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cg-disc{position:relative;flex:none;width:30px;height:30px}
+.cg-disc[hidden]{display:none}
+.cg-strip.cg-playing .cg-meter{display:none}
+@media (max-width:820px){.np{display:none!important}}
+@media (prefers-reduced-motion:reduce){.np.on .np-rec,.cg-disc.spin,#warp.go,#warp.go::before{animation:none}}
 .page-in>*,.moments-in>*{min-width:0}
 @media (max-width:640px){.page .chapters{gap:0}.page .chapters a{padding:6px 4px;letter-spacing:.03em}.page .chapters a.on::before{content:none}}
 @media (max-width:360px){.page .chapters a[href*="art/"]{display:none}}
@@ -957,7 +998,7 @@ window.THEME = (() => {
       if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
       e.preventDefault();
       if (st && !reduce) { st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }
-      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') location.href = a.href; };
+      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') { if (window.RTNav) window.RTNav.go(a.href); else location.href = a.href; } };
       if (reduce) go(); else setTimeout(go, 160);
     });
     document.addEventListener('keydown', e => {
@@ -969,13 +1010,18 @@ window.THEME = (() => {
       else if (!e.shiftKey && (i === -1 || i === list.length - 1)) { e.preventDefault(); list[0].focus(); }
     });
     matchMedia('(max-width:820px)').addEventListener('change', e => { if (!e.matches) set(false); });
-    const snd = document.getElementById('sound'), gs = document.getElementById('guideSound');
-    if (snd && gs) {
+    const gs = document.getElementById('guideSound');
+    let wired = null;
+    window.RTSyncSound = () => {
+      const snd = document.getElementById('sound');
+      if (!snd || !gs || wired === snd) return;
+      wired = snd;
       const sync = () => { const on = snd.getAttribute('aria-pressed') === 'true'; gs.setAttribute('aria-pressed', on ? 'true' : 'false'); gs.textContent = on ? 'Sound on' : 'Sound off'; };
-      gs.addEventListener('click', () => snd.click());
       new MutationObserver(sync).observe(snd, { attributes: true, attributeFilter: ['aria-pressed'] });
       sync();
-    }
+    };
+    if (gs) gs.addEventListener('click', () => { const snd = document.getElementById('sound'); if (snd) snd.click(); });
+    window.RTSyncSound();
   }
   return T;
 })();
@@ -1294,7 +1340,7 @@ window.BOOT = (() => {
 
 <div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" data-rt="three"></script>
 <script>
 (() => {
 const PORTRAIT = "data:image/webp;base64,__PORTRAIT__";
@@ -1308,6 +1354,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer:fine)').matches;
 const root = document.documentElement;
 root.classList.add('locked');
+window.RT_ENGINE = true;   // the router and inner-page scripts check this before doing the engine's jobs themselves
 
 /* ---------- wordmark ---------- */
 const mark = $('#mark');
@@ -1571,6 +1618,7 @@ BOOT.ready(finishBoot);
 $('#skip').addEventListener('click', () => BOOT.skip());
 let inSite = false; try { inSite = sessionStorage.getItem('rt-in') === '1'; } catch (e) {}
 const HASH_GO = { '#portrait': 2, '#music': 3, '#hub': 4 };
+window.RT_HASH_GO = HASH_GO;
 if (inSite) setTimeout(() => BOOT.instant(), 0);   // after the engine below has initialised
 addEventListener('keydown', e => { if (!booted && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) BOOT.skip(); });
 
@@ -1917,6 +1965,7 @@ function setPitch(v, raw) {
 function zeroPitch() { if (D.pitch !== 0) D.pitchGlide = true; }
 const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
 function dropAt(t) {
+  if (window.RTPlayer && window.RTPlayer.playing()) window.RTPlayer.pause();
   setSound(true);
   ensureWorklet().catch(() => {});
   D.t = clamp(t, -LEAD, D.tMax); D.needle = true; D.started = true; D.auto = null;
@@ -2641,6 +2690,14 @@ if ('IntersectionObserver' in window) {
 /* ---------- section navigation ---------- */
 const NAV_GAP = () => (VW() <= 820 ? 64 : 80);   // clears the top bar and its fade
 const headTop = el => el.getBoundingClientRect().top + scrollY - NAV_GAP();
+window.RTGo = i => scrollTo({ top: sectionTop(i), behavior: 'auto' });
+window.RTDeck = {
+  playing: () => (D.needle || !!(D.auto && D.auto.drop)) && D.pending == null && D.motor && trackAt(D.auto && D.auto.drop ? D.auto.t : D.t) >= 0,
+  title: () => { const i = trackAt(D.auto && D.auto.drop ? D.auto.t : D.t); return TRACKS[i >= 0 ? i : D.sel].title; },
+  time: () => { const i = trackAt(D.t); return i >= 0 ? Math.max(0, D.t - TRACKS[i].start) : 0; },
+  toggle: () => toggleTrack(trackAt(D.t) >= 0 ? trackAt(D.t) : D.sel),
+  stop: () => { D.auto = null; liftNeedle(); D.userPaused = true; }
+};
 function sectionTop(i) {
   const vh = VH(), o = els.origin, oLen = o.offsetHeight - vh;
   if (i === 0) return 0;
@@ -2888,6 +2945,7 @@ function frame(now) {
   if (justBeat && A.on && !reduce) { cornerIdx = (cornerIdx + 1) % 4; lastCornerBeat = clock; setCorner(cornerIdx); }
   else if (cornerIdx !== 1 && clock - lastCornerBeat > 2) { cornerIdx = 1; setCorner(1); }
   justBeat = false;
+  if (document.body.classList.contains('page')) { requestAnimationFrame(frame); return; }
 
   // scroll
   const sy = scrollY; scrollS = lerp(scrollS, sy, reduce ? 1 : 0.14);
@@ -3038,11 +3096,12 @@ setTimeout(runBoot, 1500);
 })();
 
 // ---- four lanes: reveal, rail progress, lane filter ----
-(() => {
+window.RT.onPage(() => {
   const tl = document.getElementById('tl'); if (!tl) return;
+  let alive = true, io = null;
   const evs = [...tl.querySelectorAll('.ev')];
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
+    io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
     evs.forEach(el => io.observe(el));
   } else evs.forEach(el => el.classList.add('in'));
   let lastP = -1;
@@ -3050,7 +3109,7 @@ setTimeout(runBoot, 1500);
     const r = tl.getBoundingClientRect(), vh = innerHeight;
     const p = Math.min(1, Math.max(0, (vh * 0.62 - r.top) / r.height));
     if (Math.abs(p - lastP) > 0.001) { lastP = p; tl.style.setProperty('--prog', p.toFixed(4)); }
-    requestAnimationFrame(tick);
+    if (alive) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
   const btns = [...document.querySelectorAll('.lane-filter button')];
@@ -3061,7 +3120,8 @@ setTimeout(runBoot, 1500);
     evs.forEach(el => el.classList.toggle('match', el.dataset.lane === on));
     try { if (window.gtag) window.gtag('event', 'lane_filter', { lane: on }); } catch (e) {}
   }));
-})();
+  return () => { alive = false; if (io) io.disconnect(); };
+});
 </script>
 
 <dialog class="lb" id="lb" aria-label="Photo viewer">
@@ -3075,8 +3135,7 @@ setTimeout(runBoot, 1500);
 (() => {
   const lb = document.getElementById('lb'); if (!lb || !lb.showModal) return;
   const big = document.getElementById('lbImg'), cap = document.getElementById('lbCap'), n = document.getElementById('lbN');
-  const imgs = [...document.querySelectorAll('#lanes .ev-media img, [data-zoom] img')];
-  let i = 0, list = imgs;
+  let imgs = [], i = 0, list = [];
   const vis = () => { const v = imgs.filter(im => im.offsetParent !== null); return v.length ? v : imgs; };
   const show = k => {
     i = (k + list.length) % list.length;
@@ -3084,20 +3143,24 @@ setTimeout(runBoot, 1500);
     n.textContent = list.length > 1 ? (i + 1) + ' / ' + list.length : '';
     lb.querySelectorAll('.lb-prev,.lb-next').forEach(b => b.hidden = list.length < 2);
   };
-  imgs.forEach(im => {
-    im.tabIndex = 0; im.setAttribute('role', 'button'); im.setAttribute('aria-label', 'Expand photo: ' + im.alt);
-    const open = () => {
-      list = vis(); show(Math.max(0, list.indexOf(im))); lb.showModal(); curs.forEach(c => c && lb.appendChild(c)); document.documentElement.style.overflow = 'hidden';
-      try { if (window.gtag) window.gtag('event', 'photo_open', { photo: im.getAttribute('src') }); } catch (e) {}
-    };
-    im.addEventListener('click', open);
-    im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  const curs = [document.getElementById('cur'), document.getElementById('dot')];
+  const open = im => {
+    list = vis(); show(Math.max(0, list.indexOf(im))); lb.showModal(); curs.forEach(c => c && lb.appendChild(c)); document.documentElement.style.overflow = 'hidden';
+    try { if (window.gtag) window.gtag('event', 'photo_open', { photo: im.getAttribute('src') }); } catch (e) {}
+  };
+  window.RT.onPage(() => {
+    imgs = [...document.querySelectorAll('#lanes .ev-media img, [data-zoom] img')];
+    imgs.forEach(im => {
+      if (im._lb) return; im._lb = 1;
+      im.tabIndex = 0; im.setAttribute('role', 'button'); im.setAttribute('aria-label', 'Expand photo: ' + im.alt);
+      im.addEventListener('click', () => open(im));
+      im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(im); } });
+    });
   });
   document.getElementById('lbPrev').onclick = () => show(i - 1);
   document.getElementById('lbNext').onclick = () => show(i + 1);
   document.getElementById('lbX').onclick = () => lb.close();
   lb.addEventListener('click', e => { if (e.target === lb || e.target.tagName === 'FIGURE') lb.close(); });
-  const curs = [document.getElementById('cur'), document.getElementById('dot')];
   const unlock = () => { document.documentElement.style.overflow = ''; curs.forEach(c => c && c.parentNode === lb && document.body.appendChild(c)); };
   lb.addEventListener('close', unlock); lb.addEventListener('cancel', unlock);
   lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') show(i - 1); else if (e.key === 'ArrowRight') show(i + 1); });

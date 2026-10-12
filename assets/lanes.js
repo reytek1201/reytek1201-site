@@ -1,9 +1,10 @@
 // ---- four lanes: reveal, rail progress, lane filter ----
-(() => {
+window.RT.onPage(() => {
   const tl = document.getElementById('tl'); if (!tl) return;
+  let alive = true, io = null;
   const evs = [...tl.querySelectorAll('.ev')];
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
+    io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
     evs.forEach(el => io.observe(el));
   } else evs.forEach(el => el.classList.add('in'));
   let lastP = -1;
@@ -11,7 +12,7 @@
     const r = tl.getBoundingClientRect(), vh = innerHeight;
     const p = Math.min(1, Math.max(0, (vh * 0.62 - r.top) / r.height));
     if (Math.abs(p - lastP) > 0.001) { lastP = p; tl.style.setProperty('--prog', p.toFixed(4)); }
-    requestAnimationFrame(tick);
+    if (alive) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
   const btns = [...document.querySelectorAll('.lane-filter button')];
@@ -22,4 +23,5 @@
     evs.forEach(el => el.classList.toggle('match', el.dataset.lane === on));
     try { if (window.gtag) window.gtag('event', 'lane_filter', { lane: on }); } catch (e) {}
   }));
-})();
+  return () => { alive = false; if (io) io.disconnect(); };
+});

@@ -6,12 +6,13 @@
   const fine = matchMedia('(pointer:fine)').matches;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const GLYPHS = '#/\\=+X01<>*%';
-  document.body.classList.add('lit', 'entered', 'page');
+  document.body.classList.add('lit', 'entered');
+  if (!window.RT_ENGINE) document.body.classList.add('page');
   try { sessionStorage.setItem('rt-in', '1'); } catch (e) {}
 
   /* cursor: the same ring and dot as the homepage */
   const cur = $('#cur'), dot = $('#dot');
-  if (fine && cur && dot) {
+  if (fine && cur && dot && !window.RT_ENGINE) {
     document.body.classList.add('has-cursor');
     let px = innerWidth / 2, py = innerHeight / 2, cx = px, cy = py;
     addEventListener('pointermove', e => {
@@ -24,6 +25,7 @@
     const tick = now => {
       const k = 1 - Math.exp(-Math.max(0, Math.min(0.05, (now - lastT) / 1000)) * 32); lastT = now;
       cx += (px - cx) * k; cy += (py - cy) * k;
+      if (window.RT_ENGINE) return;   // the homepage engine took over the cursor
       cur.style.transform = `translate(${cx}px,${cy}px)`; dot.style.transform = `translate(${px}px,${py}px)`;
       requestAnimationFrame(tick);
     };
@@ -76,29 +78,36 @@
   }
   const rail = $('#rail'), dock = $('#dock'), railIcons = [];
   const gc = $('#guideCh');
-  CHANNELS.forEach((c, i) => { if (rail) { const a = makeChannel(c, i); rail.appendChild(a); railIcons.push(a); } if (dock) dock.appendChild(makeChannel(c, i)); if (gc) gc.appendChild(makeChannel(c, i)); });
+  if (!window.RT_ENGINE) CHANNELS.forEach((c, i) => { if (rail) { const a = makeChannel(c, i); rail.appendChild(a); railIcons.push(a); } if (dock) dock.appendChild(makeChannel(c, i)); if (gc) gc.appendChild(makeChannel(c, i)); });
   let pingIdx = 0;
   if (railIcons.length && !reduce) setInterval(() => { const a = railIcons[pingIdx++ % railIcons.length]; a.classList.remove('ping'); void a.offsetWidth; a.classList.add('ping'); }, 1600);
   const foot = document.querySelector('footer');
   if (foot && 'IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => document.body.classList.toggle('foot-in', en.isIntersecting)), { threshold: 0.25 }).observe(foot);
 
+  /* per page: project marks and button magnetism are set up again after every page change */
+  window.RT.onPage(() => {
+  if (!document.body.classList.contains('page')) return;   // the homepage engine handles its own
+  const ac = new AbortController();
+  let seen = null;
   /* project marks: on a phone the color trail runs while the card is on screen */
   const plates = document.querySelectorAll('.proj-logo');
   const phone = matchMedia('(max-width:820px)');
   if (plates.length && 'IntersectionObserver' in window) {
-    const seen = new IntersectionObserver(es => {
+    seen = new IntersectionObserver(es => {
       if (!phone.matches) return;
       es.forEach(en => en.target.classList.toggle('on', en.isIntersecting));
     }, { threshold: 0.55 });
     plates.forEach(p => seen.observe(p));
     phone.addEventListener('change', () => {
+      if (ac.signal.aborted) return;
       plates.forEach(p => p.classList.remove('on'));
       if (phone.matches) plates.forEach(p => { seen.unobserve(p); seen.observe(p); });
     });
   }
 
   /* buttons: the same magnetic pull and ripple as the homepage */
-  document.querySelectorAll('.btn').forEach(bt => {
+  document.querySelectorAll('main .btn').forEach(bt => {
+    if (bt._mg) return; bt._mg = 1;
     bt.addEventListener('pointermove', e => {
       if (reduce || e.pointerType !== 'mouse') return;
       const r = bt.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
@@ -111,6 +120,9 @@
       rp.style.left = (e.clientX - r.left) + 'px'; rp.style.top = (e.clientY - r.top) + 'px'; rp.style.setProperty('--rs', (Math.max(r.width, r.height) / 5).toFixed(1));
       bt.appendChild(rp); setTimeout(() => rp.remove(), 700);
     });
+  });
+
+  return () => { ac.abort(); if (seen) seen.disconnect(); };
   });
 
   /* the frame's corner light rests top-right, like the homepage when it's quiet */

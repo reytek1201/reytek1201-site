@@ -1,6 +1,32 @@
 /* site root, resolved from this script's own URL so pages at any depth find shared files */
 window.RT_ROOT = new URL('../', document.currentScript.src).href;
 window.rtUrl = p => new URL(p, window.RT_ROOT).href;
+/* page hooks: scripts register per-page setup here; the router re-runs them after each page change */
+window.RT = window.RT || { inits: [], cleanups: [],
+  run(fn) { try { const c = fn(); if (typeof c === 'function') this.cleanups.push(c); } catch (e) { console.error(e); } },
+  onPage(fn) { this.inits.push(fn); this.run(fn); } };
+/* ---------- one player for the whole site: the Music page's rows drive it, and it keeps playing across pages ---------- */
+(() => {
+  window.RTPlayer = window.RTPlayer || (() => {
+    const audio = new Audio(); audio.preload = 'none';
+    const p = { audio, src: null, title: null, queue: [] };
+    p.play = (src, title, queue) => {
+      if (queue) p.queue = queue;
+      if (src !== p.src) { p.src = src; p.title = title; audio.src = src; }
+      if (window.RTDeck && window.RTDeck.playing()) window.RTDeck.stop();
+      return audio.play().catch(() => {});
+    };
+    p.pause = () => audio.pause();
+    p.toggle = () => (audio.paused ? p.play(p.src, p.title) : p.pause());
+    p.playing = () => !!p.src && !audio.paused;
+    audio.addEventListener('ended', () => {
+      const i = p.queue.findIndex(q => q.src === p.src);
+      if (i >= 0 && i < p.queue.length - 1) p.play(p.queue[i + 1].src, p.queue[i + 1].title);
+    });
+    return p;
+  })();
+
+})();
 /* ---------- theme: one accent color (cyan / magenta / amber) drives the whole site ---------- */
 window.THEME = (() => {
   const LIST = [
@@ -95,7 +121,7 @@ window.THEME = (() => {
       if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
       e.preventDefault();
       if (st && !reduce) { st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }
-      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') location.href = a.href; };
+      const go = () => { set(false); if (a.getAttribute('aria-current') !== 'page') { if (window.RTNav) window.RTNav.go(a.href); else location.href = a.href; } };
       if (reduce) go(); else setTimeout(go, 160);
     });
     document.addEventListener('keydown', e => {
@@ -107,13 +133,18 @@ window.THEME = (() => {
       else if (!e.shiftKey && (i === -1 || i === list.length - 1)) { e.preventDefault(); list[0].focus(); }
     });
     matchMedia('(max-width:820px)').addEventListener('change', e => { if (!e.matches) set(false); });
-    const snd = document.getElementById('sound'), gs = document.getElementById('guideSound');
-    if (snd && gs) {
+    const gs = document.getElementById('guideSound');
+    let wired = null;
+    window.RTSyncSound = () => {
+      const snd = document.getElementById('sound');
+      if (!snd || !gs || wired === snd) return;
+      wired = snd;
       const sync = () => { const on = snd.getAttribute('aria-pressed') === 'true'; gs.setAttribute('aria-pressed', on ? 'true' : 'false'); gs.textContent = on ? 'Sound on' : 'Sound off'; };
-      gs.addEventListener('click', () => snd.click());
       new MutationObserver(sync).observe(snd, { attributes: true, attributeFilter: ['aria-pressed'] });
       sync();
-    }
+    };
+    if (gs) gs.addEventListener('click', () => { const snd = document.getElementById('sound'); if (snd) snd.click(); });
+    window.RTSyncSound();
   }
   return T;
 })();

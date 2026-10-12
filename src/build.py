@@ -35,8 +35,12 @@ for name, b in zip(reversed(names), reversed(blocks)):
 
 ROOT_SHIM = ("/* site root, resolved from this script's own URL so pages at any depth find shared files */\n"
              "window.RT_ROOT = new URL('../', document.currentScript.src).href;\n"
-             "window.rtUrl = p => new URL(p, window.RT_ROOT).href;\n")
-js['theme'] = ROOT_SHIM + js['theme']
+             "window.rtUrl = p => new URL(p, window.RT_ROOT).href;\n"
+             "/* page hooks: scripts register per-page setup here; the router re-runs them after each page change */\n"
+             "window.RT = window.RT || { inits: [], cleanups: [],\n"
+             "  run(fn) { try { const c = fn(); if (typeof c === 'function') this.cleanups.push(c); } catch (e) { console.error(e); } },\n"
+             "  onPage(fn) { this.inits.push(fn); this.run(fn); } };\n")
+js['theme'] = ROOT_SHIM + open('js/player.js').read() + js['theme']
 # asset paths inside main.js resolve from the site root, not the current page URL
 main = js['main']
 a = "const WORKLET_URL = 'deck-worklet.js?v=3';"
@@ -57,7 +61,7 @@ def put(name, text):
 
 s = s.replace('__CSS__', f'<link rel="stylesheet" href="{put("site.css", css)}">')
 for n in names:
-    s = s.replace(f'__JS_{n}__', f'<script src="{put(n + ".js", js[n])}"></script>')
+    s = s.replace(f'__JS_{n}__', f'<script src="{put(n + ".js", js[n])}" data-rt="{n}"></script>')
 ASSET = {'site.css': f'assets/site.css?v=' + hashlib.md5(css.encode()).hexdigest()[:8]}
 for n in names: ASSET[n + '.js'] = f'assets/{n}.js?v=' + hashlib.md5(js[n].encode()).hexdigest()[:8]
 ASSET['lanes.js'] = put('lanes.js', js['lanes'])
@@ -65,6 +69,11 @@ js['shell'] = open('js/shell.js').read()
 ASSET['shell.js'] = put('shell.js', js['shell'])
 js['pages'] = open('js/pages.js').read()
 ASSET['pages.js'] = put('pages.js', js['pages'])
+js['router'] = open('js/router.js').read()
+ASSET['router.js'] = put('router.js', js['router'])
+# the router runs last on every page
+_lb = re.search(r'<script src="assets/lightbox\.js\?v=\w+" data-rt="lightbox"></script>', s).group(0)
+s = s.replace(_lb, _lb + f'\n<script src="{ASSET["router.js"]}" data-rt="router"></script>')
 
 # phone channel guide: the bottom strip and the full-screen guide. Same markup on the homepage and every inner page.
 N_TRACKS = len(json.loads(re.search(r'const TRACKS = (\[.*?\]);\n', js['main']).group(1)))
@@ -91,7 +100,7 @@ def guide(slug, up):
     themes = ('<div class="cg-themes" role="radiogroup" aria-label="Color theme">'
               + ''.join(f'<button type="button" role="radio" data-t="{i}" aria-label="{t} theme" style="--c:{c}"><i></i></button>' for i, (t, c) in enumerate(GUIDE_THEMES))
               + '</div>')
-    sound = '<button class="cg-snd" type="button" id="guideSound" aria-pressed="false">Sound off</button>' if slug == '' else ''
+    sound = '<button class="cg-snd" type="button" id="guideSound" aria-pressed="false">Sound off</button>'
     return (f'<div class="cg" id="guide" role="dialog" aria-modal="true" aria-label="Channel guide">'
             f'<div class="cg-head"><span>› Channel guide</span><span>{len(GUIDE):02d} channels</span></div>'
             f'<ul class="cg-list">{rows}</ul>'
@@ -153,7 +162,7 @@ def inner_page(slug, title, desc, content, scripts, label):
             f'<nav class="hud hud-tr chapters" aria-label="Pages">{nav}</nav>\n<div class="hud hud-bl">Hub v0.1 · {label}</div>\n'
             + RAIL + '\n' + guide(slug, up) + '\n<div class="hud hud-br">' + THEMES + '</div>\n\n<main>\n'
             + content + '</main>\n\n' + extra + FOOTER + '\n\n<div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>\n'
-            + LB + '\n' + ''.join(f'<script src="{up}{ASSET[n]}"></script>\n' for n in scripts) + '</body></html>\n')
+            + LB + '\n' + ''.join(f'<script src="{up}{ASSET[n]}" data-rt="{n[:-3]}"></script>\n' for n in scripts + ['router.js']) + '</body></html>\n')
     html = head + body
     os.makedirs(f'{OUT}/{slug}', exist_ok=True)
     open(f'{OUT}/{slug}index.html', 'w').write(html)
@@ -216,8 +225,8 @@ def inline(html, depth):
     html = re.sub(r'<link rel="stylesheet" href="(?:\.\./)*assets/site\.css\?v=\w+">', lambda m: '<style>\n' + css + '</style>', html)
     def _i(m):
         t = js[m.group(1)].replace("window.RT_ROOT = new URL('../', document.currentScript.src).href;", f"window.RT_ROOT = new URL('{'../' * depth or './'}', document.baseURI).href;")
-        return '<script>\n' + t + '</script>'
-    html = re.sub(r'<script src="(?:\.\./)*assets/(\w+)\.js\?v=\w+"></script>', _i, html)
+        return f'<script data-rt="{m.group(1)}">\n' + t + '</script>'
+    html = re.sub(r'<script src="(?:\.\./)*assets/(\w+)\.js\?v=\w+" data-rt="\w+"></script>', _i, html)
     assert 'assets/' not in html
     # directory links don't resolve in the preview host: point at index.html
     html = html.replace('href="./"', 'href="index.html"')

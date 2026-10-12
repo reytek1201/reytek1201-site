@@ -10,6 +10,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer:fine)').matches;
 const root = document.documentElement;
 root.classList.add('locked');
+window.RT_ENGINE = true;   // the router and inner-page scripts check this before doing the engine's jobs themselves
 
 /* ---------- wordmark ---------- */
 const mark = $('#mark');
@@ -273,6 +274,7 @@ BOOT.ready(finishBoot);
 $('#skip').addEventListener('click', () => BOOT.skip());
 let inSite = false; try { inSite = sessionStorage.getItem('rt-in') === '1'; } catch (e) {}
 const HASH_GO = { '#portrait': 2, '#music': 3, '#hub': 4 };
+window.RT_HASH_GO = HASH_GO;
 if (inSite) setTimeout(() => BOOT.instant(), 0);   // after the engine below has initialised
 addEventListener('keydown', e => { if (!booted && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) BOOT.skip(); });
 
@@ -620,6 +622,7 @@ function setPitch(v, raw) {
 function zeroPitch() { if (D.pitch !== 0) D.pitchGlide = true; }
 const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
 function dropAt(t) {
+  if (window.RTPlayer && window.RTPlayer.playing()) window.RTPlayer.pause();
   setSound(true);
   ensureWorklet().catch(() => {});
   D.t = clamp(t, -LEAD, D.tMax); D.needle = true; D.started = true; D.auto = null;
@@ -1344,6 +1347,14 @@ if ('IntersectionObserver' in window) {
 /* ---------- section navigation ---------- */
 const NAV_GAP = () => (VW() <= 820 ? 64 : 80);   // clears the top bar and its fade
 const headTop = el => el.getBoundingClientRect().top + scrollY - NAV_GAP();
+window.RTGo = i => scrollTo({ top: sectionTop(i), behavior: 'auto' });
+window.RTDeck = {
+  playing: () => (D.needle || !!(D.auto && D.auto.drop)) && D.pending == null && D.motor && trackAt(D.auto && D.auto.drop ? D.auto.t : D.t) >= 0,
+  title: () => { const i = trackAt(D.auto && D.auto.drop ? D.auto.t : D.t); return TRACKS[i >= 0 ? i : D.sel].title; },
+  time: () => { const i = trackAt(D.t); return i >= 0 ? Math.max(0, D.t - TRACKS[i].start) : 0; },
+  toggle: () => toggleTrack(trackAt(D.t) >= 0 ? trackAt(D.t) : D.sel),
+  stop: () => { D.auto = null; liftNeedle(); D.userPaused = true; }
+};
 function sectionTop(i) {
   const vh = VH(), o = els.origin, oLen = o.offsetHeight - vh;
   if (i === 0) return 0;
@@ -1591,6 +1602,7 @@ function frame(now) {
   if (justBeat && A.on && !reduce) { cornerIdx = (cornerIdx + 1) % 4; lastCornerBeat = clock; setCorner(cornerIdx); }
   else if (cornerIdx !== 1 && clock - lastCornerBeat > 2) { cornerIdx = 1; setCorner(1); }
   justBeat = false;
+  if (document.body.classList.contains('page')) { requestAnimationFrame(frame); return; }
 
   // scroll
   const sy = scrollY; scrollS = lerp(scrollS, sy, reduce ? 1 : 0.14);
