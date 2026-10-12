@@ -762,6 +762,10 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 
 /* gaming */
 .poe-card{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:32px;align-items:center;padding:22px;border:1px solid rgba(214,166,72,.35);border-radius:calc(var(--r) + 4px);background:radial-gradient(circle at 0 0,rgba(214,166,72,.12),transparent 50%),rgba(11,13,18,.78);box-shadow:0 30px 80px -40px rgba(214,166,72,.45)}
+.poe-card{--pc:232,192,106}
+.poe-card .page-cta{margin-top:4px}
+.poe-card .btn.primary{border-color:rgba(232,192,106,.75);color:#f3d48c;background:rgba(232,192,106,.08)}
+.poe-card .btn.primary:hover{border-color:#e8c06a;background:rgba(232,192,106,.16);box-shadow:0 0 24px -6px rgba(232,192,106,.6)}
 .poe-art img{width:100%;height:auto;display:block;border-radius:var(--r)}
 .poe-body{display:grid;gap:12px;min-width:0}
 .poe-body .proj-status{border-color:rgba(214,166,72,.6);color:#e8c06a}

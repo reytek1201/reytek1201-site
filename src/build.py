@@ -138,15 +138,25 @@ FOOTER = grab('<footer>', '</footer>')
 LB = grab('<dialog class="lb" id="lb"', '</dialog>')
 NAV = [('Signal', '', ''), ('Origin', 'origin/', ''), ('Music', 'music/', ''), ('Projects', 'projects/', ''), ('Gaming', 'gaming/', ''), ('Art', 'art/', '')]
 
+# share images: pages without their own use the site card
+OG = {
+  'gaming/': ('og-gaming.jpg', 'POE Source: free Path of Exile 2 guides and tools by Reytek, aiming for the POE2 1.0 launch on December 11'),
+}
+OG_DEFAULT = ('og.jpg', "Reytek's portrait inside a spinning vortex of light, above the REYTEK wordmark")
+
 def inner_page(slug, title, desc, content, scripts, label):
+    og_img, og_alt = OG.get(slug, OG_DEFAULT)
+    og_url = f'https://www.reytek1201.com/{og_img}'
+
     up = '../' * slug.count('/')
     nav = ''.join((f'<a href="./" aria-current="page" class="on">' if href == slug else f'<a href="{up}{href}{h}"' + (' data-go="0"' if name == 'Signal' else '') + '>') + f'{name}</a>' for name, href, h in NAV)
     url = f'https://www.reytek1201.com/{slug}'
     head = (SK + GA + f'<title>{title}</title>\n<meta name="description" content="{desc}">\n<link rel="canonical" href="{url}">\n'
             '<meta name="robots" content="index,follow,max-image-preview:large">\n<meta name="theme-color" content="#050608">\n'
             f'<meta property="og:site_name" content="REYTEK">\n<meta property="og:title" content="{title}">\n<meta property="og:description" content="{desc}">\n'
-            f'<meta property="og:type" content="website">\n<meta property="og:url" content="{url}">\n<meta property="og:image" content="https://www.reytek1201.com/og.jpg">\n'
-            '<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:site" content="@reytek1201">\n'
+            f'<meta property="og:type" content="website">\n<meta property="og:url" content="{url}">\n<meta property="og:image" content="{og_url}">\n'
+            f'<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta property="og:image:alt" content="{og_alt}">\n'
+            f'<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:site" content="@reytek1201">\n<meta name="twitter:image" content="{og_url}">\n'
             '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n'
             + FONTS + f'\n<link rel="stylesheet" href="{up}{ASSET["site.css"]}">\n</head><body>\n')
     content = content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/')
@@ -212,7 +222,7 @@ PAGES = {
              P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, a meal planner with a kitchen brain, SlidePress for social posting, the FunkHarp site and this hub.',
                 P('projects'), SCR, 'Projects'),
-  'gaming/': ('Gaming · REYTEK', 'From his dad\'s arcades in Puerto Rico to POE Source, a Path of Exile 2 companion launching with POE2 1.0 on December 11.',
+  'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
               P('gaming'), SCR, 'Gaming'),
   'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek. The cover and label art for every release so far.',
            P('art').replace('__COVERS__', '\n'.join(gal)), SCR, 'Art'),
