@@ -216,6 +216,7 @@
     busy = true;
     closeOverlays();
     // leave: keep the homepage alive in memory, tear down per-page bindings
+    if (cur === '' && window.RTEnter) window.RTEnter();   // leaving during the intro: let it finish, or its scroll lock follows you
     if (cur === '' && window.RT_ENGINE) {
       home = { nodes: {}, head: headNow() };
       REGIONS.forEach(sel => { const n = document.querySelector(sel); if (n) home.nodes[sel] = n; });
@@ -229,6 +230,7 @@
     else { nodes = home.nodes; head = home.head; }
     swap(nodes);
     document.body.classList.toggle('page', slug !== '');
+    if (slug !== '') root.classList.remove('locked');   // inner pages never lock scrolling
     setHead(head); markGuide(slug);
     cur = slug;
     if (slug === '' && !window.RT_ENGINE) await loadEngine(doc);

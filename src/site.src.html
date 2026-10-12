@@ -3025,10 +3025,12 @@ function sectionTop(i) {
   if (i === 3) return headTop(dk.section.querySelector('.music-head'));
   return headTop(els.hub.querySelector('.hub-head'));
 }
+// leaving the intro early (a nav link, or the router going to another page) counts as entering
+window.RTEnter = () => { if (root.classList.contains('locked')) { if (!booted) BOOT.skip(); enter(false); } };
 document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => {
   if (document.body.classList.contains('page')) return;   // on another page this link goes home
   e.preventDefault();
-  if (root.classList.contains('locked')) { if (!booted) BOOT.skip(); enter(false); }
+  window.RTEnter();
   const i = +a.dataset.go;
   requestAnimationFrame(() => scrollTo({ top: sectionTop(i), behavior: reduce ? 'auto' : 'smooth' }));
 }));
