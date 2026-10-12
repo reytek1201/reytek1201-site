@@ -7,3 +7,5 @@ audio/Dawn on the Loading Dock/
 
 src/_preview/
 src/__pycache__/
+.env.local
+.env*.local
