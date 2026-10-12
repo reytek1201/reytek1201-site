@@ -215,6 +215,130 @@
   }
   });
 
+  /* Projects: the ticket rail. Tickets sway as you sweep past; pull one and it prints out in full */
+  window.RT.onPage(() => {
+  const rail = document.getElementById('trRail');
+  if (!rail) return;
+  {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ac = new AbortController(), on = { signal: ac.signal };
+    const root = document.documentElement;
+    const tks = [...rail.querySelectorAll('.tr-tk')];
+    let alive = true;
+
+    // days until POE2 1.0
+    const days = Math.max(0, Math.ceil((new Date('2026-12-11T00:00:00-05:00') - Date.now()) / 864e5));
+    document.querySelectorAll('[data-days]').forEach(el => { el.textContent = days; });
+
+    // long names shrink to fit their ticket
+    const fit = () => tks.forEach(li => {
+      const n = li.querySelector('.tr-name'); n.style.fontSize = '';
+      let f = parseFloat(getComputedStyle(n).fontSize);
+      while (n.scrollWidth > n.clientWidth + 1 && f > 12) { f -= .5; n.style.fontSize = f + 'px'; }
+    });
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { if (alive) fit(); });
+    addEventListener('resize', fit, on);
+
+    // each ticket is a little pendulum hanging from its clip
+    const sw = tks.map((el, i) => ({ el, a: (i % 2 ? 1 : -1) * (1 + (i * 37 % 5) * .35), v: 0, rest: (i % 2 ? 1 : -1) * (.6 + (i * 53 % 4) * .4), ph: i * 1.7 }));
+    let lastX = null, lastT = 0;
+    addEventListener('pointermove', e => {
+      if (reduce || e.pointerType !== 'mouse') return;
+      const now = performance.now(), dx = lastX == null ? 0 : e.clientX - lastX, dt = Math.max(8, now - lastT);
+      lastX = e.clientX; lastT = now;
+      const vx = dx / dt;
+      sw.forEach(t => {
+        const r = t.el.getBoundingClientRect();
+        if (e.clientY < r.top - 40 || e.clientY > r.bottom + 20) return;
+        const d = Math.abs(e.clientX - (r.left + r.width / 2));
+        if (d < r.width * .75) t.v += vx * 1.6 * (1 - d / (r.width * .75));
+      });
+    }, { passive: true, signal: ac.signal });
+    // on phones the rail scrolls: swiping it swings the tickets
+    let lastS = rail.scrollLeft;
+    rail.addEventListener('scroll', () => {
+      const d = rail.scrollLeft - lastS; lastS = rail.scrollLeft;
+      if (!reduce) sw.forEach(t => { t.v -= Math.max(-30, Math.min(30, d * .9)); });
+    }, { passive: true, signal: ac.signal });
+    let prev = performance.now(), raf = 0;
+    const frame = now => {
+      if (!alive) return;
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+      sw.forEach(t => {
+        const idle = reduce ? 0 : Math.sin(now / 1000 * .9 + t.ph) * .45;
+        t.v += (-(t.a - t.rest - idle) * 38 - t.v * 3.2) * dt; t.a += t.v * dt;
+        t.a = Math.max(-16, Math.min(16, t.a));
+        t.el.style.transform = `rotate(${t.a.toFixed(2)}deg)`;
+      });
+    };
+    raf = requestAnimationFrame(frame);
+
+    // the pulled ticket lives outside the page content, above everything
+    const veil = document.createElement('div'); veil.className = 'tr-veil';
+    const dlg = document.createElement('div'); dlg.className = 'tr-open'; dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'trOName');
+    const paper = document.createElement('div'); paper.className = 'tr-paper'; dlg.appendChild(paper);
+    document.body.append(veil, dlg);
+    const others = () => document.querySelectorAll('main, footer, .hud, .rail, .cg-strip');
+    let cur = -1, opener = null;
+    const track = name => { try { if (window.gtag) window.gtag('event', 'open_project', { project: name }); } catch (e) {} };
+    const open = i => {
+      if (cur >= 0) return;
+      cur = i; opener = tks[i].querySelector('.tr-slip');
+      const li = tks[i];
+      dlg.style.setProperty('--pc', li.style.getPropertyValue('--pc'));
+      paper.innerHTML = '<button class="tr-x" type="button" aria-label="Back on the rail">×</button>' + li.querySelector('.tr-full').innerHTML;
+      paper.querySelectorAll('.pr').forEach((el, n) => el.style.setProperty('--n', n));
+      const h = paper.querySelector('.tr-oname'); if (h) h.id = 'trOName';
+      paper.querySelector('.tr-x').addEventListener('click', close);
+      track(li.dataset.tk);
+      const from = opener.getBoundingClientRect();
+      dlg.classList.add('on'); paper.scrollTop = 0;
+      const to = dlg.getBoundingClientRect();
+      veil.classList.add('on'); root.classList.add('tr-is-open');
+      others().forEach(el => { el.inert = true; });
+      const done = () => { dlg.style.visibility = ''; dlg.classList.remove('printing'); void dlg.offsetWidth; if (!reduce) dlg.classList.add('printing'); paper.querySelector('.tr-x').focus({ preventScroll: true }); };
+      opener.classList.add('gone');
+      if (reduce) { done(); return; }
+      // the small ticket drops off its clip and flies to where the full one sits
+      const fly = opener.cloneNode(true); fly.classList.remove('gone'); fly.classList.add('tr-flyer'); fly.removeAttribute('aria-label');
+      Object.assign(fly.style, { left: from.left + 'px', top: from.top + 'px', width: from.width + 'px', margin: 0 });
+      fly.style.setProperty('--pc', li.style.getPropertyValue('--pc'));
+      dlg.style.visibility = 'hidden'; document.body.appendChild(fly);
+      const sx = to.width / from.width, dx = to.left + to.width / 2 - (from.left + from.width / 2), dy = to.top - from.top;
+      fly.animate([
+        { transform: `rotate(${sw[i].a}deg)` },
+        { transform: `translate(0, 26px) rotate(${sw[i].a * 1.6}deg)`, offset: .22 },
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}) rotate(0deg)`, opacity: .35 }
+      ], { duration: 520, easing: 'cubic-bezier(.5,0,.15,1)' }).onfinish = () => { fly.remove(); if (cur === i) done(); };
+    };
+    const close = (quiet) => {
+      if (cur < 0) return;
+      const back = opener, i = cur;
+      dlg.classList.remove('on', 'printing'); veil.classList.remove('on'); root.classList.remove('tr-is-open');
+      others().forEach(el => { el.inert = false; });
+      back.classList.remove('gone'); cur = -1;
+      if (quiet === true) return;
+      if (!reduce) back.animate([{ transform: 'translateY(-60px)', opacity: 0 }, { transform: 'translateY(8px)', opacity: 1, offset: .7 }, { transform: 'translateY(0)' }], { duration: 420, easing: 'ease-out' });
+      sw[i].v += 40;   // clipping it back makes it swing
+      back.focus({ preventScroll: true });
+    };
+    tks.forEach((li, i) => li.querySelector('.tr-slip').addEventListener('click', () => open(i), on));
+    veil.addEventListener('click', () => close(), on);
+    document.addEventListener('keydown', e => {
+      if (cur < 0) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+      if (e.key === 'Tab') {   // keep focus inside the open ticket
+        const f = [...paper.querySelectorAll('button,a[href]')]; if (!f.length) return;
+        const a = f[0], z = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+        else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+      }
+    }, on);
+    return () => { alive = false; cancelAnimationFrame(raf); close(true); ac.abort(); veil.remove(); dlg.remove(); document.querySelectorAll('.tr-flyer').forEach(n => n.remove()); };
+  }
+  });
+
   /* Gaming: countdown to the Path of Exile 2 1.0 launch */
   window.RT.onPage(() => {
   const cd = document.getElementById('countdown');
