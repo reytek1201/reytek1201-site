@@ -22,6 +22,8 @@ Python 3 is all it needs, with no packages to install. Commit the source and the
 | Track list (title, file, cover, BPM, NEW badge) | the `const TRACKS = [...]` line in `src/site.src.html` (the Music page and Art gallery are generated from it) |
 | Inner-page frame (cursor, social rail, buttons) | `src/js/shell.js` |
 | Music page player and the Gaming countdown | `src/js/pages.js` |
+| Page-to-page navigation, warp transition, now-playing pill | `src/js/router.js` |
+| The one shared audio player (`window.RTPlayer`) | `src/js/player.js` (built into `assets/theme.js`) |
 | Homepage title, description, social cards and Google Analytics tag | `src/seo.py` |
 | Inner-page titles and descriptions | the `PAGES` table near the end of `src/build.py` |
 
@@ -38,6 +40,15 @@ Images live in `img/`, audio in `audio/` and cover art in `covers/` at the repo 
 - Check every change at phone width (about 390px) as well as desktop.
 - To test locally, serve the repo root (`python3 -m http.server`) and open http://localhost:8000. Audio and the 3D deck won't load from `file://`.
 
+## Page scripts and the router
+
+Links between the six pages don't reload. `router.js` fetches the next page and swaps `.hud-tl`, `nav.chapters`, `.hud-bl`, `main` and `#lyrics`, so audio keeps playing. Because of that:
+
+- Any script that binds to page content must register with `RT.onPage(fn)`. It runs on every page change, and if `fn` returns a function, that function runs as cleanup before the next swap. Code that runs once at load won't see the new page.
+- Play audio with `RTPlayer.play(src, title, queue)`, never with a new `Audio()`.
+- Every `<script>` tag carries `data-rt="name"` so the router knows what's already loaded.
+- Test navigation over http (`python3 -m http.server`); `file://` blocks the fetch.
+
 ## Roadmap
 
-See `PLAN.md`. Phases 1 to 3 are done (shared assets, the Origin page, the door pages). Next is Phase 4: music that keeps playing between pages, using a router that swaps page content while the audio engine keeps running.
+See `PLAN.md`. Phases 1 to 4 are done: shared assets, the Origin page, the door pages, and music that keeps playing between pages. Next is Phase 5: real signups through Supabase.
