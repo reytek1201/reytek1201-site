@@ -1340,7 +1340,7 @@ if ('IntersectionObserver' in window) {
       if (!D.built) { try { deckBuild(); } catch (err) { console.warn(err); dk.stage.classList.add('no-deck'); } }
       TRACKS.forEach((_, i) => fetchBytes(i).catch(() => {}));
     }
-  }), { rootMargin: '600px 0px' }).observe(dk.section);
+  }), { rootMargin: '600px 0px' }).observe(dk.stage);
   new IntersectionObserver(es => es.forEach(en => { D.visible = en.isIntersecting; }), { rootMargin: '80px 0px' }).observe(dk.stage);
 }
 
@@ -1353,7 +1353,15 @@ window.RTDeck = {
   title: () => { const i = trackAt(D.auto && D.auto.drop ? D.auto.t : D.t); return TRACKS[i >= 0 ? i : D.sel].title; },
   time: () => { const i = trackAt(D.t); return i >= 0 ? Math.max(0, D.t - TRACKS[i].start) : 0; },
   toggle: () => toggleTrack(trackAt(D.t) >= 0 ? trackAt(D.t) : D.sel),
-  stop: () => { D.auto = null; liftNeedle(); D.userPaused = true; }
+  stop: () => { D.auto = null; liftNeedle(); D.userPaused = true; },
+  // the track under (or heading for) the needle, or -1
+  index: () => D.pending != null ? D.pending : trackAt(D.auto && D.auto.drop ? D.auto.t : D.t),
+  find: file => TRACKS.findIndex(t => new URL(t.file, document.baseURI).href === new URL(file, document.baseURI).href),
+  dur: i => TRACKS[i] ? TRACKS[i].dur : 0,
+  play: i => { if (!(window.RTDeck.playing() && window.RTDeck.index() === i)) toggleTrack(i); },
+  seek: (i, k) => { D.userPaused = false; D.sel = i; updateCrate(); setSound(true); ensureWorklet().catch(() => {}); loadTrack(i); cueTo(TRACKS[i].start + clamp(k) * TRACKS[i].dur, true); },
+  // true while the turntable sits on the Music page (the release list then plays through it)
+  mounted: () => !!dk.stage.closest('.deck-slot') && 'AudioWorkletNode' in window
 };
 function sectionTop(i) {
   const vh = VH(), o = els.origin, oLen = o.offsetHeight - vh;
@@ -1364,6 +1372,7 @@ function sectionTop(i) {
   return headTop(els.hub.querySelector('.hub-head'));
 }
 document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => {
+  if (document.body.classList.contains('page')) return;   // on another page this link goes home
   e.preventDefault();
   if (root.classList.contains('locked')) { if (!booted) BOOT.skip(); enter(false); }
   const i = +a.dataset.go;
@@ -1591,7 +1600,7 @@ function frame(now) {
   mark.parentElement.style.setProperty('--b', reduce ? 0 : (beat * (A.on ? 1 : 0.4)).toFixed(3));
   deckFrame(dt);
   hubFrame(dt);
-  if (D.built && D.visible) { const mr = dk.section.getBoundingClientRect(); D.render((VH() - mr.top) / (VH() * 0.85), mouse.x, mouse.y); }
+  if (D.built && D.visible) { const mr = (dk.stage.closest('section') || dk.section).getBoundingClientRect(); D.render((VH() - mr.top) / (VH() * 0.85), mouse.x, mouse.y); }
   updateMark(dt);
   pillFrame();
   { const sc = scrollY > 24; if (sc !== (document.body._sc || false)) { document.body._sc = sc; document.body.classList.toggle('scrolled', sc); } }
@@ -1642,7 +1651,6 @@ function frame(now) {
   const ch = scrollS < oTop + vh * 0.2 ? 0 : p < 0.38 ? 1 : scrollS + vh * 0.5 < lanesTop ? 2 : scrollS + vh * 0.5 < musicTop ? 1 : scrollS + vh * 0.5 < hubTop ? 3 : 4;
   if (ch !== chapter) {
     chapter = ch; document.body.classList.toggle('in-hub', ch === 4);
-    els.chapters.forEach((s, i) => { s.classList.toggle('on', i === ch); if (i === ch) s.setAttribute('aria-current', 'true'); else s.removeAttribute('aria-current'); });
   }
 
 
@@ -1747,7 +1755,7 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
-scrollTo(0, 0);
+if (!document.body.classList.contains('page')) scrollTo(0, 0);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(runBoot, 150)); else setTimeout(runBoot, 300);
 setTimeout(runBoot, 1500);
 })();

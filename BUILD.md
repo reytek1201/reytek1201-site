@@ -46,6 +46,7 @@ Links between the six pages don't reload. `router.js` fetches the next page and 
 
 - Any script that binds to page content must register with `RT.onPage(fn)`. It runs on every page change, and if `fn` returns a function, that function runs as cleanup before the next swap. Code that runs once at load won't see the new page.
 - Play audio with `RTPlayer.play(src, title, queue)`, never with a new `Audio()`.
+- There is one turntable. It lives in the homepage's music section, and the router moves it into `#deckSlot` on the Music page and back again, so it keeps spinning. On the Music page the release list plays through it (`RTDeck.play(i)`, `RTDeck.seek(i, k)`), and falls back to `RTPlayer` until it has loaded. Visitors who land on Music first get the homepage engine started underneath the page.
 - Every `<script>` tag carries `data-rt="name"` so the router knows what's already loaded.
 - Test navigation over http (`python3 -m http.server`); `file://` blocks the fetch.
 

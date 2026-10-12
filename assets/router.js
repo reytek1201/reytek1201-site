@@ -2,7 +2,7 @@
    The frame (vortex, cursor, rail, guide, footer) stays put. Only the page regions below are swapped.
    The homepage's regions are kept in memory when you leave, so the turntable keeps spinning and
    coming back is instant. If a visit starts on an inner page, the homepage engine loads the first
-   time you go home. */
+   time you go home, or right away on the Music page, which borrows the homepage's turntable. */
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
@@ -64,6 +64,51 @@
     if (reduce) return;
     root.classList.add('rt-in');
     setTimeout(() => root.classList.remove('rt-in'), 420);
+  }
+
+  /* ---- the turntable: one deck, shown on the homepage and on the Music page ---- */
+  let deckHome = null, engineP = null;
+  const deckWrap = () => document.querySelector('.deck-wrap') || (home && home.nodes.main ? home.nodes.main.querySelector('.deck-wrap') : null);
+  function mountDeck() {
+    const slot = document.getElementById('deckSlot');
+    if (!slot || !window.RT_ENGINE) return;
+    const w = deckWrap(); if (!w || slot.contains(w)) return;
+    deckHome = w.parentNode;
+    slot.appendChild(w); slot.classList.add('mounted');
+  }
+  function unmountDeck() {
+    const slot = document.getElementById('deckSlot'), w = slot && slot.querySelector('.deck-wrap');
+    if (w && deckHome) deckHome.appendChild(w);   // back into the homepage's music section, on screen or in memory
+  }
+  // a visit that starts on the Music page: start the homepage engine underneath it, out of sight
+  function engineUnder() {
+    if (engineP || window.RT_ENGINE || !document.getElementById('deckSlot')) return engineP;
+    engineP = (async () => {
+      try {
+        const doc = await fetchDoc(ROOT.href);
+        const hold = document.createElement('div');
+        hold.setAttribute('aria-hidden', 'true'); hold.inert = true;
+        hold.style.cssText = 'position:fixed;top:0;left:-300vw;width:100vw;visibility:hidden;pointer-events:none';
+        const nodes = {};
+        // the homepage's paths are relative to the site root, and this page sits a folder down
+        doc.querySelectorAll('[src],[href],[poster]').forEach(el => ['src', 'href', 'poster'].forEach(k => {
+          const v = el.getAttribute(k); if (v && !/^(#|[a-z]+:)/i.test(v)) el.setAttribute(k, new URL(v, ROOT).href);
+        }));
+        REGIONS.forEach(sel => { const n = doc.querySelector(sel); if (n) { nodes[sel] = document.adoptNode(n); hold.appendChild(nodes[sel]); } });
+        document.body.prepend(hold);   // first in the document, so the engine binds to the homepage's elements
+        await loadEngine(doc);
+        // the engine lets returning visitors straight in a tick after it starts; keep its homepage in reach until then
+        const gate = nodes.main && nodes.main.querySelector('#gate');
+        await new Promise(r => { const t0 = performance.now(), chk = () => (!gate || gate.classList.contains('done') || performance.now() - t0 > 4000) ? r() : setTimeout(chk, 30); chk(); });
+        home = { nodes, head: headFrom(doc) };
+        if (cur === 'music/') mountDeck();
+        hold.remove(); hold.inert = false;
+        Object.values(nodes).forEach(n => n.removeAttribute && n.removeAttribute('inert'));
+        window.RT.cleanups.splice(0).forEach(c => { try { c(); } catch (e) {} });
+        window.RT.inits.forEach(fn => window.RT.run(fn));   // the release list now plays through the deck
+      } catch (e) { console.warn('turntable unavailable', e); }
+    })();
+    return engineP;
   }
 
   /* ---- page lifecycle ---- */
@@ -159,6 +204,7 @@
       return;
     }
     if (slug === cur) return;
+    if (engineP) await engineP;
     const token = ++seq;
     const needDoc = !(slug === '' && home);
     const docP = needDoc ? fetchDoc(u.href) : Promise.resolve(null);
@@ -175,6 +221,7 @@
       REGIONS.forEach(sel => { const n = document.querySelector(sel); if (n) home.nodes[sel] = n; });
     }
     window.RT.cleanups.splice(0).forEach(c => { try { c(); } catch (e) {} });
+    if (cur === 'music/') unmountDeck();
     if (!opt.pop) history.pushState({ rt: 1, y: 0 }, '', u.href);
     // enter
     let nodes = {}, head;
@@ -185,6 +232,8 @@
     setHead(head); markGuide(slug);
     cur = slug;
     if (slug === '' && !window.RT_ENGINE) await loadEngine(doc);
+    if (slug === 'music/') { if (window.RT_ENGINE) mountDeck(); else engineUnder(); }
+    if (slug === '') dispatchEvent(new Event('resize'));   // the homepage re-measures itself after being away
     window.RT.inits.forEach(fn => window.RT.run(fn));
     if (doc && slug !== '') await pageScripts(doc);
     scrollFor(slug, u, opt.pop ? opt.y : null);
@@ -231,7 +280,7 @@
   }
   const state = () => {
     const d = window.RTDeck;
-    if (d && d.playing()) return { src: 'deck', title: d.title(), on: true, t: d.time() };
+    if (d && d.playing()) return { src: 'deck', title: d.title(), on: true, t: d.time(), dur: d.dur ? d.dur(d.index()) : 0 };
     if (P.src) return { src: 'player', title: P.title, on: !P.audio.paused, t: P.audio.currentTime, dur: P.audio.duration };
     return null;
   };
@@ -251,8 +300,8 @@
         np.classList.toggle('on', s.on);
         npTx.querySelector('b').textContent = s.title;
         npTx.querySelector('small').textContent = s.on ? (s.src === 'deck' ? 'On the deck' : 'Now playing') : 'Paused';
-        npTx.setAttribute('href', s.src === 'deck' ? new URL('#music', ROOT).href : new URL('music/', ROOT).href);
-        npTx.setAttribute('aria-label', `${s.title}: open ${s.src === 'deck' ? 'the turntable' : 'Music'}`);
+        npTx.setAttribute('href', new URL('music/', ROOT).href);
+        npTx.setAttribute('aria-label', `${s.title}: open Music`);
         npDisc.setAttribute('aria-label', (s.on ? 'Pause ' : 'Play ') + s.title);
       }
       if (strip && readout) {
@@ -271,4 +320,8 @@
     }
     if (show) npT.textContent = s.dur ? fmt(s.t) + ' / ' + fmt(s.dur) : fmt(s.t);
   }, 250);
+  if (cur === 'music/') {
+    const start = () => setTimeout(engineUnder, 60);
+    if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  }
 })();

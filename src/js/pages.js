@@ -3,7 +3,8 @@
   const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
   const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
 
-  /* Music: each release row plays, pauses and seeks on the site-wide player, which keeps going across pages */
+  /* Music: each release row plays, pauses and seeks. With the turntable on the page, the rows play through it;
+     before it has loaded (or without it) they use the site-wide player. Either one keeps going across pages. */
   window.RT.onPage(() => {
   const list = document.getElementById('relList');
   if (!list) return;
@@ -13,7 +14,28 @@
     const rows = [...list.querySelectorAll('.rel')];
     const srcOf = row => rtUrl(row.dataset.src);
     const queue = rows.map(r => ({ src: srcOf(r), title: r.dataset.title }));
-    let cur = rows.find(r => srcOf(r) === P.src) || null;
+    // the source: whichever of the turntable or the plain player is sounding (the turntable wins when idle)
+    const D = () => window.RTDeck || null;
+    const deck = () => { const d = D(); return d && d.mounted && d.mounted() ? d : null; };
+    const idx = row => { const d = D(); return d && d.find ? d.find(srcOf(row)) : -1; };
+    const onDeck = () => { const d = D(); return !!d && (d.playing() || (!!deck() && (audio.paused || !P.src))); };
+    const S = {
+      row: () => {
+        if (onDeck()) { const i = D().index(); return i >= 0 ? rows.find(r => idx(r) === i) || null : null; }
+        return P.src ? rows.find(r => srcOf(r) === P.src) || null : null;
+      },
+      paused: () => onDeck() ? !D().playing() : audio.paused,
+      time: () => onDeck() ? D().time() : (audio.currentTime || 0),
+      dur: row => onDeck() ? D().dur(idx(row)) : (audio.duration || +row.dataset.dur),
+      pause: () => { if (onDeck()) D().stop(); else audio.pause(); },
+      seek: (row, k) => {
+        const d = deck();
+        if (d && idx(row) >= 0) { follow(row); d.seek(idx(row), k); return; }
+        if (cur !== row) { play(row); audio.addEventListener('loadedmetadata', () => { audio.currentTime = k * audio.duration; }, { once: true, signal: ac.signal }); }
+        else if (audio.duration) audio.currentTime = k * audio.duration;
+      }
+    };
+    let cur = S.row();
     const setRow = (row, on) => {
       row.classList.toggle('playing', on);
       const b = row.querySelector('.rel-play');
@@ -75,7 +97,7 @@
     };
     const frame = () => {
       if (!panel || panel.hidden || cur !== lyrRow || !song) return;
-      const t = audio.currentTime || 0;
+      const t = S.time();
       const view = lineView(t);
       const key = (view.prev ? view.prev.t : '') + '|' + (view.now ? view.now.t : '');
       if (key !== shown) { shown = key; setLine(view); }
@@ -94,18 +116,13 @@
       const sec = sectionAt(t, beat.gap);
       const pos = (((beat.i - song.downbeat) % 4) + 4) % 4;
       const hit = pos === 0 ? 1 : .55;
-      const pulse = still.matches || audio.paused ? 0 : Math.exp(-beat.f * 4.5) * hit * (.35 + .65 * sec.lift);
+      const paused = S.paused();
+      const pulse = still.matches || paused ? 0 : Math.exp(-beat.f * 4.5) * hit * (.35 + .65 * sec.lift);
       panel.style.setProperty('--lc', sec.lc);
       panel.style.setProperty('--pulse', pulse.toFixed(3));
       panel.querySelector('.lyr-trail').style.setProperty('--ang', ((pos + beat.f) * 90 - 320).toFixed(1) + 'deg');
-      panel.querySelector('.lyr-beat').dataset.b = audio.paused ? '' : pos;
+      panel.querySelector('.lyr-beat').dataset.b = paused ? '' : pos;
       if ($('lyrSec').textContent !== sec.name) $('lyrSec').textContent = sec.name;
-    };
-    const sync = () => frame();
-    const arm = () => {
-      cancelAnimationFrame(raf);
-      const loop = () => { if (!panel || panel.hidden) return; frame(); if (!audio.paused) raf = requestAnimationFrame(loop); };
-      raf = requestAnimationFrame(loop);
     };
     const others = () => document.querySelectorAll('main, footer, .hud, .rail, .cg-strip');
     const closeLyrics = focus => {
@@ -121,38 +138,40 @@
       if (!panel || !book[row.dataset.title]) return;
       lyrRow = row; lyrBtn = row.querySelector('.rel-lyrics'); song = book[row.dataset.title];
       $('lyrTitle').textContent = row.dataset.title;
-      if (cur !== lyrRow || audio.paused) play(lyrRow);
+      if (cur !== lyrRow || S.paused()) play(lyrRow);
       const art = lyrRow.querySelector('.rel-label') || lyrRow.querySelector('.rel-cover');
       $('lyrArt').src = art.currentSrc || art.src;
       panel.querySelector('.lyr-disc').classList.toggle('round', art.classList.contains('rel-label'));
       panel.hidden = false;
-      panel.classList.toggle('spin', !audio.paused);
+      panel.classList.toggle('spin', !S.paused());
       document.documentElement.classList.add('lyr-open');
       others().forEach(el => { el.inert = true; });
       lyrBtn.setAttribute('aria-expanded', 'true');
       discLabel();
       shown = '';
       frame();
-      arm();
       panel.querySelector('.lyr-x').focus();
     };
     const follow = row => {   // the player moved on (a new pick, or the next track after one ends)
       if (cur && cur !== row) { setRow(cur, false); cur.style.setProperty('--p', 0); cur.querySelector('.rel-t').textContent = fmt(+cur.dataset.dur); }
+      lastPaused = null;
       if (lyrRow && row !== lyrRow) closeLyrics(false);
       cur = row;
     };
     const play = row => {
       if (cur !== row) track('play_track', { track: row.dataset.title, from: 'music_page' });
       follow(row);
-      P.play(srcOf(row), row.dataset.title, queue);
+      const d = deck();
+      if (d && idx(row) >= 0) d.play(idx(row)); else P.play(srcOf(row), row.dataset.title, queue);
     };
+    const toggle = row => (cur === row && !S.paused()) ? S.pause() : play(row);
     rows.forEach(row => {
-      row.querySelector('.rel-play').addEventListener('click', () => (cur === row && !audio.paused) ? audio.pause() : play(row));
+      row.querySelector('.rel-play').addEventListener('click', () => toggle(row));
       const wave = row.querySelector('.rel-wave');
       wave.addEventListener('click', e => {
         const r = wave.getBoundingClientRect(), k = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
-        if (cur !== row) { play(row); audio.addEventListener('loadedmetadata', () => { audio.currentTime = k * audio.duration; }, { once: true, signal: ac.signal }); }
-        else if (audio.duration) audio.currentTime = k * audio.duration;
+        if (cur !== row) track('play_track', { track: row.dataset.title, from: 'music_page' });
+        S.seek(row, k);
       });
     });
     list.querySelectorAll('.rel-lyrics').forEach(b => b.addEventListener('click', () => {
@@ -161,27 +180,37 @@
     }));
     const discLabel = () => {
       if (!panel || !lyrRow) return;
-      panel.querySelector('.lyr-disc').setAttribute('aria-label', (cur === lyrRow && !audio.paused ? 'Pause ' : 'Play ') + lyrRow.dataset.title);
+      panel.querySelector('.lyr-disc').setAttribute('aria-label', (cur === lyrRow && !S.paused() ? 'Pause ' : 'Play ') + lyrRow.dataset.title);
     };
     if (panel) {
       panel.querySelector('.lyr-x').addEventListener('click', () => closeLyrics(true));
-      panel.querySelector('.lyr-disc').addEventListener('click', () => (cur === lyrRow && !audio.paused) ? audio.pause() : play(lyrRow));
+      panel.querySelector('.lyr-disc').addEventListener('click', () => toggle(lyrRow));
       panel.addEventListener('click', e => { if (e.target === panel) closeLyrics(true); });
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) closeLyrics(true); }, on);
     }
-    const mine = () => { const r = rows.find(x => srcOf(x) === P.src); if (r && r !== cur) follow(r); return !!r; };
-    audio.addEventListener('play', () => { if (!mine()) return; if (cur) setRow(cur, true); if (panel) panel.classList.add('spin'); discLabel(); arm(); }, on);
-    audio.addEventListener('pause', () => { if (cur) setRow(cur, false); if (panel) panel.classList.remove('spin'); discLabel(); frame(); }, on);
-    audio.addEventListener('seeked', () => { shown = ''; sync(); }, on);
+    // one watcher follows whichever source is playing: rows light up, progress moves, lyrics stay in time
+    let lastPaused = null, lastProg = 0;
     const progress = () => {
-      if (!cur || !audio.duration) return;
-      cur.style.setProperty('--p', (audio.currentTime / audio.duration).toFixed(4));
-      cur.querySelector('.rel-t').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+      if (!cur) return;
+      const d = S.dur(cur), t = S.time();
+      if (!d) return;
+      cur.style.setProperty('--p', Math.min(1, t / d).toFixed(4));
+      cur.querySelector('.rel-t').textContent = fmt(t) + ' / ' + fmt(d);
     };
-    audio.addEventListener('timeupdate', () => { progress(); sync(); }, on);
-    audio.addEventListener('ended', () => { if (cur && P.src === srcOf(cur)) setRow(cur, false); }, on);
-    // arriving with music already playing: light up its row
-    if (cur) { setRow(cur, !audio.paused); progress(); }
+    const watch = now => {
+      raf = requestAnimationFrame(watch);
+      const row = S.row(), paused = S.paused();
+      if (row && row !== cur) follow(row);
+      if (cur && paused !== lastPaused) {
+        lastPaused = paused;
+        setRow(cur, !paused);
+        if (panel) panel.classList.toggle('spin', !paused);
+        discLabel();
+      }
+      if (cur && row === cur && now - lastProg > 200) { lastProg = now; progress(); }
+      if (panel && !panel.hidden) frame();
+    };
+    raf = requestAnimationFrame(watch);
     return () => { closeLyrics(false); cancelAnimationFrame(raf); ac.abort(); };
   }
   });
