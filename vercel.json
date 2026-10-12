@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/admin", "destination": "https://reytek-back-office.vercel.app/admin" },
+    { "source": "/admin/:path*", "destination": "https://reytek-back-office.vercel.app/admin/:path*" }
+  ]
+}

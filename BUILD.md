@@ -55,3 +55,7 @@ Links between the six pages don't reload. `router.js` fetches the next page and 
 ## Roadmap
 
 See `PLAN.md`. Phases 1 to 4 are done: shared assets, the Origin page, the door pages, and music that keeps playing between pages. Next is Phase 5: real signups through Supabase.
+
+## The back office (/admin)
+
+`vercel.json` forwards `/admin` to the back office, a separate Next.js app (repo `reytek1201/back-office`, Vercel project `reytek-back-office`). It holds the Supabase secret key on its own server, which this static site can't do safely. `robots.txt` keeps `/admin` out of search.
