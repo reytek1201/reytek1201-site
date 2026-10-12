@@ -388,12 +388,35 @@ function pingNext() {
 }
 
 /* ---------- hub doors glow ---------- */
-$('#signup').addEventListener('submit', e => {
+// signups go to a Supabase function that only accepts new emails; nothing can be read back from the browser
+const SIGNUP_API = { url: 'https://pehytilcqrmzeuoewdnk.supabase.co', key: 'sb_publishable_FDV1I_WPq08LBsNyHOsbow_iZ0gcXxP' };   // publishable key: safe in the page, it can only call join_transmission
+$('#signup').addEventListener('submit', async e => {
   e.preventDefault();
-  const v = $('#email').value.trim(), msg = $('#msg');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { msg.textContent = 'Enter an email address like you@email.com.'; return; }
-  msg.textContent = 'Transmission received. (Prototype: signups get saved once Supabase is connected.)';
-  shock(0, 0, true);
+  const form = e.currentTarget, input = $('#email'), msg = $('#msg');
+  const v = input.value.trim();
+  msg.classList.remove('err');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || v.length > 254) { msg.classList.add('err'); msg.textContent = 'Enter an email address like you@email.com.'; input.focus(); return; }
+  if (form.classList.contains('busy')) return;
+  const ok = () => {
+    msg.textContent = "You're on the list. One email when something new drops.";
+    input.value = ''; shock(0, 0, true);
+    try { if (window.gtag) window.gtag('event', 'sign_up', { method: 'email' }); } catch (err) {}
+  };
+  if (form.website.value) { ok(); return; }   // a bot filled the hidden field: look the same, save nothing
+  if (!SIGNUP_API.url) { msg.textContent = 'Signups open soon.'; return; }
+  form.classList.add('busy'); msg.textContent = 'Sending…';
+  try {
+    const r = await fetch(SIGNUP_API.url + '/rest/v1/rpc/join_transmission', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SIGNUP_API.key },
+      body: JSON.stringify({ p_email: v, p_source: 'home' })
+    });
+    if (!r.ok) throw new Error(r.status === 400 ? 'invalid' : 'http ' + r.status);
+    ok();
+  } catch (err) {
+    msg.classList.add('err');
+    msg.textContent = err.message === 'invalid' ? 'That email didn\'t look right. Try again?' : 'Signal lost. Try again in a moment.';
+  } finally { form.classList.remove('busy'); }
 });
 
 /* ---------- scroll story ---------- */

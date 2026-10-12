@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=52662e75">
+<link rel="stylesheet" href="assets/site.css?v=c487d37a">
 
 </head><body>
 <canvas id="gl" aria-hidden="true"></canvas>
@@ -188,7 +188,8 @@
       </div>
       <form class="signup" id="signup" novalidate>
         <label for="email" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
-        <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required>
+        <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required maxlength="254">
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn primary" type="submit">Notify me</button>
         <div class="msg" id="msg" aria-live="polite"></div>
       </form>
@@ -207,7 +208,7 @@
 <div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" data-rt="three"></script>
-<script src="assets/main.js?v=879f9651" data-rt="main"></script>
+<script src="assets/main.js?v=a408a48d" data-rt="main"></script>
 
 <dialog class="lb" id="lb" aria-label="Photo viewer">
   <span class="lb-n" id="lbN"></span>

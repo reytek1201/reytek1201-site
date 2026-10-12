@@ -231,6 +231,9 @@ button{font:inherit;color:inherit}
 .signup input{flex:1 1 220px;min-width:0;background:rgba(5,6,8,.7);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;color:var(--bone);font:inherit;font-size:15px}
 .signup input::placeholder{color:var(--dim)}
 .signup input:focus{outline:none;border-color:var(--signal)}
+.signup .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.signup.busy button{opacity:.6;pointer-events:none}
+.signup .msg.err{color:var(--c2,#ff5fa2)}
 .signup .msg{flex-basis:100%;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--signal);min-height:1.5em}
 footer{position:relative;border-top:1px solid var(--line);padding:28px clamp(16px,6vw,96px) calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);background:rgba(5,6,8,.85)}
 footer nav{display:flex;flex-wrap:wrap;gap:20px}
@@ -1334,7 +1337,8 @@ window.BOOT = (() => {
       </div>
       <form class="signup" id="signup" novalidate>
         <label for="email" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
-        <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required>
+        <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required maxlength="254">
+        <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn primary" type="submit">Notify me</button>
         <div class="msg" id="msg" aria-live="polite"></div>
       </form>
@@ -1744,12 +1748,35 @@ function pingNext() {
 }
 
 /* ---------- hub doors glow ---------- */
-$('#signup').addEventListener('submit', e => {
+// signups go to a Supabase function that only accepts new emails; nothing can be read back from the browser
+const SIGNUP_API = { url: 'https://pehytilcqrmzeuoewdnk.supabase.co', key: 'sb_publishable_FDV1I_WPq08LBsNyHOsbow_iZ0gcXxP' };   // publishable key: safe in the page, it can only call join_transmission
+$('#signup').addEventListener('submit', async e => {
   e.preventDefault();
-  const v = $('#email').value.trim(), msg = $('#msg');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { msg.textContent = 'Enter an email address like you@email.com.'; return; }
-  msg.textContent = 'Transmission received. (Prototype: signups get saved once Supabase is connected.)';
-  shock(0, 0, true);
+  const form = e.currentTarget, input = $('#email'), msg = $('#msg');
+  const v = input.value.trim();
+  msg.classList.remove('err');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || v.length > 254) { msg.classList.add('err'); msg.textContent = 'Enter an email address like you@email.com.'; input.focus(); return; }
+  if (form.classList.contains('busy')) return;
+  const ok = () => {
+    msg.textContent = "You're on the list. One email when something new drops.";
+    input.value = ''; shock(0, 0, true);
+    try { if (window.gtag) window.gtag('event', 'sign_up', { method: 'email' }); } catch (err) {}
+  };
+  if (form.website.value) { ok(); return; }   // a bot filled the hidden field: look the same, save nothing
+  if (!SIGNUP_API.url) { msg.textContent = 'Signups open soon.'; return; }
+  form.classList.add('busy'); msg.textContent = 'Sending…';
+  try {
+    const r = await fetch(SIGNUP_API.url + '/rest/v1/rpc/join_transmission', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SIGNUP_API.key },
+      body: JSON.stringify({ p_email: v, p_source: 'home' })
+    });
+    if (!r.ok) throw new Error(r.status === 400 ? 'invalid' : 'http ' + r.status);
+    ok();
+  } catch (err) {
+    msg.classList.add('err');
+    msg.textContent = err.message === 'invalid' ? 'That email didn\'t look right. Try again?' : 'Signal lost. Try again in a moment.';
+  } finally { form.classList.remove('busy'); }
 });
 
 /* ---------- scroll story ---------- */

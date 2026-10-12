@@ -225,6 +225,9 @@ button{font:inherit;color:inherit}
 .signup input{flex:1 1 220px;min-width:0;background:rgba(5,6,8,.7);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;color:var(--bone);font:inherit;font-size:15px}
 .signup input::placeholder{color:var(--dim)}
 .signup input:focus{outline:none;border-color:var(--signal)}
+.signup .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.signup.busy button{opacity:.6;pointer-events:none}
+.signup .msg.err{color:var(--c2,#ff5fa2)}
 .signup .msg{flex-basis:100%;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--signal);min-height:1.5em}
 footer{position:relative;border-top:1px solid var(--line);padding:28px clamp(16px,6vw,96px) calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);background:rgba(5,6,8,.85)}
 footer nav{display:flex;flex-wrap:wrap;gap:20px}
