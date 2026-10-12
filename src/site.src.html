@@ -2945,6 +2945,9 @@ function frame(now) {
   if (justBeat && A.on && !reduce) { cornerIdx = (cornerIdx + 1) % 4; lastCornerBeat = clock; setCorner(cornerIdx); }
   else if (cornerIdx !== 1 && clock - lastCornerBeat > 2) { cornerIdx = 1; setCorner(1); }
   justBeat = false;
+  // cursor (runs on every page: the engine owns it once it has loaded)
+  const ck = 1 - Math.exp(-dt * 32); cx = lerp(cx, mouse.px, ck); cy = lerp(cy, mouse.py, ck);
+  if (fine) { cur.style.transform = `translate(${cx}px,${cy}px) scale(${1 + beat * 0.25})`; dot.style.transform = `translate(${mouse.px}px,${mouse.py}px)`; }
   if (document.body.classList.contains('page')) { requestAnimationFrame(frame); return; }
 
   // scroll
@@ -2985,9 +2988,6 @@ function frame(now) {
     els.chapters.forEach((s, i) => { s.classList.toggle('on', i === ch); if (i === ch) s.setAttribute('aria-current', 'true'); else s.removeAttribute('aria-current'); });
   }
 
-  // cursor
-  const ck = 1 - Math.exp(-dt * 32); cx = lerp(cx, mouse.px, ck); cy = lerp(cy, mouse.py, ck);
-  if (fine) { cur.style.transform = `translate(${cx}px,${cy}px) scale(${1 + beat * 0.25})`; dot.style.transform = `translate(${mouse.px}px,${mouse.py}px)`; }
 
   if (gl) {
     const { U, PU, camera, vortex, portrait, renderer } = gl;
