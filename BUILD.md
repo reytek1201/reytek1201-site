@@ -18,7 +18,9 @@ Python 3 is all it needs, with no packages to install. Commit the source and the
 | Homepage engine: vortex, deck, cursor, scroll story | the large `<script>` in `src/site.src.html` (built into `assets/main.js`) |
 | Origin page text | `src/pages/origin.html` |
 | The four-lane timeline (cards, years, photos) | `src/pages/origin-timeline.html` |
-| Music, Projects, Gaming and Art pages | `src/pages/music.html`, `projects.html`, `gaming.html`, `art.html` |
+| Music, Projects, Gaming, Art and Work pages | `src/pages/music.html`, `projects.html`, `gaming.html`, `art.html`, `work.html` |
+| Projects ticket rail and Work menu / order pad behavior | `src/js/pages.js` |
+| Database setup (signups, inquiries) | `supabase/migrations/` |
 | Track list (title, file, cover, BPM, NEW badge) | the `const TRACKS = [...]` line in `src/site.src.html` (the Music page and Art gallery are generated from it) |
 | Inner-page frame (cursor, social rail, buttons) | `src/js/shell.js` |
 | Music page player and the Gaming countdown | `src/js/pages.js` |

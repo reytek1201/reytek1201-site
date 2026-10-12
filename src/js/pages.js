@@ -339,6 +339,134 @@
   }
   });
 
+  /* Work: the letter-board menu fills the order pad, the line lights up as you scroll, and "Fire it" sends a real order */
+  window.RT.onPage(() => {
+  const form = document.getElementById('wkForm');
+  if (!form) return;
+  {
+    const SUPA = { url: 'https://pehytilcqrmzeuoewdnk.supabase.co', key: 'sb_publishable_FDV1I_WPq08LBsNyHOsbow_iZ0gcXxP' };   // publishable: it can only call place_order
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ac = new AbortController(), on = { signal: ac.signal };
+    const $ = id => document.getElementById(id);
+    const NAMES = { website: 'Business website', modernize: 'Site modernization', webapp: 'Small web app', mobile: 'iOS & Android app', ai: 'AI integration', automation: 'Automation' };
+    const WHEN = { asap: 'ASAP', month: 'This month', quarter: 'Next few months', exploring: 'Just looking' };
+    const BUDGET = { 'under-1500': 'Under $1.5k', '1500-5000': '$1.5k–5k', '5000-15000': '$5k–15k', '15000-plus': '$15k+', unsure: 'Not sure' };
+    let special = false, alive = true;
+
+    // the order: menu buttons and order pad chips are two views of the same set
+    const boxes = [...form.querySelectorAll('input[name="items"]')];
+    const menuBtns = [...document.querySelectorAll('.wk-item[data-item]')];
+    const specialBtn = document.querySelector('.wk-special-btn');
+    const toPad = $('wkToPad');
+    const picked = () => boxes.filter(b => b.checked).map(b => b.value);
+    const syncMenu = () => {
+      const set = new Set(picked());
+      menuBtns.forEach(b => b.setAttribute('aria-pressed', set.has(b.dataset.item) ? 'true' : 'false'));
+      if (specialBtn) { specialBtn.setAttribute('aria-pressed', special ? 'true' : 'false'); specialBtn.textContent = special ? 'On your order ✓' : 'Add the special'; }
+      if (toPad) { toPad.hidden = !set.size; $('wkCount').textContent = set.size; }
+    };
+    const setItem = (v, onOff) => { const b = boxes.find(x => x.value === v); if (b) b.checked = onOff; };
+    menuBtns.forEach(b => b.addEventListener('click', () => {
+      const v = b.dataset.item, now = !(b.getAttribute('aria-pressed') === 'true');
+      setItem(v, now); if (v === 'website' && !now) special = false;
+      syncMenu(); render(true);
+    }, on));
+    if (specialBtn) specialBtn.addEventListener('click', () => {
+      special = !special; if (special) setItem('website', true);
+      syncMenu(); render(true);
+    }, on);
+    if (toPad) toPad.addEventListener('click', e => { e.preventDefault(); $('order').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); }, on);
+
+    // the kitchen ticket prints as you fill in the guest check
+    const tk = $('wkTicket');
+    const ticketNo = () => '#' + String(Date.now() % 10000).padStart(4, '0');
+    $('ktNo').textContent = ticketNo();
+    const clock = () => { const d = new Date(); $('ktTime').textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); };
+    clock();
+    let lastItems = '';
+    const render = feed => {
+      const items = picked(), f = new FormData(form);
+      const name = String(f.get('name') || '').trim();
+      $('ktName').textContent = name ? name.split(/\s+/)[0] : '—';
+      const key = items.join(',') + (special ? '*' : '');
+      if (key !== lastItems) {
+        lastItems = key;
+        $('ktItems').innerHTML = items.length
+          ? items.map(v => `<li><span>1×</span><b>${NAMES[v]}${v === 'website' && special ? ' · special' : ''}</b></li>`).join('')
+          : '<li class="empty">Nothing on the ticket yet</li>';
+        if (feed && !reduce) { tk.classList.remove('feed'); void tk.offsetWidth; tk.classList.add('feed'); }
+      }
+      const d = String(f.get('details') || '').trim();
+      $('ktMod').querySelector('span').textContent = d ? (d.length > 90 ? d.slice(0, 88) + '…' : d) : '—';
+      $('ktWhen').textContent = WHEN[f.get('timeline')] || '—';
+      $('ktBudget').textContent = BUDGET[f.get('budget')] || '—';
+    };
+    form.addEventListener('input', () => { syncMenu(); render(true); }, on);
+    form.addEventListener('change', () => { syncMenu(); render(true); }, on);
+    syncMenu(); render(false);
+
+    // the line: the ticket rides the rail as you scroll, and each station lights up as it gets there
+    const pass = document.querySelector('.wk-pass'), sts = [...document.querySelectorAll('.wk-st')];
+    let raf = 0;
+    const line = () => {
+      raf = 0; if (!alive || !pass) return;
+      const r = pass.getBoundingClientRect(), vh = innerHeight;
+      const p = reduce ? 1 : Math.min(1, Math.max(0, (vh * .78 - r.top) / (r.height + vh * .2)));
+      pass.style.setProperty('--p', p.toFixed(3));
+      sts.forEach((st, i) => st.classList.toggle('lit', p >= [.02, .3, .58, .86][i]));
+    };
+    const ask = () => { if (!raf) raf = requestAnimationFrame(line); };
+    addEventListener('scroll', ask, { passive: true, signal: ac.signal });
+    addEventListener('resize', ask, on);
+    line();
+
+    // firing the order
+    const msg = $('wkMsg');
+    const say = (t, err) => { msg.textContent = t; msg.classList.toggle('err', !!err); };
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (form.classList.contains('busy')) return;
+      const f = new FormData(form), items = picked();
+      const name = String(f.get('name') || '').trim(), email = String(f.get('email') || '').trim();
+      let details = String(f.get('details') || '').trim();
+      if (!items.length && !details) { say('Add something to the ticket first: pick a dish or tell me what you need.', true); return; }
+      if (!name) { say('Who\'s the order for? Add your name.', true); form.elements.name.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say('I need an email to get back to you, like you@email.com.', true); form.elements.email.focus(); return; }
+      if (special) details = ("Chef's special (a site like this one). " + details).trim();
+      const heard = () => {
+        const first = name.split(/\s+/)[0];
+        say(`Heard, ${first}. Your ticket's on the rail. I'll get back to you at ${email}.`);
+        try { if (window.gtag) window.gtag('event', 'generate_lead', { items: items.join(','), budget: f.get('budget') || 'none' }); } catch (err) {}
+        tk.classList.add('heard');
+        setTimeout(() => {
+          if (!alive) return;
+          if (!reduce) tk.classList.add('away');
+          setTimeout(() => {
+            if (!alive) return;
+            form.reset(); special = false; tk.classList.remove('heard', 'away'); $('ktNo').textContent = ticketNo(); clock();
+            lastItems = '-'; syncMenu(); render(false);
+            if (!reduce) { tk.classList.remove('fresh'); void tk.offsetWidth; tk.classList.add('fresh'); }
+          }, reduce ? 0 : 700);
+        }, 1400);
+      };
+      if (form.website.value) { heard(); return; }   // a bot filled the hidden field: look the same, send nothing
+      form.classList.add('busy'); say('Sending it to the kitchen…');
+      try {
+        const r = await fetch(SUPA.url + '/rest/v1/rpc/place_order', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPA.key },
+          body: JSON.stringify({ p_name: name, p_email: email, p_items: items, p_details: details || null, p_timeline: f.get('timeline') || null, p_budget: f.get('budget') || null, p_source: 'work' })
+        });
+        if (!r.ok) throw new Error(r.status === 400 ? 'invalid' : 'http ' + r.status);
+        heard();
+      } catch (err) {
+        say(err.message === 'invalid' ? 'Something on the check didn\'t look right. Give it another look?' : 'The kitchen didn\'t get it. Try again in a moment, or email me instead.', true);
+      } finally { form.classList.remove('busy'); }
+    }, on);
+
+    return () => { alive = false; cancelAnimationFrame(raf); ac.abort(); };
+  }
+  });
+
   /* Gaming: countdown to the Path of Exile 2 1.0 launch */
   window.RT.onPage(() => {
   const cd = document.getElementById('countdown');

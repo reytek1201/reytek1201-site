@@ -85,6 +85,7 @@ GUIDE = [  # number, name, href, one line, lane color
     ('03', 'Projects', 'projects/', 'KeyMacro, SlidePress, FunkHarp', 'var(--c2)'),
     ('04', 'Gaming', 'gaming/', 'POE Source · Dec 11', 'var(--c3)'),
     ('05', 'Art', 'art/', 'Covers and experiments in light', 'var(--c0)'),
+    ('06', 'Work', 'work/', 'Sites, apps and AI tools · order up', '245,185,66'),
 ]
 GUIDE_THEMES = [('Cyan', '34,211,238'), ('Magenta', '255,61,184'), ('Amber', '255,159,28')]
 
@@ -136,7 +137,7 @@ THEMES = grab('<div class="themes" id="themes"', '</div>')
 RAIL = grab('<nav class="rail" id="rail"', '</nav>')
 FOOTER = grab('<footer>', '</footer>')
 LB = grab('<dialog class="lb" id="lb"', '</dialog>')
-NAV = [('Signal', '', ''), ('Origin', 'origin/', ''), ('Music', 'music/', ''), ('Projects', 'projects/', ''), ('Gaming', 'gaming/', ''), ('Art', 'art/', '')]
+NAV = [('Signal', '', ''), ('Origin', 'origin/', ''), ('Music', 'music/', ''), ('Projects', 'projects/', ''), ('Gaming', 'gaming/', ''), ('Art', 'art/', ''), ('Work', 'work/', '')]
 
 # share images: pages without their own use the site card
 OG = {
@@ -226,6 +227,8 @@ PAGES = {
               P('gaming'), SCR, 'Gaming'),
   'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek. The cover and label art for every release so far.',
            P('art').replace('__COVERS__', '\n'.join(gal)), SCR, 'Art'),
+  'work/': ('Work · REYTEK', 'Websites, web apps, iOS and Android apps and AI tools, built solo by Ray Burgos (Reytek) after 30+ years running kitchens. See the menu and place an order.',
+            P('work'), SCR, 'Work'),
 }
 built = {slug: inner_page(slug, *v) for slug, v in PAGES.items()}
 
@@ -240,7 +243,7 @@ def inline(html, depth):
     assert 'assets/' not in html
     # directory links don't resolve in the preview host: point at index.html
     html = html.replace('href="./"', 'href="index.html"')
-    html = re.sub(r'href="((?:\.\./)*)(origin|music|projects|gaming|art)/(#[\w-]*)?"', lambda m: f'href="{m.group(1)}{m.group(2)}/index.html{m.group(3) or ""}"', html)
+    html = re.sub(r'href="((?:\.\./)*)(origin|music|projects|gaming|art|work)/(#[\w-]*)?"', lambda m: f'href="{m.group(1)}{m.group(2)}/index.html{m.group(3) or ""}"', html)
     html = re.sub(r'href="((?:\.\./)+)(#[\w-]*)?"', lambda m: f'href="{m.group(1)}index.html{m.group(2) or ""}"', html)
     return html
 if '--preview' in sys.argv:
