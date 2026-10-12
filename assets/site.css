@@ -775,7 +775,8 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .cd-row div{display:grid;gap:2px;text-align:center}
 .cd-row b{font-family:var(--f-mark);font-weight:800;font-size:clamp(28px,3.4vw,44px);line-height:1;font-variant-numeric:tabular-nums;color:var(--bone)}
 .cd-row span{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
-.path-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:lvl}
+.path-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;counter-reset:lvl}
+@media (max-width:1100px){.path-list{grid-template-columns:repeat(2,minmax(0,1fr))}.path-step.has-img{grid-column:1/-1;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:18px}.path-step.has-img .path-pic{grid-row:1/-1;grid-column:1;margin:0}.path-step.has-img>:not(.path-pic){grid-column:2}.path-step.has-img .path-yr{grid-row:2}.path-step.has-img h3{grid-row:3}.path-step.has-img p{grid-row:4}.path-step::after{display:none}}
 .path-step{position:relative;display:grid;gap:6px;align-content:start;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:rgba(11,13,18,.7)}
 .path-step::after{content:'';position:absolute;top:50%;right:-15px;width:16px;height:1px;background:rgba(139,255,90,.5)}
 .path-step:last-child::after{display:none}
@@ -792,7 +793,7 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .gal img:hover{transform:translateY(-4px) rotate(-.6deg);box-shadow:0 20px 50px -20px rgba(var(--sig-rgb),.5)}
 .gal figcaption{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ash)}
 
-@media (max-width:980px){.facts-grid,.path-list{grid-template-columns:repeat(2,minmax(0,1fr))}.path-step::after{display:none}.gal-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:980px){.facts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.gal-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:760px){
   .poe-card{grid-template-columns:minmax(0,1fr);gap:18px;padding:16px}
   .rel{--disc:56px;grid-template-columns:var(--disc) minmax(0,1fr) 44px;gap:12px}
@@ -800,7 +801,7 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
   .rel.playing .rel-disc::after{width:6px;height:6px}
   .rel-t{display:none}
 }
-@media (max-width:640px){.facts-grid,.path-list{grid-template-columns:minmax(0,1fr)}.gal-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.facts-grid,.path-list{grid-template-columns:minmax(0,1fr)}.path-step.has-img{grid-template-columns:minmax(0,1fr);grid-template-rows:none}.path-step.has-img>*{grid-column:auto!important;grid-row:auto!important}.path-step.has-img .path-pic{margin-bottom:6px}.gal-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* ---------- router: inner pages over a sleeping homepage, the warp between pages, now playing ---------- */
 .page #gl,.page #strobe,.page .chip-dock{opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
