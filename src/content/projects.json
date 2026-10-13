@@ -1,0 +1,228 @@
+[
+ {
+  "slug": "km",
+  "sort": 10,
+  "color": "#34d399",
+  "tag": "2024",
+  "name": "KeyMacro",
+  "what": "AI nutrition & training app",
+  "status": "live",
+  "logo": [
+   {
+    "src": "img/logo-keymacro.webp",
+    "alt": "",
+    "w": 512,
+    "h": 512
+   }
+  ],
+  "logo_style": "logo",
+  "mod": "Eat and train off one plan.",
+  "time_value": "7 mo",
+  "lede": "My AI nutrition and training partner.",
+  "story": "KeyMacro builds your meals and your workouts off one plan, so eating and training stop living in separate apps. Coach Key checks in and adjusts when real life happens, Snap logs a plate from a photo, and the Green Zone rewards consistency over perfect grams. The kitchen is still in there: Prep Station splits the week's cooking by station, just like running a line.",
+  "order_note": "2024",
+  "fire_note": "built in 7 months",
+  "plated_note": "first sale",
+  "stat1_value": "7 months",
+  "stat1_label": "concept to first sale",
+  "stat2_value": "3 platforms",
+  "stat2_label": "web, iOS and Android",
+  "shots": [
+   {
+    "src": "img/proj/km-today.webp",
+    "alt": "Today's progress",
+    "w": 540,
+    "h": 1150
+   },
+   {
+    "src": "img/proj/km-snap.webp",
+    "alt": "Snap a meal",
+    "w": 540,
+    "h": 1150
+   },
+   {
+    "src": "img/proj/km-coach.webp",
+    "alt": "Coach Key",
+    "w": 540,
+    "h": 1150
+   }
+  ],
+  "shots_style": "phone",
+  "link_url": "https://keymacro.fit",
+  "link_label": "Open keymacro.fit ↗",
+  "note": null,
+  "more_url": null,
+  "more_label": null
+ },
+ {
+  "slug": "sp",
+  "sort": 20,
+  "color": "#f16931",
+  "tag": "2025",
+  "name": "SlidePress",
+  "what": "Social posting app",
+  "status": "live",
+  "logo": [
+   {
+    "src": "img/logo-slidepress.webp",
+    "alt": "",
+    "w": 485,
+    "h": 512
+   }
+  ],
+  "logo_style": "logo",
+  "mod": "Three apps → one. Hours → 10 min.",
+  "time_value": "2 mo",
+  "lede": "Three apps and hours, down to ten minutes.",
+  "story": "I was making social posts for KeyMacro and bouncing between three apps for every one. A post could take hours. Now I make it and publish it to every account in about ten minutes. It has so many moving parts and reviews to get through, and it still went to production in two months. It's the build I'm proudest of so far.",
+  "order_note": "2025",
+  "fire_note": "2 months",
+  "plated_note": "in production",
+  "stat1_value": "2 months",
+  "stat1_label": "to production",
+  "stat2_value": "10 min",
+  "stat2_label": "per post, everywhere",
+  "shots": [
+   {
+    "src": "img/proj/sp-editor.webp",
+    "alt": "The slide editor",
+    "w": 560,
+    "h": 1118
+   },
+   {
+    "src": "img/proj/sp-slide.webp",
+    "alt": "A finished slide",
+    "w": 600,
+    "h": 750
+   }
+  ],
+  "shots_style": "phone",
+  "link_url": "https://www.slidepress.co",
+  "link_label": "Open slidepress.co ↗",
+  "note": null,
+  "more_url": null,
+  "more_label": null
+ },
+ {
+  "slug": "fh",
+  "sort": 30,
+  "color": "#c0714f",
+  "tag": "Client",
+  "name": "FunkHarp",
+  "what": "Artist website",
+  "status": "served",
+  "logo": [
+   {
+    "src": "img/logo-funkharp.webp",
+    "alt": "",
+    "w": 360,
+    "h": 360
+   }
+  ],
+  "logo_style": "logo",
+  "mod": "For a friend who lives both lives.",
+  "time_value": "2 wk",
+  "lede": "A site for a friend who lives both lives too.",
+  "story": "Built for a buddy of mine in St. Augustine who is also a chef, and a great musician.",
+  "order_note": "a friend",
+  "fire_note": "built in 2 weeks",
+  "plated_note": "live",
+  "stat1_value": null,
+  "stat1_label": null,
+  "stat2_value": null,
+  "stat2_label": null,
+  "shots": [
+   {
+    "src": "img/proj/fh-site.webp",
+    "alt": "funkharp.com",
+    "w": 960,
+    "h": 504
+   }
+  ],
+  "shots_style": "wide",
+  "link_url": "https://funkharp.com",
+  "link_label": "Open funkharp.com ↗",
+  "note": null,
+  "more_url": null,
+  "more_label": null
+ },
+ {
+  "slug": "rt",
+  "sort": 40,
+  "color": "#22d3ee",
+  "tag": "2026",
+  "name": "reytek1201",
+  "what": "This hub",
+  "status": "here",
+  "logo": [
+   {
+    "src": "img/proj/face.webp",
+    "alt": "",
+    "w": 320,
+    "h": 320
+   }
+  ],
+  "logo_style": "face",
+  "mod": "Music, art, projects, play.",
+  "time_value": "2 wk",
+  "lede": "Music, art, projects and play, under one name.",
+  "story": "A light-trail vortex, a turntable you can scratch, and four decades on four lanes. Seeing how it's coming along, it might give the others some competition.",
+  "order_note": "2026",
+  "fire_note": "built in 2 weeks",
+  "plated_note": "you are here",
+  "stat1_value": null,
+  "stat1_label": null,
+  "stat2_value": null,
+  "stat2_label": null,
+  "shots": [
+   {
+    "src": "img/proj/rt-site.webp",
+    "alt": "reytek1201.com",
+    "w": 960,
+    "h": 504
+   }
+  ],
+  "shots_style": "wide",
+  "link_url": null,
+  "link_label": null,
+  "note": "You're looking at it.",
+  "more_url": null,
+  "more_label": null
+ },
+ {
+  "slug": "poe",
+  "sort": 50,
+  "color": "#e8c06a",
+  "tag": "Dec 11",
+  "name": "POE Source",
+  "what": "Path of Exile 2 companion",
+  "status": "fire",
+  "logo": [
+   {
+    "src": "img/logo-poesource.webp",
+    "alt": "",
+    "w": 720,
+    "h": 720
+   }
+  ],
+  "logo_style": "logo",
+  "mod": "Leveling guide out. Endgame next.",
+  "time_value": "{days} d",
+  "lede": "I've had this idea since POE2 came out.",
+  "story": "I never had the tools to build something of this caliber. Now I do. Free guides and tools for Path of Exile 2, and the campaign leveling guide is already live: every act, checkable step by step. The endgame companion is next, and I'm aiming to have it ready for the 1.0 launch.",
+  "order_note": "since POE2",
+  "fire_note": "early access, live",
+  "plated_note": "Dec 11 · 1.0",
+  "stat1_value": null,
+  "stat1_label": null,
+  "stat2_value": null,
+  "stat2_label": null,
+  "shots": [],
+  "shots_style": null,
+  "link_url": "https://poe2source.com/?utm_source=reytek1201&utm_medium=referral&utm_campaign=projects_page",
+  "link_label": "Open poe2source.com ↗",
+  "note": null,
+  "more_url": "../gaming/",
+  "more_label": "More on the Gaming page →"
+ }
+]

@@ -18,6 +18,9 @@ from seo import reps as SEO_REPS
 import timeline
 TL_ROWS, TL_FROM = timeline.load()
 print(f'timeline: {len(TL_ROWS)} moments from the {TL_FROM}')
+import projects, sitecontent
+PJ_ROWS, PJ_FROM = sitecontent.load('projects', 'id,' + projects.COLS)
+print(f'projects: {len(PJ_ROWS)} tickets from the {PJ_FROM}')
 s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
@@ -225,7 +228,7 @@ PAGES = {
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
              P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
-                P('projects'), SCR, 'Projects'),
+                projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
               P('gaming'), SCR, 'Gaming'),
   'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek. The cover and label art for every release so far.',

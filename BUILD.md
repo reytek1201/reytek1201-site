@@ -62,6 +62,6 @@ See `PLAN.md`. Phases 1 to 4 are done: shared assets, the Origin page, the door 
 
 ## Content from the back office
 
-The Origin timeline lives in Supabase (`timeline_moments`) and is edited in the back office at /admin. `src/timeline.py` fetches the published moments during the build and renders them into the timeline markup; `src/content/timeline.json` is the last fetched copy, used when the database can't be reached (for example on a laptop). On Vercel the build runs with `CONTENT_STRICT=1`, so it fails instead of publishing an old copy, and the previous deploy stays live.
+The Origin timeline (`timeline_moments`) and the Projects ticket rail (`projects`) live in Supabase and are edited in the back office at /admin. `src/projects.py` renders the tickets (ticket numbers come from their order); `src/sitecontent.py` fetches any content table with a saved copy in `src/content/<table>.json`. `src/timeline.py` fetches the published moments during the build and renders them into the timeline markup; `src/content/timeline.json` is the last fetched copy, used when the database can't be reached (for example on a laptop). On Vercel the build runs with `CONTENT_STRICT=1`, so it fails instead of publishing an old copy, and the previous deploy stays live.
 
 Pressing Publish in the back office calls the site's Vercel deploy hook, which rebuilds the site from the database.
