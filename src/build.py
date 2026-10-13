@@ -15,7 +15,10 @@ SRC = 'site.src.html'
 OUT = ROOT
 sys.path.insert(0, HERE)
 from seo import reps as SEO_REPS
-s = open(SRC).read()
+import timeline
+TL_ROWS, TL_FROM = timeline.load()
+print(f'timeline: {len(TL_ROWS)} moments from the {TL_FROM}')
+s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
 # 1. CSS: the single <style> block -> assets/site.css
@@ -128,7 +131,7 @@ open(f'{OUT}/index.html', 'w').write(page)
 print('built', {k: len(v) for k, v in js.items()}, 'css', len(css), 'html', len(page))
 
 # ---------- inner pages ----------
-SRC_TXT = open(SRC).read()
+SRC_TXT = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
 def grab(start, end, txt=SRC_TXT):
     i = txt.index(start); j = txt.index(end, i) + len(end); return txt[i:j]
 GA = next(b for a, b in SEO_REPS if 'googletagmanager' in b).split('<title>')[0]
@@ -179,7 +182,7 @@ def inner_page(slug, title, desc, content, scripts, label):
     open(f'{OUT}/{slug}index.html', 'w').write(html)
     return html
 
-lanes_html = open('pages/origin-timeline.html').read()
+lanes_html = timeline.render(open('pages/origin-timeline.html').read(), TL_ROWS)
 TR = json.loads(re.search(r'const TRACKS = (\[.*?\]);\n', SRC_TXT).group(1))
 fmt = lambda x: f'{int(x)//60}:{int(x)%60:02d}'
 def wave(peaks, n=120):

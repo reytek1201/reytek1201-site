@@ -1,0 +1,267 @@
+[
+ {
+  "sort": 10,
+  "year_label": "1976",
+  "lane": "life",
+  "title": "Born in Puerto Rico",
+  "body": "Computers and games were part of my life from the very beginning.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 20,
+  "year_label": "1984",
+  "lane": "play",
+  "title": "Raised on quarters",
+  "body": "My dad’s arcades were my first playground: neon signs, cosmic carpet and a change machine that never slept. Galaga taught me patterns. Donkey Kong taught me patience. I was eight, and every game was a world to figure out.",
+  "anchor": "y1984",
+  "media": [
+   {
+    "src": "img/arcade-1984.webp",
+    "alt": "A packed 1980s arcade with Pac-Man, Galaga and Donkey Kong cabinets under neon signs",
+    "w": 1200,
+    "h": 896
+   }
+  ],
+  "media_style": "flat"
+ },
+ {
+  "sort": 30,
+  "year_label": "1988",
+  "lane": "life",
+  "title": "Puerto Rico to North Miami",
+  "body": "We moved to the US and settled in North Miami, Florida. South Florida became home.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 40,
+  "year_label": "1991",
+  "lane": "code",
+  "title": "My first real PC",
+  "body": "Computers came first. The rave was two years away.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 50,
+  "year_label": "1992",
+  "lane": "kitchen",
+  "title": "Dishwasher, Boston Market",
+  "body": "Hollywood, Florida. My first kitchen job, and the start of more than three decades on the line.",
+  "anchor": null,
+  "media": [
+   {
+    "src": "img/boston-market-1992.webp",
+    "alt": "A Boston Market restaurant under palm trees in South Florida",
+    "w": 348,
+    "h": 348
+   }
+  ],
+  "media_style": "flat"
+ },
+ {
+  "sort": 60,
+  "year_label": "1993",
+  "lane": "sound",
+  "title": "The Edge, Fort Lauderdale",
+  "body": "My first rave. The music took me over and I started dancing to the beats. That day changed my life.",
+  "anchor": "y1993",
+  "media": [
+   {
+    "src": "img/edge-crowd.webp",
+    "alt": "The crowd on the dancefloor at The Edge, Fort Lauderdale",
+    "w": 720,
+    "h": 540
+   }
+  ],
+  "media_style": "photo"
+ },
+ {
+  "sort": 70,
+  "year_label": "1994",
+  "lane": "sound",
+  "title": "First synths",
+  "body": "A Nord Lead and a Quasimidi Rave-O-Lution 309. I spent every penny I had on that thing.",
+  "anchor": null,
+  "media": [
+   {
+    "src": "img/rave-o-lution-309.webp",
+    "alt": "The Quasimidi Rave-O-Lution 309, a silver groovebox covered in knobs and blue buttons",
+    "w": 460,
+    "h": 366
+   }
+  ],
+  "media_style": "flat"
+ },
+ {
+  "sort": 80,
+  "year_label": "1995",
+  "lane": "sound",
+  "title": "Winter Music Conference at The Edge",
+  "body": "Rabbit in the Moon leading the gathering. Nights with DJ Icey and DJ Sharpe. My friends from the club ate at my restaurants; my crews came out to The Edge.",
+  "anchor": null,
+  "media": [
+   {
+    "src": "img/edge-flyer-1995.webp",
+    "alt": "The Edge flyer, March 25, 1995, during Winter Music Conference: Rabbit in the Moon, Spacetime Continuum, Mixmaster Morris",
+    "w": 320,
+    "h": 250
+   },
+   {
+    "src": "img/edge-flyer-icey.webp",
+    "alt": "The Edge flyer: DJ Icey, DJ Mot, Flux and the resident DJ Sharpe",
+    "w": 320,
+    "h": 250
+   }
+  ],
+  "media_style": "pair"
+ },
+ {
+  "sort": 90,
+  "year_label": "1997",
+  "lane": "code",
+  "title": "My first website",
+  "body": "It looked good on my computer. On a friend’s it took about 30 minutes to load.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 100,
+  "year_label": "2005",
+  "lane": "life",
+  "title": "Georgia, and Benjamin",
+  "body": "A new state, and on December 1st my son Benjamin was born. Everything changed, in the best way.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 110,
+  "year_label": "2007",
+  "lane": "sound",
+  "title": "Full Sail University",
+  "body": "Audio engineering in Orlando.",
+  "anchor": "y2007",
+  "media": [
+   {
+    "src": "img/full-sail-2007.webp",
+    "alt": "The Full Sail Studios entrance arch in Winter Park, Florida",
+    "w": 250,
+    "h": 187
+   }
+  ],
+  "media_style": "flat"
+ },
+ {
+  "sort": 120,
+  "year_label": "2009",
+  "lane": "life",
+  "title": "Los Angeles",
+  "body": "I went west for new kitchens and new flavors. LA gave me both, and something I didn’t see coming: film scores. Music that tells a story without saying a word.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 130,
+  "year_label": "One night",
+  "lane": "kitchen",
+  "title": "1,000 covers. Four cooks.",
+  "body": "At Wolfgang Puck’s. The night I’ll never forget.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 140,
+  "year_label": "2011",
+  "lane": "kitchen",
+  "title": "Back to South Florida",
+  "body": "Geronimo’s Bar and Grill: line cook, assistant manager, bartender.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 150,
+  "year_label": "2016",
+  "lane": "kitchen",
+  "title": "Executive chef, St. Augustine",
+  "body": "Three successful restaurants. There is not one kitchen I will work in without music. It’s a necessity, not a want.",
+  "anchor": "y2016",
+  "media": [
+   {
+    "src": "img/keymacro-kitchen.webp",
+    "alt": "Ray Burgos in a chef's apron at a kitchen counter with fresh vegetables",
+    "w": 400,
+    "h": 300
+   }
+  ],
+  "media_style": "flat"
+ },
+ {
+  "sort": 160,
+  "year_label": "2024",
+  "lane": "code",
+  "title": "Now or never",
+  "body": "I always wanted to build apps and never had the time. So I saved up and bought my time.",
+  "anchor": "y2024",
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 170,
+  "year_label": "2024",
+  "lane": "code",
+  "title": "KeyMacro",
+  "body": "My AI nutrition and training partner: meal plans and workouts off one plan, with Coach Key in your corner. Seven months from concept to first sale.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 180,
+  "year_label": "2025",
+  "lane": "code",
+  "title": "SlidePress",
+  "body": "Built out of necessity: social posts used to take me three apps and hours. Now it’s ten minutes, everywhere at once. In production in two months.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 190,
+  "year_label": "2026",
+  "lane": "sound",
+  "title": "Back in the studio",
+  "body": "Threshold of Sound, Sonic Illusion, Dawn on the Loading Dock. I’ve stopped many times, but music always calls me back.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 200,
+  "year_label": "2026",
+  "lane": "code",
+  "title": "This hub",
+  "body": "Every lane in one place.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ },
+ {
+  "sort": 210,
+  "year_label": "Dec 2026",
+  "lane": "play",
+  "title": "POE Source",
+  "body": "Gaming is another parallel highway in my life. POE Source is built to launch with Path of Exile 2 1.0 on December 11.",
+  "anchor": null,
+  "media": [],
+  "media_style": null
+ }
+]

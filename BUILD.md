@@ -59,3 +59,9 @@ See `PLAN.md`. Phases 1 to 4 are done: shared assets, the Origin page, the door 
 ## The back office (/admin)
 
 `vercel.json` forwards `/admin` to the back office, a separate Next.js app (repo `reytek1201/back-office`, Vercel project `reytek-back-office`). It holds the Supabase secret key on its own server, which this static site can't do safely. `robots.txt` keeps `/admin` out of search.
+
+## Content from the back office
+
+The Origin timeline lives in Supabase (`timeline_moments`) and is edited in the back office at /admin. `src/timeline.py` fetches the published moments during the build and renders them into the timeline markup; `src/content/timeline.json` is the last fetched copy, used when the database can't be reached (for example on a laptop). On Vercel the build runs with `CONTENT_STRICT=1`, so it fails instead of publishing an old copy, and the previous deploy stays live.
+
+Pressing Publish in the back office calls the site's Vercel deploy hook, which rebuilds the site from the database.
