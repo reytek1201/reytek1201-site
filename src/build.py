@@ -231,7 +231,7 @@ PAGES = {
                 projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
               P('gaming'), SCR, 'Gaming'),
-  'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek. The cover and label art for every release so far.',
+  'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek: Kaelen of the Threefold Path, a Path of Exile 2 character brought to life with an original score, and the cover art for every release.',
            P('art').replace('__COVERS__', '\n'.join(gal)), SCR, 'Art'),
   'work/': ('Work · REYTEK', 'Websites, web apps, iOS and Android apps and AI tools, built solo by Ray Burgos (Reytek) after 30+ years running kitchens. See the menu and place an order.',
             P('work'), SCR, 'Work'),

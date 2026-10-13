@@ -1,4 +1,4 @@
-/* ---------- door pages: release player (Music) and launch countdown (Gaming) ---------- */
+/* ---------- door pages: release player (Music), the Kaelen short (Art) and launch countdown (Gaming) ---------- */
 (() => {
   const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
   const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
@@ -471,6 +471,26 @@
     }, on);
 
     return () => { alive = false; cancelAnimationFrame(raf); ac.abort(); };
+  }
+  });
+
+  /* Art: a short plays in place. YouTube (privacy mode) loads only after a tap, and the site's music pauses. */
+  window.RT.onPage(() => {
+  const frames = document.querySelectorAll('[data-yt]');
+  if (!frames.length) return;
+  {
+    const ac = new AbortController();
+    frames.forEach(fr => fr.querySelector('.film-play').addEventListener('click', () => {
+      try { const P = window.RTPlayer; if (P && P.audio) P.audio.pause(); const D = window.RTDeck; if (D && D.playing && D.playing()) D.stop(); } catch (e) {}
+      const f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(fr.dataset.yt) + '?autoplay=1&playsinline=1&rel=0';
+      f.title = fr.dataset.title || 'Video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      fr.replaceChildren(f); f.focus();
+      track('video_play', { video: fr.dataset.yt });
+    }, { signal: ac.signal }));
+    return () => ac.abort();
   }
   });
 
