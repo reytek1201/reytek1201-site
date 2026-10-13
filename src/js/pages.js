@@ -297,6 +297,9 @@
       const to = dlg.getBoundingClientRect();
       veil.classList.add('on'); root.classList.add('tr-is-open');
       others().forEach(el => { el.inert = true; });
+      // each line prints when the feeding paper reaches it (the feed takes 620ms over the visible height)
+      const tall = paper.clientHeight || 1;
+      paper.querySelectorAll('.pr').forEach(el => el.style.setProperty('--d', Math.max(0, Math.round(Math.min(1, el.offsetTop / tall) * 620) - 60) + 'ms'));
       const done = () => { dlg.style.visibility = ''; dlg.classList.remove('printing'); void dlg.offsetWidth; if (!reduce) dlg.classList.add('printing'); paper.querySelector('.tr-x').focus({ preventScroll: true }); };
       opener.classList.add('gone');
       if (reduce) { done(); return; }
@@ -309,8 +312,12 @@
       fly.animate([
         { transform: `rotate(${sw[i].a}deg)` },
         { transform: `translate(0, 26px) rotate(${sw[i].a * 1.6}deg)`, offset: .22 },
-        { transform: `translate(${dx}px, ${dy}px) scale(${sx}) rotate(0deg)`, opacity: .35 }
-      ], { duration: 520, easing: 'cubic-bezier(.5,0,.15,1)' }).onfinish = () => { fly.remove(); if (cur === i) done(); };
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}) rotate(0deg)` }
+      ], { duration: 520, easing: 'cubic-bezier(.5,0,.15,1)', fill: 'forwards' }).onfinish = () => {
+        // the full ticket starts feeding out from under the landed one, which then fades away
+        if (cur === i) done();
+        fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }).onfinish = () => fly.remove();
+      };
     };
     const close = (quiet) => {
       if (cur < 0) return;

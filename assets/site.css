@@ -878,10 +878,17 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .tr-go:hover{background:#000}
 .tr-go i{width:8px;height:8px;border-radius:50%;background:rgb(var(--pc));box-shadow:0 0 10px rgb(var(--pc))}
 .tr-open .txt-link.tr-more{color:var(--ink);border-color:rgba(28,28,30,.4)}
-.tr-open.printing .pr{animation:trPrint .38s steps(6) both;animation-delay:calc(var(--n) * 70ms + 120ms)}
+/* the paper feeds out from the top like a receipt, and each line prints as the paper reaches it (--d is set in pages.js) */
+.tr-open.printing .tr-paper{animation:trFeed .62s linear both}
+@keyframes trFeed{from{clip-path:inset(0 -120px 100% -120px)}to{clip-path:inset(0 -120px -120px -120px)}}
+.tr-open.printing .pr{animation:trPrint .2s steps(4) both;animation-delay:var(--d,0ms)}
 @keyframes trPrint{from{clip-path:inset(0 0 100% 0);opacity:.2}to{clip-path:inset(0 0 0 0);opacity:1}}
-.tr-flyer{position:fixed!important;z-index:86;pointer-events:none;transform-origin:50% 0}
-html.tr-is-open #cur,html.tr-is-open #dot{z-index:91}
+/* the small ticket flying to the center lives outside .tickets, so it needs the paper colors itself */
+.tr-flyer{--paper:#f1eee6;--paper-2:#e6e2d7;--ink:#1c1c1e;--ink-2:#55534d;position:fixed!important;z-index:86;pointer-events:none;transform-origin:50% 0;color:var(--ink)}
+/* over the cream ticket the light cursor vanished: invert it, dark on paper and light on the dark veil */
+html.tr-is-open #cur,html.tr-is-open #dot{z-index:91;mix-blend-mode:difference}
+html.tr-is-open #cur{border-color:#fff;border-width:1.5px}
+html.tr-is-open #dot{background:#fff}
 @media (max-width:1000px){.tr-tk{flex:0 0 auto;width:188px;max-width:none}.tr-rail{justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 18px 34px;margin:-8px -18px 0;scrollbar-width:none}.tr-rail::-webkit-scrollbar{display:none}.tr-tk{scroll-snap-align:center}}
 @media (max-width:820px){
   .tr-kds{width:100%;font-size:9.5px;letter-spacing:.1em}
@@ -896,7 +903,7 @@ html.tr-is-open #cur,html.tr-is-open #dot{z-index:91}
   .tr-paper{padding:26px 18px calc(36px + env(safe-area-inset-bottom,0px));border-radius:14px 14px 0 0}
   .tr-shots img{height:260px}
 }
-@media (prefers-reduced-motion:reduce){.tr-glint,.tr-kds .hot i{animation:none}.tr-open.printing .pr{animation:none}.tr-slip{transition:none}}
+@media (prefers-reduced-motion:reduce){.tr-glint,.tr-kds .hot i{animation:none}.tr-open.printing .pr,.tr-open.printing .tr-paper{animation:none}.tr-slip{transition:none}}
 
 /* work: front of house. A letter-board menu, the line, and an order pad that prints a kitchen ticket */
 .wk-menu,.wk-line,.wk-proof,.wk-order{--wc:245,185,66;--paper:#f1eee6;--paper-2:#e6e2d7;--ink:#1c1c1e;--ink-2:#55534d;padding:5vh clamp(16px,6vw,96px)}
