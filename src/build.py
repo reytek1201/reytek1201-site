@@ -176,7 +176,7 @@ def inner_page(slug, title, desc, content, scripts, label):
     body = ('<div id="grain" aria-hidden="true"></div>\n<div class="frame" id="frame" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></div>\n'
             '<div class="topscrim" aria-hidden="true"></div><div class="botscrim" aria-hidden="true"></div>\n'
             f'<div class="hud hud-tl"><a href="{up}" aria-label="REYTEK home"><span class="dot"></span><b>REYTEK</b><span>/ {label}</span></a></div>\n'
-            f'<nav class="hud hud-tr chapters" aria-label="Pages">{nav}</nav>\n<div class="hud hud-bl">Hub v0.1 · {label}</div>\n'
+            f'<nav class="hud hud-tr chapters" aria-label="Pages">{nav}</nav>\n<div class="hud hud-bl">Hub v1.0 · {label}</div>\n'
             + RAIL + '\n' + guide(slug, up) + '\n<div class="hud hud-br">' + THEMES + '</div>\n\n<main>\n'
             + content + '</main>\n\n' + extra + FOOTER + '\n\n<div id="cur" aria-hidden="true"></div><div id="dot" aria-hidden="true"></div>\n'
             + LB + '\n' + ''.join(f'<script src="{up}{ASSET[n]}" data-rt="{n[:-3]}"></script>\n' for n in scripts + ['router.js']) + '</body></html>\n')
