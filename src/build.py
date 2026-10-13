@@ -221,7 +221,7 @@ PAGES = {
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
              P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)), SCR, 'Music'),
-  'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, a meal planner with a kitchen brain, SlidePress for social posting, the FunkHarp site and this hub.',
+  'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
                 P('projects'), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
               P('gaming'), SCR, 'Gaming'),
