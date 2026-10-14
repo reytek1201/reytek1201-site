@@ -359,11 +359,13 @@ def sheet(r, b, selected):
     if r.get('poe_slug'):
         q = urllib.parse.urlencode({'loadout': (r.get('poe_loadout') or '').lower()}) + '&amp;' if r.get('poe_loadout') else ''
         links.append(f'<a class="btn primary" href="{POE_SITE}/b/{e(r["poe_slug"])}?{q}utm_source=reytek1201&amp;utm_medium=referral&amp;utm_campaign=gaming_sheet" {EXT}>Open the full build on POE Source ↗</a>')
+    elif r.get('guide_url'):
+        links.append(f'<a class="btn primary" href="{e(r["guide_url"])}" {EXT}>Read the build guide ↗</a>')
     elif r.get('planner_url'):
         links.append(f'<a class="btn primary" href="{e(r["planner_url"])}" {EXT}>Open the build planner ↗</a>')
     if r.get('slug') == 'kaelen': links.append('<a class="btn" href="../art/#kaelen">See the series in Art</a>')
     credit = ''
-    if r.get('guide_url'):
+    if r.get('guide_url') and r.get('poe_slug'):
         credit = f'<p class="sh-credit"><a class="txt-link" href="{e(r["guide_url"])}" {EXT}>{e(r.get("guide_credit") or "Read the guide")} ↗</a></p>'
     elif r.get('guide_credit'):
         credit = f'<p class="sh-credit">{e(r["guide_credit"])}</p>'
