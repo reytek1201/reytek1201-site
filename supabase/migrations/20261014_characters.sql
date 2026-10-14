@@ -44,3 +44,9 @@ select * from (values
 ('diablo', 40, 'Diablo', 'Diablo', 'locked', null, null, null, null, null, null, null)
 ) as v(slug, sort, game, name, status, class_line, blurb, poe_slug, planner_url, guide_url, guide_credit, videos)
 where not exists (select 1 from public.characters);
+
+-- Which POE Source loadout (gear + skill set title) a character sheet shows, and an optional level to show.
+alter table public.characters
+  add column if not exists poe_loadout text check (char_length(poe_loadout) <= 80),
+  add column if not exists level integer check (level between 1 and 100);
+update public.characters set poe_loadout = 'Endgame (Energy Shield Version)' where slug = 'poe2-palsteron' and poe_loadout is null;
