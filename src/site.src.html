@@ -886,33 +886,33 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 @media (prefers-reduced-motion:reduce){.le-sl,.le-idol{transition:none}.le-sl:hover{transform:none}}
 /* Gaming: Now playing strip, in the page flow under the intro (named gnp so it never picks up the music player's .np styles) */
 .gnp{padding:0 clamp(16px,6vw,96px) 2vh}
-.gnp-list{display:grid;gap:16px}
-.gnp-list.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))}
+.gnp-list{display:grid;gap:12px}
+.gnp-list.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
 .gnp-card{--mx:30%;--my:20%;--rx:0deg;--ry:0deg;position:relative;display:grid;overflow:hidden;isolation:isolate;border:1px solid rgba(var(--sig-rgb),.38);border-radius:calc(var(--r) + 6px);background:linear-gradient(135deg,rgba(var(--sig-rgb),.10),transparent 55%),rgba(10,10,12,.82);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .25s ease,border-color .25s,box-shadow .25s}
 .gnp-card.tilting{transition:border-color .25s,box-shadow .25s}
 .gnp-card::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(360px circle at var(--mx) var(--my),rgba(var(--sig-rgb),.22),transparent 60%)}
 .gnp-card:hover,.gnp-card:focus-within{border-color:rgba(var(--sig-rgb),.8);box-shadow:0 14px 44px -14px rgba(var(--sig-rgb),.55)}
 .gnp-card:hover::before{opacity:1}
-.gnp-card.has-art{grid-template-columns:minmax(150px,38%) minmax(0,1fr)}
+.gnp-card.has-art{grid-template-columns:minmax(96px,27%) minmax(0,1fr)}
 .gnp-art{position:relative;display:block;overflow:hidden;min-height:100%}
 .gnp-art::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,rgba(10,10,12,.96)),linear-gradient(0deg,rgba(10,10,12,.55),transparent 35%)}
 .gnp-art img,main .gnp-art img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;background:none;object-fit:cover;object-position:50% 20%;transform:scale(1.06) translate(var(--px,0),var(--py,0));transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .gnp-card:hover .gnp-art img{transform:scale(1.14) translate(var(--px,0),var(--py,0))}
-.gnp-body{position:relative;z-index:3;display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px 22px}
-.gnp-body h2{margin:0;font-size:clamp(22px,2.6vw,30px);line-height:1.08}
+.gnp-body{position:relative;z-index:3;display:flex;flex-direction:column;gap:6px;min-width:0;padding:14px 18px}
+.gnp-body h2{margin:0;font-size:clamp(18px,1.9vw,22px);line-height:1.1}
 .gnp-body p{margin:0}
 .gnp-meta{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(var(--sig-rgb),.95)}
-.gnp-blurb{color:var(--bone);opacity:.85;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.gnp-blurb{color:var(--bone);opacity:.85;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.4}
 .gnp-chips{display:flex;flex-wrap:wrap;gap:6px}
-.gnp-chips span{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;padding:4px 9px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:99px;color:var(--bone);background:rgba(var(--sig-rgb),.08)}
-.gnp-credit{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--ash)}
+.gnp-chips span{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;padding:2px 8px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:99px;color:var(--bone);background:rgba(var(--sig-rgb),.08)}
+.gnp-credit{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--ash)}
 .gnp-card .proj-meta{margin:0}
 .gnp-card .proj-status.live{--pc:var(--sig-rgb)}
 .gnp-card .proj-status.live::before{animation:gnp-pulse 1.8s ease-in-out infinite}
 @keyframes gnp-pulse{50%{opacity:.3}}
-.gnp-card .page-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:6px}
-.gnp-card .page-cta .btn{padding:11px 12px;font-size:10.5px;letter-spacing:.1em;white-space:nowrap}
-@media (max-width:640px){.gnp-card.has-art{grid-template-columns:1fr}.gnp-art{height:190px;min-height:0}.gnp-art::after{background:linear-gradient(0deg,rgba(10,10,12,.96),transparent 70%)}.gnp-body{padding:16px 18px 18px;margin-top:-34px}}
+.gnp-card .page-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:2px}
+.gnp-card .page-cta .btn{padding:8px 11px;font-size:10px;letter-spacing:.1em;white-space:nowrap}
+@media (max-width:640px){.gnp-card.has-art{grid-template-columns:1fr}.gnp-art{height:120px;min-height:0}.gnp-art::after{background:linear-gradient(0deg,rgba(10,10,12,.96),transparent 70%)}.gnp-body{padding:16px 18px 18px;margin-top:-34px}}
 @media (prefers-reduced-motion:reduce){.gnp-card,.gnp-art img{transition:none!important;transform:none!important}.gnp-card .proj-status.live::before{animation:none}}
 /* Gaming: Player Select. An arcade select row (1P cursor, one slot per character) over one character sheet at a time.
    Play-lane green marks the selection; Path of Exile's own rarity colors appear only inside the sheet. */

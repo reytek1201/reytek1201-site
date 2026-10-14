@@ -408,14 +408,16 @@ def card(r):
     art = (f'<a class="gnp-art" href="{pick}" data-pick="{e(r["slug"])}" tabindex="-1" aria-hidden="true"><img src="{e(pic.get("src"))}" alt="" width="{int(pic.get("w") or 480)}" '
            f'height="{int(pic.get("h") or 480)}" loading="lazy" decoding="async"></a>') if pic.get('src') else ''
     links = []
-    if r.get('planner_url'):
+    if r.get('guide_url') and not r.get('poe_slug'):
+        links.append(f'<a class="btn primary" href="{e(r["guide_url"])}" {EXT}>Read the guide ↗</a>')
+    elif r.get('planner_url'):
         links.append(f'<a class="btn primary" href="{e(r["planner_url"])}" {EXT}>Open the build ↗</a>')
     elif r.get('poe_slug'):
         q = '?' + urllib.parse.urlencode({'loadout': r['poe_loadout'].lower()}).replace('&', '&amp;') if r.get('poe_loadout') else ''
         links.append(f'<a class="btn primary" href="{POE_SITE}/b/{e(r["poe_slug"])}{q}" {EXT}>Open the build ↗</a>')
     links.append(f'<a class="btn" href="{pick}" data-pick="{e(r["slug"])}">Character sheet</a>')
     credit = e(r.get('guide_credit'))
-    if r.get('guide_url'):
+    if r.get('guide_url') and r.get('poe_slug'):
         credit = f'<a class="txt-link" href="{e(r["guide_url"])}" {EXT}>{credit or "Read the guide"} ↗</a>'
     chips = [x for x in (r.get('class_line'), ('Loadout: ' + r['poe_loadout']) if r.get('poe_loadout') else None,
                          ('Level %s' % r['level']) if r.get('level') else None) if x]
