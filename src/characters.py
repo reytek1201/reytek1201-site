@@ -8,7 +8,16 @@ public icon storage, looked up in src/content/poe2_icons.json (refresh it with s
 """
 import html, json, math, os, re, unicodedata, urllib.parse, urllib.request
 
-COLS = 'slug,sort,game,name,status,class_line,blurb,poe_slug,poe_loadout,level,planner_url,guide_url,guide_credit,videos,portrait'
+import lastepoch
+COLS = 'slug,sort,game,name,status,class_line,blurb,poe_slug,poe_loadout,level,loadout,planner_url,guide_url,guide_credit,videos,portrait'
+
+def _seed(slug):
+    """Last Epoch build data shipped with the repo, used only while the database row's loadout is empty."""
+    f = os.path.join(HERE, 'content', f'le_loadout_{slug.split("-", 1)[-1].replace("-", "_")}.json')
+    try:
+        with open(f) as fh: return fh.read()
+    except OSError: return None
+
 MARK = '__NOW_PLAYING__'
 SELECT_MARK = '__PLAYER_SELECT__'
 
@@ -338,7 +347,8 @@ def sheet(r, b, selected):
     if st == 'locked':
         return (open_ + f'<div class="sh-locked">{LOCK}<h3>{e(r.get("game"))}</h3><p>Locked for now.</p></div></article>')
     s = (b or {}).get('summary') or {}
-    lvl = r.get('level') or (s.get('level') if s.get('statsMatch') else None)
+    le = lastepoch.load(r.get('loadout') or _seed(r['slug']))
+    lvl = r.get('level') or (le or {}).get('level') or (s.get('level') if s.get('statsMatch') else None)
     cls = r.get('class_line') or ' · '.join(x for x in (s.get('className'), s.get('ascendClassName')) if x)
     meta = ''.join(f'<span>{x}</span>' for x in (e(r.get('game')), e(cls), f'{int(s["passiveCount"])} passives' if s.get('passiveCount') else '') if x)
     loadout = (s.get('gear') or {}).get('title') if b else ''
@@ -364,7 +374,9 @@ def sheet(r, b, selected):
     about = ((f'<p class="sh-blurb">{e(r["blurb"])}</p>' if r.get('blurb') else '') + credit
              + (f'<div class="page-cta">{"".join(links)}</div>' if links else ''))
     eps_html = f'<div class="sh-eps"><h4>Episodes</h4><ol>{eps}</ol></div>' if eps else ''
-    if b:
+    if le:
+        body = f'{lastepoch.body(r["slug"], le)}<div class="sh-about">{about}</div>{eps_html}'
+    elif b:
         st_html = stats(s)
         body = (f'<div class="sh-grid{" has-stats" if st_html else ""}">{doll(r["slug"], b)}{st_html}</div>{skills(s)}'
                 f'<div class="sh-about">{about}</div>{eps_html}')

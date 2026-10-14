@@ -567,6 +567,22 @@
       });
     });
 
+    // Last Epoch sheet: one item card at a time (gear and idols share the card column)
+    ps.querySelectorAll('[data-le]').forEach(root => {
+      const btns = [...root.querySelectorAll('[aria-controls]')], cards = [...root.querySelectorAll('.le-card')];
+      const show = (b, scroll) => {
+        btns.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+        let shown = null;
+        cards.forEach(c => { c.hidden = c.id !== b.getAttribute('aria-controls'); if (!c.hidden) shown = c; });
+        if (scroll && shown && !hover.matches) shown.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      };
+      btns.forEach(b => {
+        b.addEventListener('click', () => show(b, true), on);
+        b.addEventListener('focus', () => show(b, false), on);
+        b.addEventListener('mouseenter', () => { if (hover.matches) show(b, false); }, on);
+      });
+    });
+
     place();
     addEventListener('resize', place, on);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);

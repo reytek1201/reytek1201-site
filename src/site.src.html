@@ -774,6 +774,96 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .poe-card .btn.primary:hover{border-color:#e8c06a;background:rgba(232,192,106,.16);box-shadow:0 0 24px -6px rgba(232,192,106,.6)}
 .poe-art img{width:100%;height:auto;display:block;border-radius:var(--r)}
 .poe-body{display:grid;gap:12px;min-width:0}
+/* Last Epoch character sheet (src/lastepoch.py). Drawn glyphs, rarity colours, one item card at a time. */
+.le{--rc:150,150,160;display:grid;gap:14px;margin-top:6px}
+.rar-legendary{--rc:255,122,42}.rar-unique{--rc:240,160,60}.rar-exalted{--rc:181,124,255}.rar-rare{--rc:242,217,74}.rar-magic{--rc:111,168,255}.rar-set{--rc:111,211,107}.rar-heretical{--rc:200,92,255}.rar-normal{--rc:190,190,200}
+.le-box{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:rgba(11,11,14,.6);min-width:0}
+.le-box h4{margin:0 0 12px;font:600 11px var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+.le-box h4 small{margin-left:8px;letter-spacing:.08em;color:rgba(var(--sig-rgb),.9);font-weight:500}
+.le-main{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:14px;align-items:start}
+.le-tipcol{position:sticky;top:78px;min-width:0}
+.le-row{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:14px;align-items:start}
+.le-row3{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}
+.le-src{margin:0;font:11px var(--f-mono);letter-spacing:.06em;color:var(--ash)}
+
+/* gear doll */
+.le-doll{display:grid;grid-template-columns:repeat(3,1fr);grid-template-areas:". hd am" "w1 bd w2" "r1 bt r2" "gl bo rl";gap:8px}
+.a-hd{grid-area:hd}.a-am{grid-area:am}.a-w1{grid-area:w1}.a-bd{grid-area:bd}.a-w2{grid-area:w2}.a-r1{grid-area:r1}.a-bt{grid-area:bt}.a-r2{grid-area:r2}.a-gl{grid-area:gl}.a-bo{grid-area:bo}.a-rl{grid-area:rl}
+.le-sl{position:relative;display:grid;place-items:center;aspect-ratio:1;padding:0;border:1px solid rgba(var(--rc),.55);border-radius:10px;color:rgb(var(--rc));cursor:pointer;
+  background:radial-gradient(circle at 50% 38%,rgba(var(--rc),.20),rgba(var(--rc),.04) 62%),rgba(8,8,10,.8);transition:transform .15s,box-shadow .15s,border-color .15s}
+.le-sl:hover,.le-sl:focus-visible{transform:translateY(-2px);border-color:rgba(var(--rc),.95)}
+.le-sl[aria-pressed=true]{border-color:rgb(var(--rc));box-shadow:0 0 0 2px rgba(var(--rc),.35),0 8px 22px -8px rgba(var(--rc),.7)}
+.le-sl.empty{--rc:120,120,130;border-style:dashed;opacity:.35;cursor:default}
+.le-gl{width:54%;height:54%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(var(--rc),.45))}
+.le-sn{position:absolute;left:0;right:0;bottom:4px;text-align:center;font:9px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
+
+/* item card */
+.le-card{border:1px solid rgba(var(--rc),.5);border-radius:var(--r);padding:14px 16px 12px;background:linear-gradient(180deg,rgba(var(--rc),.10),transparent 120px),rgba(9,9,12,.92);display:grid;gap:8px;font-size:13.5px;line-height:1.4}
+.le-card header{display:grid;gap:2px;padding-bottom:8px;border-bottom:1px solid rgba(var(--rc),.35)}
+.le-nm{font:600 clamp(17px,2vw,20px) var(--f-body);color:rgb(var(--rc))}
+.le-ty{font:11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ash)}
+.le-pr{margin:0;font:12px var(--f-mono);color:var(--bone);opacity:.85}
+.le-card ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.le-card li{display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+.le-card li span{min-width:0}
+.le-card li i{flex:none;font:600 10px var(--f-mono);letter-spacing:.08em;font-style:normal;padding:1px 6px;border-radius:99px;border:1px solid rgba(var(--rc),.5);color:rgb(var(--rc))}
+.le-card li.mod span{color:#9ad0ff}
+.le-card li.note span{font-size:12px;color:var(--ash);font-style:italic}
+.le-imp{padding-bottom:8px;border-bottom:1px dashed rgba(255,255,255,.12)}
+.le-imp li.mod span{color:var(--bone)}
+.le-rel{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.le-rel span{font:11px var(--f-mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--ash)}
+.le-lore{margin:2px 0 0;font-style:italic;color:#c9a86a;font-size:12.5px}
+.le-req{margin:0;font:11px var(--f-mono);letter-spacing:.04em;color:var(--ash)}
+
+/* idols */
+.le-altar{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;padding:7px 10px;border:1px solid rgba(var(--sig-rgb),.4);border-radius:8px;background:rgba(var(--sig-rgb),.06);color:var(--bone);font:12px var(--f-mono);cursor:pointer;text-align:left}
+.le-altar .le-gl{width:20px;height:20px;flex:none;color:rgb(var(--sig-rgb))}
+.le-altar[aria-pressed=true]{border-color:rgb(var(--sig-rgb))}
+.le-igrid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);gap:3px;aspect-ratio:1;max-width:300px}
+.le-cell{border-radius:4px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035)}
+.le-cell.c-blocked{opacity:.18}
+.le-cell.c-refract{border-color:rgba(var(--sig-rgb),.5);background:rgba(var(--sig-rgb),.1)}
+.le-idol{position:relative;z-index:1;display:grid;place-items:center;padding:0;border-radius:6px;border:1px solid rgba(var(--rc),.8);color:rgb(var(--rc));cursor:pointer;
+  background:linear-gradient(160deg,rgba(var(--rc),.32),rgba(var(--rc),.1)),rgba(8,8,10,.9);transition:box-shadow .15s}
+.le-idol .le-gl{width:60%;height:60%;max-width:34px;max-height:34px}
+.le-idol:hover,.le-idol:focus-visible,.le-idol[aria-pressed=true]{box-shadow:0 0 0 2px rgba(var(--rc),.5),0 6px 16px -6px rgba(var(--rc),.8)}
+
+/* stats */
+.le-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:14px}
+.le-st h5{margin:0 0 6px;font:600 10px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:rgba(var(--sig-rgb),.9)}
+.le-st dl{margin:0;display:grid;gap:3px}
+.le-st dl div{display:flex;justify-content:space-between;gap:10px;font-size:13px;border-bottom:1px dotted rgba(255,255,255,.08);padding-bottom:2px}
+.le-st dt{color:var(--ash)}.le-st dd{margin:0;font-family:var(--f-mono);color:var(--bone)}
+
+/* skills, passives, blessings */
+.le-box ol,.le-box ul.bl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.le-bless ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.le-bless li{display:grid;gap:1px;padding-left:10px;border-left:2px solid var(--line)}
+.le-bless li.grand{border-left-color:rgba(var(--sig-rgb),.8)}
+.le-bless b{font-weight:600}.le-bless span{font-size:13px;color:#9ad0ff}.le-bless em{font:11px var(--f-mono);font-style:normal;color:var(--ash)}
+.le-box details{border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.02)}
+.le-box summary{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;list-style:none}
+.le-box summary::-webkit-details-marker{display:none}
+.le-box summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);color:var(--ash)}
+.le-box details[open] summary::after{content:"−"}
+.le-box details[open]{border-color:rgba(var(--sig-rgb),.45)}
+.le-skn,.le-pn{font-weight:600}
+.le-skl,.le-skp,.le-pp{font:11px var(--f-mono);letter-spacing:.06em;color:var(--ash)}
+.le-skl{padding:1px 7px;border:1px solid rgba(var(--sig-rgb),.5);border-radius:99px;color:rgb(var(--sig-rgb))}
+.le-pp{font-size:13px;color:rgb(var(--sig-rgb))}
+.le-bar{flex:1;max-width:70px;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.le-bar i{display:block;height:100%;background:rgb(var(--sig-rgb))}
+.le-nodes{list-style:none;margin:0;padding:2px 12px 10px;display:grid;gap:4px}
+.le-nodes li{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--bone)}
+.le-nodes b{font:600 11px var(--f-mono);color:var(--ash);flex:none}
+
+@media (max-width:760px){
+  .le-main,.le-row{grid-template-columns:1fr}
+  .le-tipcol{position:static}
+  .le-doll{max-width:360px}
+}
+@media (prefers-reduced-motion:reduce){.le-sl,.le-idol{transition:none}.le-sl:hover{transform:none}}
 /* Gaming: Now playing strip, in the page flow under the intro (named gnp so it never picks up the music player's .np styles) */
 .gnp{padding:0 clamp(16px,6vw,96px) 2vh}
 .gnp-list{display:grid;gap:16px}

@@ -50,3 +50,7 @@ alter table public.characters
   add column if not exists poe_loadout text check (char_length(poe_loadout) <= 80),
   add column if not exists level integer check (level between 1 and 100);
 update public.characters set poe_loadout = 'Endgame (Energy Shield Version)' where slug = 'poe2-palsteron' and poe_loadout is null;
+
+-- Last Epoch sheet: the exported build (gear, idols, blessings, skills, passives, stats) as JSON text,
+-- made by the "Export to reytek" bookmarklet on lastepochtools.com and pasted in the back office.
+alter table public.characters add column if not exists loadout text check (char_length(loadout) <= 300000);
