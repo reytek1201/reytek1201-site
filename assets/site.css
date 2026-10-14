@@ -781,6 +781,7 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .gnp-credit{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--ash)}
 .gnp-card .proj-status.live{--pc:var(--sig-rgb)}
 .gnp-card .page-cta{margin-top:4px}
+.gnp-card .page-cta{display:flex;flex-wrap:wrap;gap:10px}.gnp-card .page-cta .btn{padding:12px 16px;font-size:11px;letter-spacing:.16em}
 @media (max-width:640px){.gnp-card.has-art{grid-template-columns:72px minmax(0,1fr)}}
 /* Gaming: Player Select. An arcade select row (1P cursor, one slot per character) over one character sheet at a time.
    Play-lane green marks the selection; Path of Exile's own rarity colors appear only inside the sheet. */
@@ -790,15 +791,15 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 @media (hover:none){.ps-hint{display:none}}
 .ps-row{position:relative;display:flex;gap:clamp(8px,1.4vw,14px);padding:30px 4px 22px;margin:0 -4px -18px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
 .ps-row::-webkit-scrollbar{display:none}
-.ps-slot{position:relative;flex:0 0 clamp(74px,20.5vw,184px);display:grid;align-content:start;gap:10px;padding:0;border:0;background:none;color:var(--bone);text-align:left;cursor:pointer;scroll-snap-align:start;-webkit-tap-highlight-color:transparent}
-.ps-pic{position:relative;display:grid;place-items:center;aspect-ratio:3/4;overflow:hidden;border-radius:6px;border:1px solid var(--line);background:radial-gradient(90% 60% at 50% 0,rgba(237,235,230,.07),transparent 70%),#0b0d12;transition:border-color .2s,box-shadow .2s,filter .2s}
-.ps-pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ps-slot{position:relative;flex:0 0 clamp(66px,13vw,128px);display:grid;align-content:start;gap:8px;padding:0;border:0;background:none;color:var(--bone);text-align:left;cursor:pointer;scroll-snap-align:start;-webkit-tap-highlight-color:transparent}
+.ps-pic{position:relative;display:grid;place-items:center;aspect-ratio:1;overflow:hidden;border-radius:6px;border:1px solid var(--line);background:radial-gradient(90% 60% at 50% 0,rgba(237,235,230,.07),transparent 70%),#0b0d12;transition:border-color .2s,box-shadow .2s,filter .2s}
+.ps-pic img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;border-radius:0;background:none}
 .ps-pic::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);pointer-events:none}
-.ps-code{position:relative;z-index:1;font-family:var(--f-num);font-weight:800;font-size:clamp(26px,4.6vw,60px);line-height:.9;letter-spacing:.01em;color:rgba(237,235,230,.88)}
-.ps-slot.has-pic .ps-code{position:absolute;left:9px;bottom:8px;font-size:clamp(15px,2vw,22px);text-shadow:0 2px 10px #000}
+.ps-code{position:relative;z-index:1;font-family:var(--f-num);font-weight:800;font-size:clamp(20px,3.2vw,40px);line-height:.9;letter-spacing:.01em;color:rgba(237,235,230,.88)}
+.ps-slot.has-pic .ps-code{position:absolute;left:7px;bottom:6px;font-size:clamp(12px,1.5vw,16px);text-shadow:0 1px 6px #000,0 0 2px #000}
 .ps-cap{display:grid;gap:3px;min-width:0}
 .ps-game,.ps-state{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
-.ps-name{font-family:var(--f-body);font-weight:500;font-size:14px;line-height:1.25}
+.ps-name{font-family:var(--f-body);font-weight:500;font-size:13px;line-height:1.25}
 .ps-slot.is-live .ps-state{color:rgb(var(--play))}
 .ps-slot.is-live .ps-state::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;margin-right:6px;vertical-align:1px;animation:psPulse 1.6s ease-in-out infinite}
 .ps-slot.is-retired .ps-pic{filter:grayscale(.8) brightness(.62)}

@@ -13,7 +13,14 @@
   "guide_url": "https://actionrpg.com/last-epoch/guide/poison-rogues-necromancer-endgame-build-guide",
   "guide_credit": "Following the guide by Aaron (ActionRPG)",
   "videos": null,
-  "portrait": [],
+  "portrait": [
+   {
+    "src": "img/chars/le-poison-rogues.webp",
+    "alt": "A necromancer with a glowing green staff leads hooded skeleton rogues through a ruined crypt",
+    "w": 480,
+    "h": 480
+   }
+  ],
   "poe_loadout": null,
   "level": null
  },
@@ -31,7 +38,14 @@
   "guide_url": null,
   "guide_credit": null,
   "videos": null,
-  "portrait": [],
+  "portrait": [
+   {
+    "src": "img/chars/poe2-palsteron.webp",
+    "alt": "A druid raises his staff in a storm of lightning as ice pillars erupt around him",
+    "w": 480,
+    "h": 480
+   }
+  ],
   "poe_loadout": "Endgame (Energy Shield Version)",
   "level": null
  },
