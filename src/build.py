@@ -21,6 +21,9 @@ print(f'timeline: {len(TL_ROWS)} moments from the {TL_FROM}')
 import projects, sitecontent
 PJ_ROWS, PJ_FROM = sitecontent.load('projects', 'id,' + projects.COLS)
 print(f'projects: {len(PJ_ROWS)} tickets from the {PJ_FROM}')
+import characters
+CH_ROWS, CH_FROM = sitecontent.load('characters', characters.COLS)
+print(f'characters: {len(CH_ROWS)} from the {CH_FROM}')
 s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
@@ -230,7 +233,7 @@ PAGES = {
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
                 projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
-              P('gaming'), SCR, 'Gaming'),
+              characters.render(P('gaming'), CH_ROWS), SCR, 'Gaming'),
   'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek: Kaelen of the Threefold Path, a Path of Exile 2 character brought to life with an original score, and the cover art for every release.',
            P('art').replace('__COVERS__', '\n'.join(gal)), SCR, 'Art'),
   'work/': ('Work · REYTEK', 'Websites, web apps, iOS and Android apps and AI tools, built solo by Ray Burgos (Reytek) after 30+ years running kitchens. See the menu and place an order.',

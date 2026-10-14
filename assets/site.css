@@ -768,6 +768,18 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .poe-card .btn.primary:hover{border-color:#e8c06a;background:rgba(232,192,106,.16);box-shadow:0 0 24px -6px rgba(232,192,106,.6)}
 .poe-art img{width:100%;height:auto;display:block;border-radius:var(--r)}
 .poe-body{display:grid;gap:12px;min-width:0}
+/* Gaming: Now playing strip, in the page flow under the intro (named gnp so it never picks up the music player's .np styles) */
+.gnp{padding:0 clamp(16px,6vw,96px) 2vh}
+.gnp-card{display:grid;gap:18px;padding:16px 18px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:calc(var(--r) + 4px);background:radial-gradient(circle at 0 0,rgba(var(--sig-rgb),.12),transparent 50%),rgba(11,13,18,.78)}
+.gnp-card.has-art{grid-template-columns:96px minmax(0,1fr);align-items:center}
+.gnp-art img{display:block;width:100%;height:auto;border-radius:10px}
+.gnp-body{display:grid;gap:8px;min-width:0}
+.gnp-body h2{margin:0;font-size:clamp(20px,2.4vw,26px)}
+.gnp-body p{margin:0}
+.gnp-credit{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--ash)}
+.gnp-card .proj-status.live{--pc:var(--sig-rgb)}
+.gnp-card .page-cta{margin-top:4px}
+@media (max-width:640px){.gnp-card.has-art{grid-template-columns:72px minmax(0,1fr)}}
 /* Art: Kaelen of the Threefold Path, a vertical short behind a play button (YouTube loads only on tap) */
 .film,.kael{padding:5vh clamp(16px,6vw,96px)}
 .film-card{--fi:255,106,61;--ic:127,212,255;--st:180,140,255;display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:32px;align-items:center;padding:22px;border:1px solid rgba(var(--ic),.28);border-radius:calc(var(--r) + 4px);
