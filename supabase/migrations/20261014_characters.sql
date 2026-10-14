@@ -37,7 +37,7 @@ select * from (values
  null, 'https://www.lastepochtools.com/planner/Bakv46j9',
  'https://actionrpg.com/last-epoch/guide/poison-rogues-necromancer-endgame-build-guide', 'Following the guide by Aaron (ActionRPG)', null),
 ('poe2-palsteron', 20, 'Path of Exile 2', 'Palsteron Grim Pillars', 'retired', 'Druid · Oracle',
- null, '3JdN4ZekXw', null, null, null, null),
+ null, '7VBA2Aj49n', null, null, null, null),
 ('kaelen', 30, 'Path of Exile 2', 'Kaelen of the Threefold Path', 'retired', 'Monk · Hollow Palm',
  'The Hollow Palm monk, kept as a character with his video series.',
  null, null, null, null, 'Part 1 of 4 | KDcnnFOW5as'),
