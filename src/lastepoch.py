@@ -4,6 +4,7 @@ Everything is drawn from the JSON that the "Export to reytek" bookmarklet copies
 (see le_export.js). The back office stores it as text in characters.loadout. No game art is used: slots get drawn
 glyphs coloured by rarity."""
 import json
+import os
 import re
 from html import escape as e
 
@@ -95,6 +96,18 @@ def card(cid, p, raw, shown):
     req = f'<p class="le-req">{" · ".join(e(x) for x in p["req"][:3])}</p>' if p['req'] else ''
     return (f'<div class="le-card rar-{rar_class(p, raw)}" id="{cid}"' + ('' if shown else ' hidden') + f'>{head}{props}{imp}{mod}{rel}{lore}{req}</div>')
 
+# Item icons saved in img/le/ (from the build guide's gear section), looked up by item name. A missing file falls back to the drawn glyph.
+ICONS = {'Lethal Concentration': '2hand_icon_2', 'Wall of Nothing': 'chest_icon_31', 'Unbroken Legion': 'helm_icon_26',
+         "Julra's Obsession": 'gloves_icon_9', 'Foot of the Mountain': 'boots_icon_7', "Brewmaster's Buckle": 'belt_icon_13',
+         'Hollow Finger': 'ring_icon_16', 'Unsated Rage': 'ring_icon_28', "Serpent's Milk": 'amulet_icon_23', "Tyrant's Skull": 'relic_icon_3'}
+_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+
+def icon(name, key):
+    f = ICONS.get(name)
+    if f and os.path.exists(os.path.join(_ROOT, 'img', 'le', f + '.jpg')):
+        return f'<img class="le-ic" src="/img/le/{f}.jpg" alt="" loading="lazy" decoding="async">'
+    return svg(key)
+
 def doll(slug, d, first):
     eq, cards, btns = d.get('equipment') or {}, [], []
     for key, label, area in SLOTS:
@@ -107,7 +120,7 @@ def doll(slug, d, first):
         shown = key == first
         cards.append(card(cid, p, raw, shown))
         btns.append(f'<button type="button" class="{cls} rar-{rar_class(p, raw)}" aria-controls="{cid}" aria-pressed="{"true" if shown else "false"}" '
-                    f'aria-label="{e(label)}: {e(p["name"])}">{svg(key)}<span class="le-sn">{e(label)}</span></button>')
+                    f'aria-label="{e(label)}: {e(p["name"])}">{icon(p["name"], key)}<span class="le-sn">{e(label)}</span></button>')
     return ''.join(btns), cards
 
 def idol_panel(slug, d, cards_out):
