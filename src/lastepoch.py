@@ -105,7 +105,9 @@ _ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__))
 def icon(name, key):
     f = ICONS.get(name)
     if f and os.path.exists(os.path.join(_ROOT, 'img', 'le', f + '.jpg')):
-        return f'<span class="le-ic"><img class="le-ic-i" src="/img/le/{f}.jpg" alt="" loading="lazy" decoding="async"></span>'
+        ar = {'2hand': '150/260', 'chest': '150/260', 'belt': '235/128'}.get(f.split('_')[0], '1')
+        return (f'<span class="le-ic"><span class="le-icf" style="aspect-ratio:{ar}"><img class="le-ic-i" src="/img/le/{f}.jpg" alt="" '
+                f'loading="lazy" decoding="async"></span></span>')
     return svg(key)
 
 def doll(slug, d, first):

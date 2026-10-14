@@ -802,11 +802,11 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .le-sl.a-w2.empty .le-gl{width:46%;height:46%;opacity:.55}
 .le-sl:has(.le-ic){overflow:hidden;min-width:0;min-height:0;padding:0;border:1px solid rgba(var(--rc),.4);background:#0c0a0b;box-shadow:inset 0 0 0 1px rgba(0,0,0,.6)}
 .le-sl:has(.le-ic):hover,.le-sl:has(.le-ic):focus-visible,.le-sl:has(.le-ic)[aria-pressed=true]{border-color:rgb(var(--rc));box-shadow:0 0 0 1px rgba(var(--rc),.5),0 8px 20px -10px rgba(var(--rc),.9)}
-.le-sl .le-ic{position:absolute;inset:5px;overflow:hidden;border:1px solid rgba(160,36,64,.75);background:radial-gradient(circle at 50% 35%,#4a0f23,#1b0710 75%)}
-.le-sl img.le-ic-i{position:absolute;inset:0;width:100%;height:100%;max-width:none;border-radius:0;object-fit:cover;transform:scale(1.15);transition:transform .25s}
-.le-sl:hover img.le-ic-i,.le-sl:focus-visible img.le-ic-i,.le-sl[aria-pressed=true] img.le-ic-i{transform:scale(1.22)}
-.le-sl.a-bt img.le-ic-i{object-fit:contain;transform:scale(1.75)}
-.le-sl.a-bt:hover img.le-ic-i,.le-sl.a-bt[aria-pressed=true] img.le-ic-i{transform:scale(1.85)}
+.le-sl .le-ic{position:absolute;inset:6px;display:flex;align-items:center;justify-content:center}
+.le-sl .le-icf{position:relative;overflow:hidden;width:100%;height:auto;max-height:100%;border:1px solid rgba(160,36,64,.75);background:#1b0710}
+.le-sl.a-bd .le-icf,.le-sl.a-bo .le-icf,.le-sl.a-bt .le-icf{width:auto;height:100%;max-width:100%}
+.le-sl img.le-ic-i{position:absolute;inset:0;width:100%;height:100%;max-width:none;border-radius:0;object-fit:cover;transform:scale(1.07);transition:transform .25s}
+.le-sl:hover img.le-ic-i,.le-sl:focus-visible img.le-ic-i,.le-sl[aria-pressed=true] img.le-ic-i{transform:scale(1.12)}
 .le-sl:has(.le-ic) .le-sn{opacity:0;z-index:1;bottom:7px;color:#f0e6d4;text-shadow:0 1px 3px #000,0 0 6px #000;transition:opacity .15s}
 .le-sl:has(.le-ic):hover .le-sn,.le-sl:has(.le-ic):focus-visible .le-sn{opacity:1}
 .le-sn{position:absolute;left:0;right:0;bottom:4px;text-align:center;font:9px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ash)}
