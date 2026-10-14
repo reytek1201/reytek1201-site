@@ -385,8 +385,8 @@ def player_select(rows, builds):
 # ---------- Now playing ----------
 
 def now_playing(rows):
-    """The first Live character by sort order, or None."""
-    return next((r for r in rows if r.get('status') == 'live'), None)
+    """Every Live character, in sort order."""
+    return [r for r in rows if r.get('status') == 'live']
 
 def card(r):
     pic = (r.get('portrait') or [{}])[0]
@@ -397,23 +397,25 @@ def card(r):
     if r.get('planner_url'):
         links.append(f'<a class="btn primary" href="{e(r["planner_url"])}" {EXT}>Open the build ↗</a>')
     elif r.get('poe_slug'):
-        links.append(f'<a class="btn primary" href="{POE_SITE}/b/{e(r["poe_slug"])}" {EXT}>Open the build on POE Source ↗</a>')
+        q = '?' + urllib.parse.urlencode({'loadout': r['poe_loadout'].lower()}).replace('&', '&amp;') if r.get('poe_loadout') else ''
+        links.append(f'<a class="btn primary" href="{POE_SITE}/b/{e(r["poe_slug"])}{q}" {EXT}>Open the build ↗</a>')
     links.append(f'<a class="btn" href="#pick-{e(r["slug"])}" data-pick="{e(r["slug"])}">Character sheet</a>')
     credit = e(r.get('guide_credit'))
     if r.get('guide_url'):
         credit = f'<a class="txt-link" href="{e(r["guide_url"])}" {EXT}>{credit or "Read the guide"} ↗</a>'
-    return (f'  <section class="gnp" aria-labelledby="gnpTitle">\n    <div class="page-in">\n'
-            f'      <div class="gnp-card{" has-art" if art else ""}">\n        {art}\n        <div class="gnp-body">\n'
+    return (f'      <div class="gnp-card{" has-art" if art else ""}">\n        {art}\n        <div class="gnp-body">\n'
             f'          <div class="proj-meta"><span class="proj-status live">Now playing</span><span>{meta}</span></div>\n'
-            f'          <h2 id="gnpTitle">{e(r["name"])}</h2>\n'
+            f'          <h2>{e(r["name"])}</h2>\n'
             + (f'          <p>{e(r["blurb"])}</p>\n' if r.get('blurb') else '')
             + (f'          <p class="gnp-credit">{credit}</p>\n' if credit else '')
             + f'          <div class="page-cta">{"".join(links)}</div>\n'
-            + '        </div>\n      </div>\n    </div>\n  </section>\n')
+            + '        </div>\n      </div>\n')
 
 def render(template, rows, builds=None):
     assert template.count(MARK) == 1, MARK
     assert template.count(SELECT_MARK) == 1, SELECT_MARK
-    r = now_playing(rows)
-    page = template.replace(MARK + '\n', card(r) if r else '', 1)
+    live = now_playing(rows)
+    strip = (f'  <section class="gnp" aria-label="Now playing">\n    <div class="page-in">\n'
+             f'      <div class="gnp-list{" two" if len(live) > 1 else ""}">\n{"".join(card(r) for r in live)}      </div>\n    </div>\n  </section>\n') if live else ''
+    page = template.replace(MARK + '\n', strip, 1)
     return page.replace(SELECT_MARK + '\n', player_select(rows, builds or {}), 1)
