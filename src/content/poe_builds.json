@@ -1,50 +1,971 @@
 [
  {
-  "share_slug": "3JdN4ZekXw",
-  "loadout": "Endgame (Energy Shield Version)",
-  "label": "Palsteron Grim Pillars",
+  "share_slug": "7VBA2Aj49n",
+  "label": "Palestron Grim Pillars",
   "video_url": null,
-  "updated_at": "2026-09-20T05:12:42.65+00:00",
+  "updated_at": "2026-10-14T12:53:57.823+00:00",
+  "loadout": "",
   "summary": {
    "game": "poe2",
-   "level": 15,
+   "level": 93,
    "className": "Druid",
    "ascendClassName": "Oracle",
+   "mainSkill": {
+    "name": "Spell Totem",
+    "supports": [
+     "Grim Pillars",
+     "Urgent Totems III",
+     "Efficiency II",
+     "Magnified Area II",
+     "Cold Mastery"
+    ]
+   },
+   "attributes": {
+    "strength": 66,
+    "dexterity": 17,
+    "intelligence": 165
+   },
+   "offense": {
+    "dps": null,
+    "speed": 3.68,
+    "hitChance": 100,
+    "averageHit": null,
+    "critChance": null,
+    "critMultiplier": 385
+   },
+   "defense": {
+    "life": 1262,
+    "mana": 982,
+    "armour": 0,
+    "spirit": 434,
+    "evasion": 9,
+    "totalEhp": 10551.564923089,
+    "coldResist": 75,
+    "fireResist": 75,
+    "blockChance": 0,
+    "chaosResist": 20,
+    "evadeChance": 0,
+    "energyShield": 4537,
+    "deflectChance": 0,
+    "lightningResist": 75,
+    "deflectionRating": 0,
+    "spellBlockChance": 0,
+    "spiritUnreserved": 281,
+    "spellSuppressionChance": 0,
+    "physicalDamageReduction": 0
+   },
    "passiveCount": 150,
    "activeItemSetId": "1",
-   "statsMatch": false,
-   "mainSkill": {"name": "Contagion", "supports": ["Unleash"]},
-   "attributes": {"strength": 44, "dexterity": 7, "intelligence": 16},
-   "offense": {"dps": 432.308, "speed": 1.22, "hitChance": 100, "averageHit": null, "critChance": null, "critMultiplier": 210},
-   "defense": {"life": 473, "mana": 291, "armour": 84, "spirit": 100, "evasion": 7, "coldResist": 0, "fireResist": -23, "chaosResist": 0, "energyShield": 60, "lightningResist": 4},
+   "statsMatch": true,
    "gear": {
-    "id": "9",
-    "title": "Endgame (Energy Shield Version)",
+    "id": "1",
+    "title": "Default",
     "items": [
-     {"slot": "Charm 2", "rarity": "MAGIC", "baseType": null, "displayName": "Stone Charm", "lines": ["Crafted: true", "Prefix: None", "Suffix: None", "Quality: 0", "LevelReq: 8", "Implicits: 1", "Used when you become Stunned"]},
-     {"slot": "Charm 3", "rarity": "UNIQUE", "baseType": "Thawing Charm", "displayName": "Nascent Hope", "lines": ["League: Dawn of the Hunt", "Quality: 0", "LevelReq: 12", "Implicits: 1", "Used when you become Frozen", "(20-25)% Chance to gain a Charge when you kill an enemy", "Energy Shield Recharge starts on use"]},
-     {"slot": "Weapon 1", "rarity": "RARE", "baseType": "Attuned Wand", "displayName": "Phoenix Weaver", "desecrated": true, "enchantCount": 1, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Hedgewitch Assandra's Rune of Wisdom", "lines": ["+1 to Level of all Spell Skills"]}], "lines": ["Crafted: true", "Prefix: {range:1}SpellDamageGainedAsLightning6", "Prefix: {range:0}SpellDamageGainedAsCold5", "Prefix: None", "Suffix: {range:0.5}GlobalColdSpellGemsLevelWeapon5", "Suffix: {range:0.167}SpellCriticalStrikeChance4", "Suffix: {range:0}AlloyCastSpeedGloves1", "Item Level: 82", "Quality: 0", "Sockets: S", "Rune: Hedgewitch Assandra's Rune of Wisdom", "LevelReq: 78", "Implicits: 2", "{enchant}{rune}+1 to Level of all Spell Skills", "Grants Skill: Level 18 Mana Drain", "{tags:damage,elemental,lightning}Gain 30% of Damage as Extra Lightning Damage", "{tags:damage,elemental,cold}Gain 25% of Damage as Extra Cold Damage", "{tags:damage,elemental,fire,cold,lightning}{desecrated}{custom}{range:0.5}(74-89)% increased Elemental Damage", "{tags:elemental,cold,caster,gem}+5 to Level of all Cold Spell Skills", "{tags:caster,critical}{crafted}48% increased Critical Hit Chance for Spells", "{crafted}39% increased Cast Speed", "{crafted}{range:0.5}Gain (11-16)% of Elemental Damage as Extra Cold Damage"]},
-     {"slot": "Amulet", "rarity": "RARE", "baseType": "Stellar Amulet", "displayName": "Maelstrom Noose", "enchantCount": 1, "lines": ["Crafted: true", "Prefix: None", "Prefix: {range:0.667}IncreasedSpirit4", "Prefix: {range:0.6}IncreasedEnergyShieldPercent7", "Suffix: {range:0.5}GlobalSpellGemsLevel3", "Suffix: None", "Suffix: None", "Catalyst: Carapace", "CatalystQuality: 20", "Item Level: 79", "LevelReq: 24", "Implicits: 2", "{unscalable}{enchant}Allocates Efficient Inscriptions", "{tags:attribute}{range:0.5}+(5-7) to all Attributes", "57% increased maximum Energy Shield", "+45 to Spirit", "+3 to Level of all Spell Skills"]},
-     {"slot": "Helmet", "rarity": "RARE", "baseType": "Ancestral Tiara", "displayName": "Victory Star", "enchantCount": 1, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Perfect Iron Rune", "lines": ["20% increased Armour, Evasion and Energy Shield"]}], "lines": ["Energy Shield: 508", "Crafted: true", "Prefix: {range:0.875}LocalIncreasedEnergyShieldPercent7_", "Prefix: {range:0.6}LocalIncreasedEnergyShieldAndLife5", "Prefix: {range:0.75}LocalIncreasedEnergyShield7", "Suffix: None", "Suffix: {range:0.5}LightningResist8", "Suffix: {range:0}ColdResist6", "Item Level: 82", "Quality: 20", "Sockets: S", "Rune: Perfect Iron Rune", "LevelReq: 80", "Implicits: 1", "{enchant}{rune}20% increased Armour, Evasion and Energy Shield", "+57 to maximum Energy Shield", "135% increased Energy Shield", "+38 to maximum Life", "+31% to Cold Resistance", "+43% to Lightning Resistance"]},
-     {"slot": "Weapon 2", "rarity": "RARE", "baseType": "Shrine Sceptre", "displayName": "Gale Song", "enchantCount": 1, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Rabbit Idol", "lines": ["15% increased Spirit"]}], "lines": ["Spirit: 196", "Crafted: true", "Prefix: {range:0.75}LocalIncreasedSpiritPercent6", "Prefix: None", "Prefix: {range:0}LocalIncreasedSpiritAndMana5", "Suffix: None", "Suffix: None", "Suffix: None", "CatalystQuality: 20", "Item Level: 80", "Quality: 20", "Sockets: S", "Rune: Rabbit Idol", "LevelReq: 0", "Implicits: 1", "{enchant}{rune}15% increased Spirit", "81% increased Spirit", "+34 to maximum Mana"]},
-     {"slot": "Body Armour", "rarity": "RARE", "baseType": "Vile Robe", "displayName": "Rage Carapace", "enchantCount": 3, "sockets": [{"color": "S", "group": 0}, {"color": "S", "group": 1}], "runes": [{"displayName": "Perfect Iron Rune", "lines": ["40% increased Armour, Evasion and Energy Shield", "Bonded: +40 to maximum Life"]}, {"displayName": "Perfect Iron Rune", "lines": ["Bonded: +40 to maximum Mana"]}], "lines": ["Energy Shield: 792", "Crafted: true", "Prefix: {range:0.889}LocalIncreasedEnergyShieldPercent8", "Prefix: {range:0.6}LocalIncreasedEnergyShield11", "Prefix: {range:1}IncreasedSpirit6", "Suffix: {range:0.25}LightningResist7", "Suffix: {range:0.845}ColdResist5", "Suffix: {range:0.5}FireResist6", "Item Level: 79", "Quality: 20", "Sockets: S S", "Rune: Perfect Iron Rune", "Rune: Perfect Iron Rune", "LevelReq: 65", "Implicits: 3", "{enchant}{rune}40% increased Armour, Evasion and Energy Shield", "{enchant}{rune}Bonded: +40 to maximum Life", "{enchant}{rune}Bonded: +40 to maximum Mana", "+94 to maximum Energy Shield", "109% increased Energy Shield", "+53 to Spirit", "+33% to Fire Resistance", "+29% to Cold Resistance", "+37% to Lightning Resistance"]},
-     {"slot": "Gloves", "rarity": "RARE", "baseType": "Vaal Gloves", "displayName": "Phoenix Claw", "desecrated": true, "enchantCount": 1, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Cadigan's Epiphany", "lines": ["Destroys all Augment Sockets on the item to create a Jewel Socket"]}], "lines": ["Energy Shield: 220", "Crafted: true", "Prefix: {range:0.5}AddedPhysicalDamage7", "Prefix: {range:0.125}LocalIncreasedEnergyShieldPercent7_", "Prefix: {range:0.4}LocalIncreasedEnergyShield6", "Suffix: {range:0.667}ItemFoundRarityIncrease3", "Suffix: {range:0}ColdResist7", "Suffix: {range:0.5}CriticalMultiplier5", "Item Level: 81", "Quality: 20", "Sockets: S", "Rune: Cadigan's Epiphany", "Sockets: J", "LevelReq: 75", "Implicits: 1", "{enchant}{rune}Destroys all Augment Sockets on the item to create a Jewel Socket", "{tags:damage,physical,attack}Adds 7 to 17 Physical Damage to Attacks", "{tags:energyshield}93% increased Energy Shield", "{tags:energyshield}{desecrated}+44 to maximum Energy Shield", "17% increased Rarity of Items found", "{tags:elemental,cold,resistance}+36% to Cold Resistance", "{tags:damage,critical}32% increased Critical Damage Bonus"]},
-     {"slot": "Boots", "rarity": "RARE", "baseType": "Sekhema Sandals", "displayName": "Agony Slippers", "enchantCount": 1, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Farrul's Rune of the Chase", "lines": ["5% increased Movement Speed"]}], "lines": ["Energy Shield: 292", "Crafted: true", "Prefix: {range:0.125}LocalIncreasedEnergyShieldPercent7_", "Prefix: {range:0.5}MovementVelocity6", "Prefix: {range:0.2}LocalIncreasedEnergyShield6", "Suffix: None", "Suffix: {range:0.112}ColdResist8", "Suffix: {range:1}LightningResist8", "Item Level: 82", "Quality: 20", "Sockets: S", "Rune: Farrul's Rune of the Chase", "LevelReq: 80", "Implicits: 1", "{enchant}{rune}5% increased Movement Speed", "35% increased Movement Speed", "+43 to maximum Energy Shield", "93% increased Energy Shield", "+41% to Cold Resistance", "+45% to Lightning Resistance"]},
-     {"slot": "Ring 1", "rarity": "RARE", "baseType": "Gold Ring", "displayName": "Horror Coil", "lines": ["Crafted: true", "Prefix: {range:0.333}ItemFoundRarityIncreasePrefix3", "Prefix: {range:0.474}IncreasedMana9", "Prefix: None", "Suffix: {range:1}CastSpeedJewellery4", "Suffix: {range:0.25}ColdResist6", "Suffix: {range:0.563}FireResist5", "Catalyst: Sibilant", "CatalystQuality: 18", "Item Level: 71", "LevelReq: 40", "Implicits: 1", "{range:0.444}(6-15)% increased Rarity of Items found", "+114 to maximum Mana", "17% increased Rarity of Items found", "24% increased Cast Speed", "+28% to Fire Resistance", "+32% to Cold Resistance"]},
-     {"slot": "Ring 2", "rarity": "RARE", "baseType": "Gold Ring", "displayName": "Horror Coil", "lines": ["Crafted: true", "Prefix: {range:0.333}ItemFoundRarityIncreasePrefix3", "Prefix: {range:0.474}IncreasedMana9", "Prefix: None", "Suffix: {range:1}CastSpeedJewellery4", "Suffix: {range:0.25}ColdResist6", "Suffix: {range:0.563}FireResist5", "Catalyst: Sibilant", "CatalystQuality: 18", "Item Level: 71", "LevelReq: 40", "Implicits: 1", "{range:0.444}(6-15)% increased Rarity of Items found", "+114 to maximum Mana", "17% increased Rarity of Items found", "24% increased Cast Speed", "+28% to Fire Resistance", "+32% to Cold Resistance"]},
-     {"slot": "Charm 1", "rarity": "UNIQUE", "baseType": "Silver Charm", "displayName": "The Fall of the Axe", "lines": ["League: Dawn of the Hunt", "Quality: 0", "LevelReq: 10", "Implicits: 1", "Used when you are affected by a Slow", "Grants Onslaught during effect"]}
+     {
+      "slot": "Flask 2",
+      "lines": [
+       "Item Level: 70",
+       "Quality: 19",
+       "LevelReq: 49",
+       "Implicits: 0",
+       "This Flask cannot be Used but applies its Effect constantly",
+       "73% reduced Amount Recovered"
+      ],
+      "rarity": "UNIQUE",
+      "baseType": "Gargantuan Mana Flask",
+      "displayName": "Lavianga's Spirits"
+     },
+     {
+      "slot": "Weapon 1",
+      "lines": [
+       "Item Level: 80",
+       "Quality: 4",
+       "Sockets: S",
+       "Rune: Hedgewitch Assandra's Rune of Wisdom",
+       "LevelReq: 50",
+       "Implicits: 3",
+       "{enchant}{rune}+1 to Level of all Spell Skills",
+       "{enchant}{rune}Bonded: Archon recovery period expires 30% faster",
+       "Grants Skill: Level 18 Mana Drain",
+       "Gain 29% of Damage as Extra Fire Damage",
+       "+140 to maximum Mana",
+       "+4 to Level of all Spell Skills",
+       "53% increased Critical Hit Chance for Spells",
+       "29% increased Cast Speed",
+       "Gain 8% of Elemental Damage as Extra Cold Damage",
+       "Gain 27% of Damage as Extra Cold Damage"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "+1 to Level of all Spell Skills",
+         "Bonded: Archon recovery period expires 30% faster"
+        ],
+        "displayName": "Hedgewitch Assandra's Rune of Wisdom"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       }
+      ],
+      "baseType": "Attuned Wand",
+      "corrupted": true,
+      "displayName": "Rage Bite",
+      "enchantCount": 2
+     },
+     {
+      "slot": "Amulet",
+      "lines": [
+       "Item Level: 81",
+       "LevelReq: 63",
+       "Implicits: 2",
+       "{enchant}Allocates Efficient Inscriptions",
+       "+13 to Spirit",
+       "+16 to maximum Energy Shield",
+       "+42 to maximum Mana",
+       "+30 to Spirit",
+       "+2 to Level of all Spell Skills",
+       "+13% to Lightning Resistance",
+       "24% of Damage taken Recouped as Life"
+      ],
+      "rarity": "RARE",
+      "baseType": "Solar Amulet",
+      "displayName": "Blood Heart",
+      "enchantCount": 1
+     },
+     {
+      "slot": "Helmet",
+      "lines": [
+       "Energy Shield: 495",
+       "Item Level: 80",
+       "Quality: 20",
+       "Sockets: S",
+       "Rune: Perfect Iron Rune",
+       "LevelReq: 80",
+       "Implicits: 3",
+       "{enchant}{rune}20% increased Armour, Evasion and Energy Shield",
+       "{enchant}{rune}Bonded: +20 to maximum Life",
+       "{enchant}{rune}Bonded: +20 to maximum Mana",
+       "+52 to maximum Energy Shield",
+       "37% increased Energy Shield",
+       "+31 to maximum Mana",
+       "+29% to Fire Resistance",
+       "+35% to Lightning Resistance",
+       "+20% to Chaos Resistance",
+       "99% increased Energy Shield"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "20% increased Armour, Evasion and Energy Shield",
+         "Bonded: +20 to maximum Life",
+         "Bonded: +20 to maximum Mana"
+        ],
+        "displayName": "Perfect Iron Rune"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       }
+      ],
+      "baseType": "Ancestral Tiara",
+      "corrupted": true,
+      "displayName": "Armageddon Cowl",
+      "enchantCount": 3
+     },
+     {
+      "slot": "Weapon 2",
+      "lines": [
+       "Spirit: 194",
+       "Item Level: 82",
+       "Quality: 20",
+       "Sockets: S",
+       "Rune: Rabbit Idol",
+       "LevelReq: 26",
+       "Implicits: 3",
+       "{enchant}{rune}15% increased Spirit",
+       "{enchant}{rune}Bonded: Minions have 30% increased Cooldown Recovery Rate for Command Skills",
+       "Grants Skill: Level 19 Purity of Ice",
+       "79% increased Spirit",
+       "+37 to maximum Mana",
+       "Allies in your Presence deal 55% increased Damage",
+       "Allies in your Presence have 7% increased Cast Speed",
+       "Allies in your Presence have +10% to all Elemental Resistances",
+       "+21 to Intelligence"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "15% increased Spirit",
+         "Bonded: Minions have 30% increased Cooldown Recovery Rate for Command Skills"
+        ],
+        "displayName": "Rabbit Idol"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       }
+      ],
+      "baseType": "Shrine Sceptre",
+      "corrupted": true,
+      "displayName": "Onslaught Call",
+      "enchantCount": 2
+     },
+     {
+      "slot": "Body Armour",
+      "lines": [
+       "Energy Shield: 628",
+       "Item Level: 83",
+       "Quality: 20",
+       "Sockets: S S",
+       "Rune: Perfect Iron Rune",
+       "Rune: Perfect Iron Rune",
+       "LevelReq: 65",
+       "Implicits: 3",
+       "{enchant}{rune}40% increased Armour, Evasion and Energy Shield",
+       "{enchant}{rune}Bonded: +40 to maximum Life",
+       "{enchant}{rune}Bonded: +40 to maximum Mana",
+       "+40 to maximum Energy Shield",
+       "108% increased Energy Shield",
+       "+55 to Spirit",
+       "+29% to Fire Resistance",
+       "+21% to Cold Resistance",
+       "+31% to Lightning Resistance"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "40% increased Armour, Evasion and Energy Shield",
+         "Bonded: +40 to maximum Life"
+        ],
+        "displayName": "Perfect Iron Rune"
+       },
+       {
+        "lines": [
+         "Bonded: +40 to maximum Mana"
+        ],
+        "displayName": "Perfect Iron Rune"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       },
+       {
+        "color": "S",
+        "group": 1
+       }
+      ],
+      "baseType": "Vile Robe",
+      "corrupted": true,
+      "displayName": "Agony Keep",
+      "enchantCount": 3
+     },
+     {
+      "slot": "Gloves",
+      "lines": [
+       "Energy Shield: 197",
+       "Item Level: 82",
+       "Quality: 20",
+       "Sockets: S",
+       "Rune: Cadigan's Epiphany",
+       "Sockets: J",
+       "LevelReq: 75",
+       "Implicits: 1",
+       "{enchant}{rune}Destroys all Augment Sockets on the item to create a Jewel Socket",
+       "+39 to maximum Energy Shield",
+       "82% increased Energy Shield",
+       "Adds 1 to 42 Lightning damage to Attacks",
+       "20% increased Critical Damage Bonus",
+       "+30% to Cold Resistance",
+       "Leech 8.01% of Physical Attack Damage as Mana"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "Destroys all Augment Sockets on the item to create a Jewel Socket"
+        ],
+        "displayName": "Cadigan's Epiphany"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       }
+      ],
+      "baseType": "Vaal Gloves",
+      "displayName": "Corruption Nails",
+      "enchantCount": 1
+     },
+     {
+      "slot": "Boots",
+      "lines": [
+       "Energy Shield: 207",
+       "Item Level: 82",
+       "Quality: 20",
+       "Sockets: S",
+       "Rune: Farrul's Rune of the Chase",
+       "LevelReq: 80",
+       "Implicits: 2",
+       "{enchant}{rune}5% increased Movement Speed",
+       "{enchant}{rune}Bonded: 10% increased Cooldown Recovery Rate",
+       "35% increased Movement Speed",
+       "+43 to maximum Energy Shield",
+       "37% increased Energy Shield",
+       "15% increased Rarity of Items found",
+       "+33% to Fire Resistance",
+       "+42% to Cold Resistance",
+       "+82 to Stun Threshold"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "5% increased Movement Speed",
+         "Bonded: 10% increased Cooldown Recovery Rate"
+        ],
+        "displayName": "Farrul's Rune of the Chase"
+       }
+      ],
+      "rarity": "RARE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       }
+      ],
+      "baseType": "Sekhema Sandals",
+      "corrupted": true,
+      "displayName": "Dragon Span",
+      "enchantCount": 2
+     },
+     {
+      "slot": "Ring 1",
+      "lines": [
+       "Item Level: 79",
+       "LevelReq: 60",
+       "Implicits: 1",
+       "13% increased Rarity of Items found",
+       "Adds 22 to 33 Cold damage to Attacks",
+       "29% increased Lightning Damage",
+       "+44 to maximum Life",
+       "24% increased Cast Speed",
+       "+22% to Fire Resistance",
+       "+35% to Lightning Resistance"
+      ],
+      "rarity": "RARE",
+      "baseType": "Gold Ring",
+      "displayName": "Foe Gyre"
+     },
+     {
+      "slot": "Ring 2",
+      "lines": [
+       "Item Level: 82",
+       "LevelReq: 65",
+       "Implicits: 1",
+       "10% increased Cast Speed",
+       "Adds 10 to 17 Cold damage to Attacks",
+       "Adds 2 to 41 Lightning damage to Attacks",
+       "21% increased Cast Speed",
+       "+28 to Intelligence",
+       "+43% to Fire Resistance",
+       "Adds 2 to 8 Physical Damage to Attacks"
+      ],
+      "rarity": "RARE",
+      "baseType": "Pearl Ring",
+      "displayName": "Plague Grip"
+     },
+     {
+      "slot": "Charm 3",
+      "lines": [
+       "Item Level: 81",
+       "Quality: 0",
+       "LevelReq: 12",
+       "Implicits: 1",
+       "Used when you become Frozen",
+       "23% Chance to gain a Charge when you kill an enemy",
+       "Energy Shield Recharge starts on use"
+      ],
+      "rarity": "UNIQUE",
+      "baseType": "Thawing Charm",
+      "displayName": "Nascent Hope"
+     },
+     {
+      "slot": "Charm 2",
+      "lines": [
+       "Item Level: 42",
+       "Quality: 0",
+       "LevelReq: 20",
+       "Implicits: 1",
+       "Used when you become Stunned",
+       "Recover 92 Life when Used",
+       "37% increased Charges"
+      ],
+      "rarity": "MAGIC",
+      "baseType": null,
+      "displayName": "Blooming Stone Charm of the Copious"
+     },
+     {
+      "slot": "Charm 1",
+      "lines": [
+       "Item Level: 80",
+       "Quality: 0",
+       "LevelReq: 50",
+       "Implicits: 1",
+       "Used when you kill a Rare or Unique enemy",
+       "Possessed by Spirit Of The Boar for 19 seconds on use"
+      ],
+      "rarity": "UNIQUE",
+      "baseType": "Golden Charm",
+      "displayName": "Rite of Passage"
+     },
+     {
+      "slot": "Flask 1",
+      "lines": [
+       "Item Level: 78",
+       "Quality: 20",
+       "LevelReq: 60",
+       "Implicits: 0",
+       "58% increased Amount Recovered",
+       "29% increased Charges gained"
+      ],
+      "rarity": "MAGIC",
+      "baseType": null,
+      "displayName": "Abundant Ultimate Life Flask of the Constant"
+     },
+     {
+      "slot": "Belt",
+      "lines": [
+       "Charm Slots: 3",
+       "Item Level: 86",
+       "Sockets: S S",
+       "Rune: Craiceann's Rune of Recovery",
+       "Rune: Rune of the Blossom",
+       "LevelReq: 62",
+       "Implicits: 8",
+       "{enchant}{rune}+88 to Spirit",
+       "{enchant}{rune}53% increased Energy Shield Recharge Rate",
+       "{enchant}{rune}Bonded: Gain additional Ailment Threshold equal to 88% of maximum Energy Shield",
+       "{enchant}{rune}Bonded: 8% increased Spirit Reservation Efficiency",
+       "{enchant}{rune}-1 to Spirit per 2 Levels",
+       "{enchant}{rune}Bonded: Gain additional Stun Threshold equal to 88% of maximum Energy Shield",
+       "Has 3 Charm Slots",
+       "Flasks gain 0.17 charges per Second",
+       "77% increased effect of Socketed Augment Items",
+       "This item gains bonuses from Socketed Items as though it was a Body Armour"
+      ],
+      "runes": [
+       {
+        "lines": [
+         "+88 to Spirit",
+         "53% increased Energy Shield Recharge Rate",
+         "Bonded: Gain additional Ailment Threshold equal to 88% of maximum Energy Shield"
+        ],
+        "displayName": "Craiceann's Rune of Recovery"
+       },
+       {
+        "lines": [
+         "Bonded: 8% increased Spirit Reservation Efficiency",
+         "-1 to Spirit per 2 Levels",
+         "Bonded: Gain additional Stun Threshold equal to 88% of maximum Energy Shield"
+        ],
+        "displayName": "Rune of the Blossom"
+       }
+      ],
+      "rarity": "UNIQUE",
+      "sockets": [
+       {
+        "color": "S",
+        "group": 0
+       },
+       {
+        "color": "S",
+        "group": 1
+       }
+      ],
+      "baseType": "Fine Belt",
+      "corrupted": true,
+      "displayName": "Darkness Enthroned",
+      "enchantCount": 6
+     },
+     {
+      "slot": "Jewel 1",
+      "lines": [
+       "Item Level: 80",
+       "LevelReq: 0",
+       "Implicits: 0",
+       "16% increased maximum Energy Shield",
+       "20% increased Critical Damage Bonus",
+       "2% increased Cast Speed",
+       "11% faster start of Energy Shield Recharge"
+      ],
+      "rarity": "RARE",
+      "baseType": "Sapphire",
+      "treeNodeId": 7960,
+      "displayName": "Bramble Ruin"
+     },
+     {
+      "slot": "Jewel 2",
+      "lines": [
+       "Item Level: 81",
+       "LevelReq: 0",
+       "Implicits: 0",
+       "17% increased Critical Spell Damage Bonus",
+       "14% faster start of Energy Shield Recharge",
+       "Offering Skills have 17% increased Duration",
+       "16% increased maximum Energy Shield"
+      ],
+      "rarity": "RARE",
+      "baseType": "Sapphire",
+      "treeNodeId": 21984,
+      "displayName": "Armageddon Shine"
+     },
+     {
+      "slot": "Jewel 3",
+      "lines": [
+       "Item Level: 76",
+       "LevelReq: 0",
+       "Implicits: 0",
+       "17% increased maximum Energy Shield",
+       "20% increased Critical Damage Bonus",
+       "12% increased Area of Effect of Curses",
+       "11% increased Critical Spell Damage Bonus"
+      ],
+      "rarity": "RARE",
+      "baseType": "Sapphire",
+      "treeNodeId": 26196,
+      "displayName": "Entropy Splinter"
+     },
+     {
+      "slot": "Jewel 4",
+      "lines": [
+       "Item Level: 80",
+       "LevelReq: 0",
+       "Implicits: 0",
+       "7% increased Chaos Damage",
+       "18% increased maximum Energy Shield",
+       "15% increased Critical Damage Bonus",
+       "10% increased Critical Spell Damage Bonus"
+      ],
+      "rarity": "RARE",
+      "baseType": "Sapphire",
+      "treeNodeId": 55190,
+      "displayName": "Plague Bliss"
+     },
+     {
+      "slot": "Jewel 5",
+      "lines": [
+       "Item Level: 71",
+       "LevelReq: 0",
+       "Implicits: 0",
+       "17% increased Critical Spell Damage Bonus",
+       "12% faster start of Energy Shield Recharge",
+       "3% increased Skill Speed while Shapeshifted",
+       "15% increased maximum Energy Shield"
+      ],
+      "rarity": "RARE",
+      "baseType": "Sapphire",
+      "treeNodeId": 61419,
+      "displayName": "Brood Shine"
+     }
     ]
    },
    "skills": {
-    "title": "Endgame (Energy Shield Version)",
+    "title": "",
     "groups": [
-     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Spell Totem", "gemId": "Metadata/Items/Gems/SkillGemSpellTotem", "level": 10, "quality": 20, "enabled": true}, {"name": "Grim Pillars", "gemId": "Metadata/Items/Gems/SkillGemGrimPillars", "level": 21, "quality": 20, "enabled": true}, {"name": "Urgent Totems III", "gemId": "Metadata/Items/Gem/SupportGemAncestralUrgencyThree", "level": 1, "quality": 0, "enabled": true}, {"name": "Efficiency II", "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Magnified Area II", "gemId": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Cold Mastery", "gemId": "Metadata/Items/Gems/SupportGemColdMastery", "level": 1, "quality": 0, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Entangle", "gemId": "Metadata/Items/Gem/SkillGemEntangle", "level": 1, "quality": 20, "enabled": true}, {"name": "Biting Frost I", "gemId": "Metadata/Items/Gems/SupportGemBitingFrost", "level": 1, "quality": 0, "enabled": true}, {"name": "Living Lightning II", "gemId": "Metadata/Items/Gem/SupportGemLivingLightningTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Branching Fissures I", "gemId": "Metadata/Items/Gem/SupportGemBranchingFissures", "level": 1, "quality": 0, "enabled": true}, {"name": "Rapid Casting II", "gemId": "Metadata/Items/Gems/SupportGemArcaneTempoTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Magnified Area II", "gemId": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo", "level": 1, "quality": 0, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Mana Tempest", "gemId": "Metadata/Items/Gems/SkillGemManaTempest", "level": 20, "quality": 20, "enabled": true}, {"name": "Advancing Storm", "gemId": "Metadata/Items/Gem/SupportGemAdvancingStorm", "level": 1, "quality": 0, "enabled": true}, {"name": "Efficiency II", "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Lightning Mastery", "gemId": "Metadata/Items/Gems/SupportGemLightningMastery", "level": 1, "quality": 0, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": "Purity Sceptre Supports (cost no Spirit)", "slot": null, "source": null, "gems": [{"name": "Mysticism II", "gemId": "Metadata/Items/Gem/SupportGemMysticismTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Clarity II", "gemId": "Metadata/Items/Gems/SupportGemClarityTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Fire Mastery", "gemId": "Metadata/Items/Gems/SupportGemFireMastery", "level": 1, "quality": 0, "enabled": true}, {"name": "Her Declaration", "gemId": "Metadata/Items/Gem/SupportGemHerDeclaration", "level": 1, "quality": 0, "enabled": true}, {"name": "Seraph's Heart", "gemId": "Metadata/Items/Gem/SupportGemSeraphsHeart", "level": 1, "quality": 20, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Elemental Weakness", "gemId": "Metadata/Items/Gem/SkillGemElementalWeakness", "level": 20, "quality": 20, "enabled": true}, {"name": "Efficiency II", "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo", "level": 1, "quality": 0, "enabled": true}, {"name": "Cursed Ground", "gemId": "Metadata/Items/Gem/SupportGemCursedGround", "level": 1, "quality": 0, "enabled": true}, {"name": "Heightened Curse", "gemId": "Metadata/Items/Gems/SupportGemHeightenedCurse", "level": 1, "quality": 0, "enabled": true}, {"name": "Ritualistic Curse", "gemId": "Metadata/Items/Gem/SupportGemRitualisticCurse", "level": 1, "quality": 0, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Frost Bomb", "gemId": "Metadata/Items/Gems/SkillGemFrostBomb", "level": 20, "quality": 20, "enabled": true}, {"name": "Spell Echo", "gemId": "Metadata/Items/Gems/SupportGemSpellEcho", "level": 1, "quality": 0, "enabled": true}, {"name": "Overabundance I", "gemId": "Metadata/Items/Gems/SupportGemOverabundance", "level": 1, "quality": 0, "enabled": true}, {"name": "Potent Exposure", "gemId": "Metadata/Items/Gem/SupportGemStripAway", "level": 1, "quality": 0, "enabled": true}, {"name": "Efficiency II", "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo", "level": 1, "quality": 0, "enabled": true}]},
-     {"isMain": false, "enabled": true, "label": null, "slot": "Weapon 1", "source": "Item:48:Phoenix Weaver, Attuned Wand", "gems": [{"name": "Mana Drain", "gemId": "Metadata/Items/Gem/SkillGemManaDrain", "level": 18, "quality": 0, "enabled": true}]}
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Mana Drain",
+        "gemId": "Metadata/Items/Gem/SkillGemManaDrain",
+        "level": 18,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Purity of Ice",
+        "gemId": "Metadata/Items/Gems/SkillGemPurityOfIce",
+        "level": 19,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Clarity II",
+        "gemId": "Metadata/Items/Gems/SupportGemClarityTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Mysticism II",
+        "gemId": "Metadata/Items/Gem/SupportGemMysticismTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Cold Mastery",
+        "gemId": "Metadata/Items/Gems/SupportGemColdMastery",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": true,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Spell Totem",
+        "gemId": "Metadata/Items/Gems/SkillGemSpellTotem",
+        "level": 14,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Grim Pillars",
+        "gemId": "Metadata/Items/Gems/SkillGemGrimPillars",
+        "level": 13,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Urgent Totems III",
+        "gemId": "Metadata/Items/Gem/SupportGemAncestralUrgencyThree",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Efficiency II",
+        "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Magnified Area II",
+        "gemId": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Cold Mastery",
+        "gemId": "Metadata/Items/Gems/SupportGemColdMastery",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Elemental Weakness",
+        "gemId": "Metadata/Items/Gem/SkillGemElementalWeakness",
+        "level": 15,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Efficiency II",
+        "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Cursed Ground",
+        "gemId": "Metadata/Items/Gem/SupportGemCursedGround",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Heightened Curse",
+        "gemId": "Metadata/Items/Gems/SupportGemHeightenedCurse",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Ritualistic Curse",
+        "gemId": "Metadata/Items/Gem/SupportGemRitualisticCurse",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Frost Bomb",
+        "gemId": "Metadata/Items/Gems/SkillGemFrostBomb",
+        "level": 19,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Spell Echo",
+        "gemId": "Metadata/Items/Gems/SupportGemSpellEcho",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Overabundance I",
+        "gemId": "Metadata/Items/Gems/SupportGemOverabundance",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Efficiency II",
+        "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Potent Exposure",
+        "gemId": "Metadata/Items/Gem/SupportGemStripAway",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Mana Tempest",
+        "gemId": "Metadata/Items/Gems/SkillGemManaTempest",
+        "level": 19,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Efficiency II",
+        "gemId": "Metadata/Items/Gems/SupportGemInspirationTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Lightning Mastery",
+        "gemId": "Metadata/Items/Gems/SupportGemLightningMastery",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Entangle",
+        "gemId": "Metadata/Items/Gem/SkillGemEntangle",
+        "level": 16,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Magnified Area II",
+        "gemId": "Metadata/Items/Gems/SupportGemMagnifiedEffectTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Living Lightning II",
+        "gemId": "Metadata/Items/Gem/SupportGemLivingLightningTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Branching Fissures I",
+        "gemId": "Metadata/Items/Gem/SupportGemBranchingFissures",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Rapid Casting II",
+        "gemId": "Metadata/Items/Gems/SupportGemArcaneTempoTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Morrigan's Insight",
+        "gemId": "Metadata/Items/Gem/SupportGemMorrigansInsight",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Convalescence",
+        "gemId": "Metadata/Items/Gem/SkillGemConvalescence",
+        "level": 17,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Cooldown Recovery II",
+        "gemId": "Metadata/Items/Gems/SupportGemIngenuityTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Prolonged Duration II",
+        "gemId": "Metadata/Items/Gems/SupportGemPersistenceTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": null,
+      "source": null,
+      "gems": [
+       {
+        "name": "Elemental Conflux",
+        "gemId": "Metadata/Items/Gem/SkillGemElementalConflux",
+        "level": 15,
+        "quality": 20,
+        "enabled": true
+       },
+       {
+        "name": "Compressed Duration II",
+        "gemId": "Metadata/Items/Gems/SupportGemFastForwardTwo",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       },
+       {
+        "name": "Cold Mastery",
+        "gemId": "Metadata/Items/Gems/SupportGemColdMastery",
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": "Weapon 1",
+      "source": "Item:7:Rage Bite, Attuned Wand",
+      "gems": [
+       {
+        "name": "Mana Drain",
+        "gemId": "Metadata/Items/Gem/SkillGemManaDrain",
+        "level": 18,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": null,
+      "slot": "Weapon 2",
+      "source": "Item:11:Onslaught Call, Shrine Sceptre",
+      "gems": [
+       {
+        "name": "Purity of Ice",
+        "gemId": "Metadata/Items/Gems/SkillGemPurityOfIce",
+        "level": 19,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     },
+     {
+      "isMain": false,
+      "enabled": true,
+      "label": "Thorns",
+      "slot": null,
+      "source": "Thorns",
+      "gems": [
+       {
+        "name": "ThornsPlayer",
+        "gemId": null,
+        "level": 1,
+        "quality": 0,
+        "enabled": true
+       }
+      ]
+     }
     ]
    }
   }

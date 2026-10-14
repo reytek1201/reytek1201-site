@@ -1,6 +1,5 @@
 [
  {
-  "id": 1,
   "slug": "le-poison-rogues",
   "sort": 10,
   "game": "Last Epoch",
@@ -9,23 +8,22 @@
   "class_line": "Acolyte · Necromancer",
   "blurb": "A minion build: Summon Skeleton Warrior as Rogues, Dread Shade and Aura of Decay. Season 5.",
   "poe_slug": null,
+  "poe_loadout": null,
+  "level": null,
   "planner_url": "https://www.lastepochtools.com/planner/Bakv46j9",
   "guide_url": "https://actionrpg.com/last-epoch/guide/poison-rogues-necromancer-endgame-build-guide",
   "guide_credit": "Following the guide by Aaron (ActionRPG)",
   "videos": null,
   "portrait": [
    {
-    "src": "img/chars/le-poison-rogues.webp",
-    "alt": "A necromancer with a glowing green staff leads hooded skeleton rogues through a ruined crypt",
+    "h": 480,
     "w": 480,
-    "h": 480
+    "alt": "A necromancer with a glowing green staff leads hooded skeleton rogues through a ruined crypt",
+    "src": "img/chars/le-poison-rogues.webp"
    }
-  ],
-  "poe_loadout": null,
-  "level": null
+  ]
  },
  {
-  "id": 2,
   "slug": "poe2-palsteron",
   "sort": 20,
   "game": "Path of Exile 2",
@@ -34,23 +32,22 @@
   "class_line": "Druid · Oracle",
   "blurb": null,
   "poe_slug": "7VBA2Aj49n",
+  "poe_loadout": null,
+  "level": null,
   "planner_url": null,
   "guide_url": null,
   "guide_credit": null,
   "videos": null,
   "portrait": [
    {
-    "src": "img/chars/poe2-palsteron.webp",
-    "alt": "A druid raises his staff in a storm of lightning as ice pillars erupt around him",
+    "h": 480,
     "w": 480,
-    "h": 480
+    "alt": "A druid raises his staff in a storm of lightning as ice pillars erupt around him",
+    "src": "img/chars/poe2-palsteron.webp"
    }
-  ],
-  "poe_loadout": null,
-  "level": null
+  ]
  },
  {
-  "id": 3,
   "slug": "kaelen",
   "sort": 30,
   "game": "Path of Exile 2",
@@ -59,16 +56,15 @@
   "class_line": "Monk · Hollow Palm",
   "blurb": "The Hollow Palm monk, kept as a character with his video series.",
   "poe_slug": null,
+  "poe_loadout": null,
+  "level": null,
   "planner_url": null,
   "guide_url": null,
   "guide_credit": null,
   "videos": "Part 1 of 4 | KDcnnFOW5as",
-  "portrait": [],
-  "poe_loadout": null,
-  "level": null
+  "portrait": []
  },
  {
-  "id": 4,
   "slug": "diablo",
   "sort": 40,
   "game": "Diablo",
@@ -77,12 +73,12 @@
   "class_line": null,
   "blurb": null,
   "poe_slug": null,
+  "poe_loadout": null,
+  "level": null,
   "planner_url": null,
   "guide_url": null,
   "guide_credit": null,
   "videos": null,
-  "portrait": [],
-  "poe_loadout": null,
-  "level": null
+  "portrait": []
  }
 ]

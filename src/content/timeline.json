@@ -18,10 +18,10 @@
   "anchor": "y1984",
   "media": [
    {
-    "src": "img/arcade-1984.webp",
-    "alt": "A packed 1980s arcade with Pac-Man, Galaga and Donkey Kong cabinets under neon signs",
+    "h": 896,
     "w": 1200,
-    "h": 896
+    "alt": "A packed 1980s arcade with Pac-Man, Galaga and Donkey Kong cabinets under neon signs",
+    "src": "img/arcade-1984.webp"
    }
   ],
   "media_style": "flat"
@@ -55,10 +55,10 @@
   "anchor": null,
   "media": [
    {
-    "src": "img/boston-market-1992.webp",
-    "alt": "A Boston Market restaurant under palm trees in South Florida",
+    "h": 348,
     "w": 348,
-    "h": 348
+    "alt": "A Boston Market restaurant under palm trees in South Florida",
+    "src": "img/boston-market-1992.webp"
    }
   ],
   "media_style": "flat"
@@ -72,10 +72,10 @@
   "anchor": "y1993",
   "media": [
    {
-    "src": "img/edge-crowd.webp",
-    "alt": "The crowd on the dancefloor at The Edge, Fort Lauderdale",
+    "h": 540,
     "w": 720,
-    "h": 540
+    "alt": "The crowd on the dancefloor at The Edge, Fort Lauderdale",
+    "src": "img/edge-crowd.webp"
    }
   ],
   "media_style": "photo"
@@ -89,10 +89,10 @@
   "anchor": null,
   "media": [
    {
-    "src": "img/rave-o-lution-309.webp",
-    "alt": "The Quasimidi Rave-O-Lution 309, a silver groovebox covered in knobs and blue buttons",
+    "h": 366,
     "w": 460,
-    "h": 366
+    "alt": "The Quasimidi Rave-O-Lution 309, a silver groovebox covered in knobs and blue buttons",
+    "src": "img/rave-o-lution-309.webp"
    }
   ],
   "media_style": "flat"
@@ -106,16 +106,16 @@
   "anchor": null,
   "media": [
    {
-    "src": "img/edge-flyer-1995.webp",
-    "alt": "The Edge flyer, March 25, 1995, during Winter Music Conference: Rabbit in the Moon, Spacetime Continuum, Mixmaster Morris",
+    "h": 250,
     "w": 320,
-    "h": 250
+    "alt": "The Edge flyer, March 25, 1995, during Winter Music Conference: Rabbit in the Moon, Spacetime Continuum, Mixmaster Morris",
+    "src": "img/edge-flyer-1995.webp"
    },
    {
-    "src": "img/edge-flyer-icey.webp",
-    "alt": "The Edge flyer: DJ Icey, DJ Mot, Flux and the resident DJ Sharpe",
+    "h": 250,
     "w": 320,
-    "h": 250
+    "alt": "The Edge flyer: DJ Icey, DJ Mot, Flux and the resident DJ Sharpe",
+    "src": "img/edge-flyer-icey.webp"
    }
   ],
   "media_style": "pair"
@@ -149,10 +149,10 @@
   "anchor": "y2007",
   "media": [
    {
-    "src": "img/full-sail-2007.webp",
-    "alt": "The Full Sail Studios entrance arch in Winter Park, Florida",
+    "h": 187,
     "w": 250,
-    "h": 187
+    "alt": "The Full Sail Studios entrance arch in Winter Park, Florida",
+    "src": "img/full-sail-2007.webp"
    }
   ],
   "media_style": "flat"
@@ -196,10 +196,10 @@
   "anchor": "y2016",
   "media": [
    {
-    "src": "img/keymacro-kitchen.webp",
-    "alt": "Ray Burgos in a chef's apron at a kitchen counter with fresh vegetables",
+    "h": 300,
     "w": 400,
-    "h": 300
+    "alt": "Ray Burgos in a chef's apron at a kitchen counter with fresh vegetables",
+    "src": "img/keymacro-kitchen.webp"
    }
   ],
   "media_style": "flat"
@@ -216,10 +216,10 @@
  },
  {
   "sort": 170,
-  "year_label": "2024",
+  "year_label": "2025",
   "lane": "code",
   "title": "KeyMacro",
-  "body": "My AI nutrition and training partner: meal plans and workouts off one plan, with Coach Key in your corner. Seven months from concept to first sale.",
+  "body": "My AI nutrition and training partner: meal plans and workouts off one plan, with Coach Key in your corner. Seven months from concept to live app.",
   "anchor": null,
   "media": [],
   "media_style": null
