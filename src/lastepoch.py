@@ -83,7 +83,7 @@ def parse(it):
 
 def rar_class(p, raw):
     if p['rar'] in RARITIES: return p['rar']
-    return {'10': 'heretical', '2': 'rare'}.get(str((raw or {}).get('rarityClass')), 'normal')
+    return {'10': 'heretical', '9': 'legendary', '2': 'rare'}.get(str((raw or {}).get('rarityClass')), 'normal')
 
 def card(cid, p, raw, shown):
     li = lambda lst: ''.join(f'<li class="{"note" if x["note"] else "mod"}"><span>{e(x["t"])}</span>' + (f'<i>{e(x["tier"])}</i>' if x['tier'] else '') + '</li>' for x in lst)
@@ -97,7 +97,7 @@ def card(cid, p, raw, shown):
     return (f'<div class="le-card rar-{rar_class(p, raw)}" id="{cid}"' + ('' if shown else ' hidden') + f'>{head}{props}{imp}{mod}{rel}{lore}{req}</div>')
 
 # Item icons saved in img/le/ (from the build guide's gear section), looked up by item name. A missing file falls back to the drawn glyph.
-ICONS = {'Lethal Concentration': '2hand_icon_2', 'Wall of Nothing': 'chest_icon_31', 'Unbroken Legion': 'helm_icon_26',
+ICONS = {'Lethal Concentration': '2hand_icon_2', 'Mantle of the Pale Ox': 'chest_icon_31', 'Unbroken Legion': 'helm_icon_26',
          "Julra's Obsession": 'gloves_icon_9', 'Foot of the Mountain': 'boots_icon_7', "Brewmaster's Buckle": 'belt_icon_13',
          'Hollow Finger': 'ring_icon_16', 'Unsated Rage': 'ring_icon_28', "Serpent's Milk": 'amulet_icon_23', "Tyrant's Skull": 'relic_icon_3'}
 _ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
