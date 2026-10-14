@@ -1,0 +1,57 @@
+[
+ {
+  "share_slug": "3JdN4ZekXw",
+  "label": "Palsteron Grim Pillars",
+  "video_url": null,
+  "updated_at": "2026-09-20T05:12:42.65+00:00",
+  "summary": {
+   "game": "poe2",
+   "name": null,
+   "level": 15,
+   "notes": null,
+   "config": null,
+   "className": "Druid",
+   "ascendClassName": "Oracle",
+   "passiveCount": 20,
+   "mainSkill": {"name": "Contagion", "supports": ["Unleash"]},
+   "attributes": {"strength": 44, "dexterity": 7, "intelligence": 16},
+   "offense": {"dps": 432.308, "speed": 1.22, "hitChance": 100, "averageHit": null, "critChance": null, "critMultiplier": 210},
+   "defense": {"life": 473, "mana": 291, "armour": 84, "spirit": 100, "evasion": 7, "totalEhp": 472.99188955259, "coldResist": 0, "fireResist": -23, "blockChance": 0, "chaosResist": 0, "evadeChance": 0, "energyShield": 60, "deflectChance": 0, "lightningResist": 4, "deflectionRating": 0, "spellBlockChance": 0, "spiritUnreserved": 70, "spellSuppressionChance": 0, "physicalDamageReduction": 1},
+   "gear": {
+    "activeItemSetId": "1",
+    "itemSets": [
+     {
+      "id": "1",
+      "title": "Act1",
+      "items": [
+       {"slot": "Belt", "rarity": "RARE", "baseType": "Linen Belt", "displayName": "New Item", "lines": ["Charm Slots: 2", "Crafted: true", "Prefix: {range:0.479}IncreasedLife2", "Prefix: {range:0.236}IncreasedMana2", "Prefix: None", "Suffix: None", "Suffix: {range:0.465}LightningResist2", "Suffix: {range:0.324}ColdResist2", "LevelReq: 0", "Implicits: 2", "{tags:flask,resource,mana}{range:1}(20-30)% increased Mana Recovery from Flasks", "{range:0.5}Has (1-3) Charm Slots", "+24 to maximum Life", "+17 to maximum Mana", "+12% to Cold Resistance", "+13% to Lightning Resistance"]},
+       {"slot": "Weapon 1", "rarity": "RARE", "baseType": "Attuned Wand", "displayName": "New Item", "enchantCount": 2, "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "Lesser Storm Rune", "lines": ["Gain 6% of Damage as Extra Lightning Damage", "Bonded: 30% increased Magnitude of Shock you inflict"]}], "lines": ["Crafted: true", "Prefix: {range:1}SpellDamageOnWeapon4", "Prefix: None", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: {range:0.944}GlobalSpellGemsLevelWeapon1", "Quality: 0", "Sockets: S", "Rune: Lesser Storm Rune", "LevelReq: 41", "Implicits: 3", "{enchant}{rune}Gain 6% of Damage as Extra Lightning Damage", "{enchant}{rune}Bonded: 30% increased Magnitude of Shock you inflict", "{range:0.5}Grants Skill: Level (1-20) Mana Drain", "64% increased Spell Damage", "+1 to Level of all Spell Skills"]},
+       {"slot": "Amulet", "rarity": "RARE", "baseType": "Amber Amulet", "displayName": "New Item", "lines": ["Crafted: true", "Prefix: None", "Prefix: None", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: {range:0.782}GlobalSpellGemsLevel1", "LevelReq: 8", "Implicits: 1", "{tags:attribute}{range:0.5}+(10-15) to Strength", "+1 to Level of all Spell Skills"]},
+       {"slot": "Helmet", "rarity": "RARE", "baseType": "Iron Crown", "displayName": "New Item", "lines": ["Armour: 26", "Energy Shield: 13", "Crafted: true", "Prefix: {range:0.408}IncreasedLife2", "Prefix: {range:0.655}IncreasedMana2", "Prefix: None", "Suffix: None", "Suffix: {range:0.577}LightningResist2", "Suffix: {range:0.606}FireResist2", "Quality: 0", "LevelReq: 5", "Implicits: 0", "+24 to maximum Life", "+21 to maximum Mana", "+13% to Fire Resistance", "+13% to Lightning Resistance"]},
+       {"slot": "Weapon 2", "rarity": "RARE", "baseType": "Woven Focus", "displayName": "New Item", "sockets": [{"color": "S", "group": 0}], "runes": [{"displayName": "None", "lines": []}], "lines": ["Energy Shield: 15", "Crafted: true", "Prefix: None", "Prefix: None", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: {range:0.782}GlobalSpellGemsLevel1", "Quality: 0", "Sockets: S", "Rune: None", "LevelReq: 6", "Implicits: 0", "+1 to Level of all Spell Skills"]},
+       {"slot": "Body Armour", "rarity": "RARE", "baseType": "Pilgrim Vestments", "displayName": "New Item", "lines": ["Armour: 25", "Energy Shield: 16", "Crafted: true", "Prefix: {range:0.602}IncreasedLife2", "Prefix: None", "Prefix: None", "Suffix: None", "Suffix: {range:0.028}LightningResist3", "Suffix: {range:0.775}FireResist2", "Quality: 0", "LevelReq: 0", "Implicits: 0", "+25 to maximum Life", "+14% to Fire Resistance", "+16% to Lightning Resistance"]},
+       {"slot": "Gloves", "rarity": "RARE", "baseType": "Rope Cuffs", "displayName": "New Item", "lines": ["Armour: 13", "Energy Shield: 6", "Crafted: true", "Prefix: {range:0.743}IncreasedLife2", "Prefix: {range:0.711}IncreasedMana2", "Prefix: None", "Suffix: None", "Suffix: {range:0.324}LightningResist2", "Suffix: {range:0.577}ColdResist2", "Quality: 0", "LevelReq: 5", "Implicits: 0", "+27 to maximum Life", "+21 to maximum Mana", "+13% to Cold Resistance", "+12% to Lightning Resistance"]},
+       {"slot": "Boots", "rarity": "RARE", "baseType": "Padded Leggings", "displayName": "New Item", "lines": ["Armour: 20", "Energy Shield: 10", "Crafted: true", "Prefix: {range:0.761}MovementVelocity1", "Prefix: None", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: None", "Quality: 0", "LevelReq: 5", "Implicits: 0", "10% increased Movement Speed"]},
+       {"slot": "Ring 1", "rarity": "RARE", "baseType": "Lazuli Ring", "displayName": "New Item", "lines": ["Crafted: true", "Prefix: {range:0.324}IncreasedLife2", "Prefix: {range:0.944}IncreasedMana2", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: {range:0.722}CastSpeedJewellery1", "LevelReq: 0", "Implicits: 1", "{tags:resource,mana}{range:0.5}+(20-30) to maximum Mana", "+23 to maximum Life", "+23 to maximum Mana", "11% increased Cast Speed"]},
+       {"slot": "Ring 2", "rarity": "RARE", "baseType": "Lazuli Ring", "displayName": "New Item", "lines": ["Crafted: true", "Prefix: {range:0.324}IncreasedLife2", "Prefix: {range:0.944}IncreasedMana2", "Prefix: None", "Suffix: None", "Suffix: None", "Suffix: {range:0.722}CastSpeedJewellery1", "LevelReq: 0", "Implicits: 1", "{tags:resource,mana}{range:0.5}+(20-30) to maximum Mana", "+23 to maximum Life", "+23 to maximum Mana", "11% increased Cast Speed"]},
+       {"slot": "Charm 1", "rarity": "MAGIC", "baseType": null, "displayName": "Sapphire Charm", "lines": ["Crafted: true", "Prefix: None", "Suffix: None", "Quality: 0", "LevelReq: 5", "Implicits: 1", "Used when you take Cold damage from a Hit"]}
+      ]
+     }
+    ]
+   },
+   "skills": {
+    "activeSkillSetId": "1",
+    "groups": [
+     {"isMain": true, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Contagion", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gems/SkillGemContagion"}, {"name": "Unleash", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemUnleash"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Volcano", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gems/SkillGemVolcano"}, {"name": "Controlled Destruction", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemControlledDestruction"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Entangle", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gem/SkillGemEntangle"}, {"name": "Upheaval I", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gem/SupportGemUpheaval"}, {"name": "Controlled Destruction", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemControlledDestruction"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Frost Bomb", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gems/SkillGemFrostBomb"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Bone Cage", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gem/SkillGemBoneCage"}, {"name": "Spell Cascade", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gem/SupportGemSpellCascade"}, {"name": "Controlled Destruction", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemControlledDestruction"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Bonestorm", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gem/SkillGemBonestorm"}, {"name": "Rapid Casting I", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemArcaneTempo"}, {"name": "Burgeon I", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gem/SupportGemBurgeon"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": null, "source": null, "gems": [{"name": "Ravenous Swarm", "level": 20, "enabled": true, "gemId": "Metadata/Items/Gem/SkillGemRavenousSwarm"}, {"name": "Corrosion", "level": 1, "enabled": true, "gemId": "Metadata/Items/Gems/SupportGemCorrosion"}]},
+     {"isMain": false, "enabled": true, "label": null, "slot": "Weapon 1", "source": "Item:2:New Item, Attuned Wand", "gems": [{"name": "Mana Drain", "level": 11, "enabled": true, "gemId": "Metadata/Items/Gem/SkillGemManaDrain"}]}
+    ]
+   }
+  }
+ }
+]

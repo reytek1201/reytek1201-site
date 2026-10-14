@@ -494,6 +494,86 @@
   }
   });
 
+  /* Gaming: Player Select. Slots are tabs (arrow keys move, like a cabinet), the 1P cursor follows the pick,
+     and each gear doll shows one item's tooltip at a time. #pick-<slug> links select a character. */
+  window.RT.onPage(() => {
+  const ps = document.getElementById('player-select');
+  if (!ps) return;
+  {
+    const ac = new AbortController(), on = { signal: ac.signal };
+    const tabs = [...ps.querySelectorAll('[role="tab"]')];
+    const cur = ps.querySelector('.ps-cursor');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+    const place = () => {
+      const t = tabs.find(x => x.getAttribute('aria-selected') === 'true');
+      if (!t || !cur) return;
+      cur.style.setProperty('--x', (t.offsetLeft + t.offsetWidth / 2) + 'px');
+      cur.classList.toggle('locked', t.classList.contains('is-locked'));
+    };
+    const pick = (t, user) => {
+      if (!t) return;
+      const was = t.getAttribute('aria-selected') === 'true';
+      tabs.forEach(x => {
+        const sel = x === t, p = document.getElementById(x.getAttribute('aria-controls'));
+        x.setAttribute('aria-selected', sel ? 'true' : 'false');
+        x.tabIndex = sel ? 0 : -1;
+        if (p) p.hidden = !sel;
+      });
+      place();
+      t.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (!user) return;
+      if (!reduce) {
+        if (t.classList.contains('is-locked')) replay(t, 'nope');
+        if (!was) { const p = document.getElementById(t.getAttribute('aria-controls')); if (p) replay(p, 'in'); }
+      }
+      if (!was) { history.replaceState(history.state, '', '#' + t.id); track('character_select', { character: t.dataset.slug }); }
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => pick(t, true), on);
+      t.addEventListener('keydown', ev => {
+        const k = ev.key, n = tabs.length;
+        const j = k === 'ArrowRight' ? i + 1 : k === 'ArrowLeft' ? i - 1 : k === 'Home' ? 0 : k === 'End' ? n - 1 : null;
+        if (j === null) return;
+        ev.preventDefault();
+        const nt = tabs[(j + n) % n];
+        pick(nt, true); nt.focus();
+      }, on);
+    });
+    // "Character sheet" links and #pick-<slug> in the address bar
+    document.querySelectorAll('[data-pick]').forEach(a => a.addEventListener('click', ev => {
+      const t = document.getElementById('pick-' + a.dataset.pick);
+      if (!t) return;
+      ev.preventDefault();
+      pick(t, true);
+      ps.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+    }, on));
+    const fromHash = () => { const t = tabs.find(x => '#' + x.id === location.hash); if (t) pick(t, false); };
+    fromHash();
+    addEventListener('popstate', fromHash, on);
+
+    // gear doll: one tooltip at a time; hover previews where there's a mouse
+    const hover = matchMedia('(hover: hover)');
+    ps.querySelectorAll('.sh-grid').forEach(g => {
+      const slots = [...g.querySelectorAll('.slot[aria-controls]')], tips = [...g.querySelectorAll('.it')];
+      const show = b => {
+        slots.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+        tips.forEach(it => { it.hidden = it.id !== b.getAttribute('aria-controls'); });
+      };
+      slots.forEach(b => {
+        b.addEventListener('click', () => show(b), on);
+        b.addEventListener('focus', () => show(b), on);
+        b.addEventListener('mouseenter', () => { if (hover.matches) show(b); }, on);
+      });
+    });
+
+    place();
+    addEventListener('resize', place, on);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    return () => ac.abort();
+  }
+  });
+
   /* Gaming: countdown to the Path of Exile 2 1.0 launch */
   window.RT.onPage(() => {
   const cd = document.getElementById('countdown');
