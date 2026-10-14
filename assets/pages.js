@@ -574,6 +574,27 @@
   }
   });
 
+  /* Gaming: Now playing cards. Pointer-follow glow, a small tilt and art parallax (mouse only, not with reduced motion) */
+  window.RT.onPage(() => {
+    const cards = [...document.querySelectorAll('.gnp-card')];
+    if (!cards.length || !matchMedia('(hover: hover)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ac = new AbortController(), on = { signal: ac.signal };
+    cards.forEach(c => {
+      c.addEventListener('pointermove', ev => {
+        const r = c.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+        c.classList.add('tilting');
+        c.style.setProperty('--mx', (x * 100) + '%'); c.style.setProperty('--my', (y * 100) + '%');
+        c.style.setProperty('--ry', ((x - .5) * 5) + 'deg'); c.style.setProperty('--rx', ((.5 - y) * 4) + 'deg');
+        c.style.setProperty('--px', ((.5 - x) * 10) + 'px'); c.style.setProperty('--py', ((.5 - y) * 8) + 'px');
+      }, on);
+      c.addEventListener('pointerleave', () => {
+        c.classList.remove('tilting');
+        ['--rx', '--ry', '--px', '--py'].forEach(k => c.style.removeProperty(k));
+      }, on);
+    });
+    return () => ac.abort();
+  });
+
   /* Gaming: countdown to the Path of Exile 2 1.0 launch */
   window.RT.onPage(() => {
   const cd = document.getElementById('countdown');

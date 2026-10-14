@@ -390,26 +390,30 @@ def now_playing(rows):
 
 def card(r):
     pic = (r.get('portrait') or [{}])[0]
-    art = (f'<div class="gnp-art"><img src="{e(pic.get("src"))}" alt="{e(pic.get("alt") or r["name"])}" width="{int(pic.get("w") or 480)}" '
-           f'height="{int(pic.get("h") or 480)}" loading="lazy" decoding="async"></div>') if pic.get('src') else ''
-    meta = ' · '.join(e(x) for x in (r.get('game'), r.get('class_line')) if x)
+    pick = f'#pick-{e(r["slug"])}'
+    art = (f'<a class="gnp-art" href="{pick}" data-pick="{e(r["slug"])}" tabindex="-1" aria-hidden="true"><img src="{e(pic.get("src"))}" alt="" width="{int(pic.get("w") or 480)}" '
+           f'height="{int(pic.get("h") or 480)}" loading="lazy" decoding="async"></a>') if pic.get('src') else ''
     links = []
     if r.get('planner_url'):
         links.append(f'<a class="btn primary" href="{e(r["planner_url"])}" {EXT}>Open the build ↗</a>')
     elif r.get('poe_slug'):
         q = '?' + urllib.parse.urlencode({'loadout': r['poe_loadout'].lower()}).replace('&', '&amp;') if r.get('poe_loadout') else ''
         links.append(f'<a class="btn primary" href="{POE_SITE}/b/{e(r["poe_slug"])}{q}" {EXT}>Open the build ↗</a>')
-    links.append(f'<a class="btn" href="#pick-{e(r["slug"])}" data-pick="{e(r["slug"])}">Character sheet</a>')
+    links.append(f'<a class="btn" href="{pick}" data-pick="{e(r["slug"])}">Character sheet</a>')
     credit = e(r.get('guide_credit'))
     if r.get('guide_url'):
         credit = f'<a class="txt-link" href="{e(r["guide_url"])}" {EXT}>{credit or "Read the guide"} ↗</a>'
-    return (f'      <div class="gnp-card{" has-art" if art else ""}">\n        {art}\n        <div class="gnp-body">\n'
-            f'          <div class="proj-meta"><span class="proj-status live">Now playing</span><span>{meta}</span></div>\n'
+    chips = [x for x in (r.get('class_line'), ('Loadout: ' + r['poe_loadout']) if r.get('poe_loadout') else None,
+                         ('Level %s' % r['level']) if r.get('level') else None) if x]
+    return (f'      <article class="gnp-card{" has-art" if art else ""}" aria-label="{e(r["name"])}">\n        {art}\n        <div class="gnp-body">\n'
+            f'          <div class="proj-meta"><span class="proj-status live">Now playing</span></div>\n'
             f'          <h2>{e(r["name"])}</h2>\n'
-            + (f'          <p>{e(r["blurb"])}</p>\n' if r.get('blurb') else '')
+            f'          <p class="gnp-meta">{e(r.get("game"))}</p>\n'
+            + (f'          <p class="gnp-blurb">{e(r["blurb"])}</p>\n' if r.get('blurb') else '')
+            + (f'          <div class="gnp-chips">{"".join("<span>" + e(c) + "</span>" for c in chips)}</div>\n' if chips else '')
             + (f'          <p class="gnp-credit">{credit}</p>\n' if credit else '')
             + f'          <div class="page-cta">{"".join(links)}</div>\n'
-            + '        </div>\n      </div>\n')
+            + '        </div>\n      </article>\n')
 
 def render(template, rows, builds=None):
     assert template.count(MARK) == 1, MARK
