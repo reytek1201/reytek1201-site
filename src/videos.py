@@ -140,6 +140,35 @@ ART = ('<svg class="tv-art" viewBox="0 40 1200 680" width="1200" height="680" ar
        '<path d="M880,150 H1030 L1050,170 V490 L1030,510 H880 Z" fill="#06080c" stroke="#000" stroke-width="3"></path>'
        '<path class="tv-edge lit" d="M884,154 H1028 L1046,172 V488 L1028,506 H884 Z" stroke-width="1.5" fill="none"></path></svg>')
 
+PTRACES = ['M40,10 H120 L130,19 H210', 'M238,10 H318', 'M30,306 H90 L98,298 H190', 'M240,306 H328', 'M4,60 V110 L8,114 V200',
+           'M354,60 V130 L350,134 V210', 'M4,236 V280 L12,288', 'M354,240 V280 L346,288']
+PNODES = [(40, 10), (318, 10), (30, 306), (328, 306), (4, 60), (354, 60)]
+
+def _ptraces(cls, pulse=False, boot=False):
+    out = f'<g class="trg {cls}">'
+    for i, d in enumerate(PTRACES):
+        out += f'<path d="{d}" pathLength="100"' + (f' style="--i:{i}"' if boot else '') + '></path>'
+    if not pulse:
+        out += ''.join(f'<circle cx="{x}" cy="{y}" r="2.2"></circle>' for x, y in PNODES)
+    return out + '</g>'
+
+PART = ('<svg class="tv-art-m" viewBox="0 0 358 316" aria-hidden="true" focusable="false"><defs>'
+        '<linearGradient id="tvmShell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2531"></stop><stop offset="1" stop-color="#080a0f"></stop></linearGradient>'
+        '<linearGradient id="tvmSheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".13"></stop><stop offset=".5" stop-color="#fff" stop-opacity=".02"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></linearGradient>'
+        '<filter id="tvmGlow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.5"></feGaussianBlur></filter></defs>'
+        '<path d="M26,0 H332 L358,26 V290 L332,316 H26 L0,290 V26 Z" fill="url(#tvmShell)" stroke="#000" stroke-width="2.5"></path>'
+        '<path d="M26,0 H332 L358,26 V150 L0,60 V26 Z" fill="url(#tvmSheen)"></path>'
+        '<path d="M30,5 H328 L353,28 V288 L328,311 H30 L5,288 V28 Z" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="1"></path>'
+        '<path d="M0,26 L5,28 M26,0 L30,5 M332,0 L328,5 M358,26 L353,28 M358,290 L353,288 M332,316 L328,311 M26,316 L30,311 M0,290 L5,288" stroke="#fff" stroke-opacity=".14" stroke-width="1.2" fill="none"></path>'
+        '<path d="M14,300 H24 M334,300 H344 M150,12 H208" stroke="#000" stroke-opacity=".55" stroke-width="2" fill="none"></path>'
+        + '<g filter="url(#tvmGlow)" class="tr-glow">' + _ptraces('tr-g') + '</g>'
+        + '<g class="tr-base">' + _ptraces('tr-b', boot=True) + '</g>'
+        + '<g class="tr-pulse">' + _ptraces('tr-p', pulse=True) + '</g>'
+        + '<path d="M12,24 H346 V228 H12 Z" fill="#04060a" stroke="#000" stroke-width="2"></path>'
+        '<path d="M12,24 H346 V228 H12 Z" class="tv-edge lit" fill="none" stroke-width="1"></path>'
+        '<path d="M12,262 H346" stroke="#000" stroke-opacity=".5" stroke-width="2"></path>'
+        '</svg>')
+
 def _bars(n=5):
     return '<span class="tv-meter" aria-hidden="true">' + '<i></i>' * n + '</span>'
 
@@ -176,7 +205,7 @@ def render_vision(rows):
     <div class="page-in vis-in">
       <div class="tv" id="tv" data-state="standby" data-power="on" data-vis="1"{' style="--vc:' + c['rgb'] + '"' if c['rgb'] else ''}>
         <div class="tv-fit" id="tvFit"><div class="tv-rig" id="tvRig"><div class="tv-tilt" id="tvTilt"><div class="tv-body">
-          {ART}
+          {ART}{PART}
           <div class="tv-top"><span class="tv-brand">Reytek Vision</span><span class="tv-tally"><i aria-hidden="true"></i><span id="tvTally">Standby</span></span></div>
           <div class="tv-set" id="tvSet">
             <div class="tv-screen" id="tvScreen">
