@@ -11,7 +11,7 @@
 
   if (!window.fetch || !history.pushState || !window.DOMParser) return;
   const ROOT = new URL(window.RT_ROOT || './', location.href);
-  const PAGES = ['', 'origin/', 'music/', 'projects/', 'gaming/', 'art/', 'work/'];
+  const PAGES = ['', 'origin/', 'music/', 'vision/', 'projects/', 'gaming/', 'art/', 'work/'];
   const slugOf = href => {
     let u; try { u = new URL(href, location.href); } catch (e) { return null; }
     if (u.origin !== ROOT.origin || !u.pathname.startsWith(ROOT.pathname)) return null;

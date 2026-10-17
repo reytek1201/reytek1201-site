@@ -76,6 +76,10 @@ button{font:inherit;color:inherit}
 .chapters a:hover::after{transform:scaleX(1)}
 .chapters a.on{color:var(--bone)}
 .chapters a.on::before{content:'› ';color:var(--signal)}
+.chapters a[data-go="0"]{display:none}
+.chapters .vdot{display:inline-block;width:5px;height:5px;margin-left:6px;border-radius:50%;background:rgb(var(--sig-rgb));box-shadow:0 0 8px rgb(var(--sig-rgb));vertical-align:middle;animation:tvTally 1.8s ease-in-out infinite}
+@keyframes tvTally{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.chapters .vdot{animation:none}}
 .hud-tl a{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
 .hud-tl a:hover b{color:var(--signal)}
 #sound{display:flex;align-items:center;gap:10px;background:none;border:1px solid var(--line);padding:9px 14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);border-radius:var(--r);transition:border-color .25s,color .25s}
@@ -688,34 +692,100 @@ body.page::before{content:'';position:fixed;inset:-20vmax;z-index:-1;pointer-eve
 .rel.playing .rel-play{background:rgb(var(--sig-rgb));color:#041014}
 .rel-lyrics{flex:none;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);background:transparent;border:1px solid rgba(var(--sig-rgb),.45);border-radius:99px;padding:5px 9px;cursor:pointer}
 .rel-lyrics:hover,.rel-lyrics:focus-visible,.rel-lyrics[aria-expanded="true"]{background:rgba(var(--sig-rgb),.16);border-color:rgb(var(--sig-rgb));color:rgb(var(--sig-rgb));outline:none}
-/* Music: Watch mode. A Listen / Watch switch above the turntable; Watch swaps the deck for a framed 16:9 screen. */
-.rel-watch{flex:none;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);background:transparent;border:1px solid rgba(var(--sig-rgb),.45);border-radius:99px;padding:5px 9px;cursor:pointer}
-.rel-watch svg,.wm svg{width:13px;height:13px;fill:currentColor;flex:none}
+/* Music: a Watch link on release rows and a slim link to Reytek Vision above the turntable. */
+.rel-watch{flex:none;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);text-decoration:none;background:transparent;border:1px solid rgba(var(--sig-rgb),.45);border-radius:99px;padding:5px 9px;cursor:pointer}
+.rel-watch svg{width:13px;height:13px;fill:currentColor;flex:none}
 .rel-watch:hover,.rel-watch:focus-visible{background:rgba(var(--sig-rgb),.16);border-color:rgb(var(--sig-rgb));color:rgb(var(--sig-rgb));outline:none}
 @media (max-width:600px){.rel-watch{padding:6px 8px}.rel-watch span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
-.watch{margin-bottom:18px}
-.watch-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:14px}
-.watch-mode{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:99px;background:rgba(5,6,8,.6)}
-.wm{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);background:transparent;border:0;border-radius:99px;padding:9px 16px;cursor:pointer;transition:background .2s,color .2s}
-.wm:hover{color:var(--bone)}
-.wm.on{background:rgb(var(--sig-rgb));color:#041014}
-.wm:focus-visible,.watch-pick button:focus-visible{outline:2px solid rgb(var(--sig-rgb));outline-offset:2px}
-.watch-pick{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.watch-pick[hidden]{display:none}
-.watch-pick button{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);background:transparent;border:1px solid var(--line);border-radius:99px;padding:7px 12px;cursor:pointer}
-.watch-pick button:hover,.watch-pick button[aria-pressed="true"]{color:rgb(var(--sig-rgb));border-color:rgba(var(--sig-rgb),.6)}
-.watch-screen{padding:12px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:calc(var(--r-lg) + 4px);background:rgba(11,13,18,.7);box-shadow:0 40px 90px -50px rgba(var(--sig-rgb),.65);animation:deckIn .6s cubic-bezier(.16,1,.3,1)}
-.watch-screen[hidden],.watch-pane[hidden]{display:none}
-.watch-pane{margin:0}
-.watch-frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#07080b}
-.watch-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.watch-pane figcaption{display:grid;gap:8px;padding:14px 6px 4px}
-.watch-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
-.watch-meta b{font-weight:500;font-size:18px}
-.watch-meta span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
-.watch-pane figcaption p{margin:0;color:var(--ash);max-width:60ch}
-.deck-sec.is-watching .deck-slot{display:none}
-@media (prefers-reduced-motion:reduce){.watch-screen{animation:none}.wm{transition:none}}
+.vis-link{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 16px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:var(--r);background:rgba(11,13,18,.6);color:var(--bone);text-decoration:none;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:border-color .25s,background .25s}
+.vis-link b{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;letter-spacing:.04em;font-size:14px}
+.vis-link .vdot{width:7px;height:7px;border-radius:50%;background:rgb(var(--sig-rgb));box-shadow:0 0 10px rgb(var(--sig-rgb));animation:tvTally 1.8s ease-in-out infinite}
+.vis-link .vis-n{color:var(--ash)}
+.vis-link .tag{margin-left:auto;color:rgb(var(--sig-rgb))}
+.vis-link:hover,.vis-link:focus-visible{border-color:rgb(var(--sig-rgb));background:rgba(var(--sig-rgb),.08);outline:none}
+@media (max-width:600px){.vis-link .vis-n{display:none}}
+.music-head .txt-link+.txt-link{margin-left:18px}
+
+/* Reytek Vision: the site's TV. A bezel around the screen, controls under it, a channel guide beside it. */
+.vis{padding:2vh clamp(16px,6vw,96px) 6vh}
+.vis-in{grid-template-columns:minmax(0,1fr);gap:28px;align-items:start}
+@media (min-width:1000px){.vis-in{grid-template-columns:minmax(0,1fr) 340px}}
+.vis-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tv{--vc:var(--sig-rgb);display:grid;gap:18px;min-width:0}
+.tv-set{position:relative;padding:16px 16px 12px;border-radius:calc(var(--r-lg) + 10px);background:linear-gradient(180deg,#14171e,#0a0c11);border:1px solid rgba(var(--vc),.35);box-shadow:0 0 0 1px #000 inset,0 40px 110px -50px rgba(var(--vc),.7),0 0 60px -34px rgba(var(--vc),.5);transition:border-color .5s,box-shadow .5s}
+.tv-top{display:flex;align-items:center;gap:14px;padding:0 6px 12px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.tv-brand{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;letter-spacing:.06em;font-size:13px;color:var(--bone)}
+.tv-meter{display:flex;align-items:flex-end;gap:2px;height:14px}
+.tv-meter i{width:3px;height:100%;border-radius:1px;background:rgb(var(--vc));opacity:.45;transform-origin:50% 100%;transform:scaleY(.2)}
+.tv[data-state="playing"] .tv-meter i{opacity:.95;animation:tvMeter 1.3s ease-in-out infinite alternate}
+.tv[data-state="playing"] .tv-meter i:nth-child(2){animation-duration:.9s;animation-delay:-.3s}
+.tv[data-state="playing"] .tv-meter i:nth-child(3){animation-duration:1.7s;animation-delay:-.7s}
+.tv[data-state="playing"] .tv-meter i:nth-child(4){animation-duration:1.1s;animation-delay:-.1s}
+.tv[data-state="playing"] .tv-meter i:nth-child(5){animation-duration:1.5s;animation-delay:-.9s}
+@keyframes tvMeter{to{transform:scaleY(1)}}
+.tv-tally{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+.tv-tally i{width:7px;height:7px;border-radius:50%;background:rgb(var(--vc));box-shadow:0 0 10px rgb(var(--vc));opacity:.35}
+.tv[data-state="playing"] .tv-tally i{opacity:1;animation:tvTally 1.8s ease-in-out infinite}
+.tv[data-state="playing"] .tv-tally{color:rgb(var(--vc))}
+.tv-screen{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 0 0 1px rgba(0,0,0,.85)}
+.tv-video{position:absolute;inset:0;z-index:1}
+.tv-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.tv-standby{position:absolute;inset:0;z-index:2;display:block;width:100%;padding:0;border:0;cursor:pointer;background:#05070a;color:#fff}
+.tv-standby[hidden],.tv-end[hidden],.tv-end .btn[hidden]{display:none}
+.tv-standby img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.72);transition:transform .6s,filter .6s}
+.tv-standby::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.3) 0 1px,transparent 1px 3px),radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(0,0,0,.65))}
+.tv-standby:hover img,.tv-standby:focus-visible img{transform:scale(1.03);filter:saturate(.95) brightness(.85)}
+.tv-standby:hover .film-btn,.tv-standby:focus-visible .film-btn{transform:scale(1.08);background:rgba(var(--vc),.35)}
+.tv-standby:focus-visible{outline:2px solid rgb(var(--vc));outline-offset:-3px}
+.tv-standby .film-btn{z-index:2}
+.tv-cue{position:absolute;left:18px;bottom:14px;z-index:2;display:grid;gap:3px;text-align:left}
+.tv-cue b{font-family:var(--f-mono);font-weight:500;font-size:clamp(16px,2.6vw,26px);letter-spacing:.12em;color:rgb(var(--vc));text-shadow:0 0 12px rgba(var(--vc),.6)}
+.tv-cue small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(237,235,230,.8)}
+.tv-osd{position:absolute;left:18px;top:14px;z-index:4;pointer-events:none;opacity:0;transition:opacity .25s;font-family:var(--f-mono);font-size:clamp(18px,3vw,30px);letter-spacing:.12em;color:rgb(var(--vc));text-shadow:0 0 12px rgba(var(--vc),.7),0 2px 0 rgba(0,0,0,.6)}
+.tv-osd.on{opacity:1}
+.tv-static{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:repeating-linear-gradient(0deg,rgba(237,235,230,.16) 0 1px,transparent 1px 3px),radial-gradient(120% 80% at 50% 50%,rgba(var(--vc),.28),transparent 70%)}
+.tv-static.go{animation:tvTune .4s ease-out}
+@keyframes tvTune{0%{opacity:0}12%{opacity:1;background-position:0 0,0 0}55%{opacity:.7;background-position:0 7px,0 0}100%{opacity:0;background-position:0 14px,0 0}}
+.tv-end{position:absolute;inset:0;z-index:5;display:grid;place-content:center;gap:10px;justify-items:center;text-align:center;padding:20px;background:rgba(5,6,8,.88)}
+.tv-end-k{margin:0;font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgb(var(--vc))}
+.tv-end-t{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:clamp(18px,3.4vw,30px);text-transform:uppercase;line-height:1.05}
+.tv-end-b{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+.tv-ctl{display:flex;align-items:center;gap:10px;padding:14px 2px 2px}
+.tv-btn{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid rgba(var(--vc),.45);background:rgba(5,6,8,.6);color:var(--bone);display:grid;place-items:center;cursor:pointer;transition:background .2s,border-color .2s}
+.tv-btn svg{width:16px;height:16px;fill:currentColor}
+.tv-btn:hover,.tv-btn:focus-visible{background:rgba(var(--vc),.18);border-color:rgb(var(--vc));outline:none}
+.tv-btn[disabled]{opacity:.35;cursor:default;pointer-events:none}
+.tv-btn[hidden]{display:none}
+.tv-btn.main{background:rgb(var(--vc));border-color:rgb(var(--vc));color:#041014}
+.tv-btn .i-pause,.tv-btn .i-mute,.tv-btn[aria-pressed="true"] .i-play,.tv-btn[aria-pressed="true"] .i-vol{display:none}
+.tv-btn[aria-pressed="true"] .i-pause,.tv-btn[aria-pressed="true"] .i-mute{display:block}
+.tv-seek{flex:1;min-width:0;accent-color:rgb(var(--vc));cursor:pointer}
+.tv-seek:disabled{opacity:.35;cursor:default}
+.tv-time{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--ash);min-width:34px;text-align:right}
+@media (max-width:600px){.tv-ctl{flex-wrap:wrap}.tv-seek{order:9;flex:1 0 100%}.tv-time{margin-left:auto}}
+.tv-now{display:grid;gap:8px;padding:0 6px}
+.tv-now-k{margin:0;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:rgb(var(--vc))}
+.tv-now h2{margin:0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:clamp(22px,3.4vw,34px);text-transform:uppercase;line-height:1}
+.tv-now p:not(.tv-now-k){margin:0;color:var(--ash);max-width:60ch}
+.vg-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 8px 8px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.vg-head span:first-child{color:rgb(var(--sig-rgb))}
+.vg{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.vg-chan{--cc:var(--sig-rgb)}
+.vg-chan button{width:100%;text-align:left;font:inherit;color:var(--bone);background:transparent;border:0;cursor:pointer;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:6px;min-height:52px;padding:10px 10px 10px 8px;border-radius:12px}
+.vg-chan button:hover,.vg-chan button:focus-visible{background:rgba(var(--cc),.08);outline:none}
+.vg-chan button:focus-visible{box-shadow:inset 0 0 0 1px rgba(var(--cc),.55)}
+.vg-chan .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:rgb(var(--cc))}
+.vg-chan .name{display:grid;gap:1px;min-width:0}
+.vg-chan .name b{font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 125;font-size:clamp(20px,2.6vw,26px);line-height:1;text-transform:uppercase;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vg-chan .name i{font-style:normal;font-size:12.5px;color:var(--ash)}
+.vg-chan .tick{width:26px;height:2px;border-radius:2px;background:rgba(var(--cc),.55)}
+.vg-chan .tick:not(:empty){width:auto;height:auto;padding:4px 7px;border-radius:5px;background:rgb(var(--cc));box-shadow:0 0 14px -2px rgba(var(--cc),.9);font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#041014}
+.vg-chan.on .name b{color:rgb(var(--cc));text-shadow:0 0 22px rgba(var(--cc),.45)}
+.tv-set:fullscreen{display:flex;flex-direction:column;justify-content:center;border-radius:0;border:0;padding:2vh 2vw;background:#000}
+.tv-set:fullscreen .tv-screen{flex:1;aspect-ratio:auto;min-height:0}
+.tv-set:-webkit-full-screen{display:flex;flex-direction:column;justify-content:center;border-radius:0;border:0;padding:2vh 2vw;background:#000}
+.tv-set:-webkit-full-screen .tv-screen{flex:1;aspect-ratio:auto;min-height:0}
+@media (prefers-reduced-motion:reduce){.tv-static.go,.tv[data-state="playing"] .tv-meter i,.tv[data-state="playing"] .tv-tally i,.vis-link .vdot{animation:none}.tv-standby img,.tv-set,.tv-osd{transition:none}}
 /* lyrics card. pages.js drives --lc (section color, crossfaded into each downbeat), --pulse (decays after every beat, harder on beat one) and --ang (one lap of the trail per bar) from the audio clock. */
 html.lyr-open,html.lyr-open body{overflow:hidden}
 html.lyr-open #cur,html.lyr-open #dot{z-index:81}
@@ -1566,7 +1636,7 @@ html.rt-in body:not(.page) main{animation:rtFade .36s ease-out both}
 <div class="topscrim" aria-hidden="true"></div><div class="botscrim" aria-hidden="true"></div>
 <div class="hud hud-tl"><a href="#hero" data-go="0" aria-label="Back to top"><span class="dot"></span><b>REYTEK</b><span>/ hub</span></a></div>
 <nav class="hud hud-tr chapters" aria-label="Pages">
-  <a href="#hero" data-go="0" class="on" aria-current="page">Signal</a><a href="origin/">Origin</a><a href="music/">Music</a><a href="projects/">Projects</a><a href="gaming/">Gaming</a><a href="art/">Art</a><a href="work/">Work</a>
+  <a href="#hero" data-go="0" class="on" aria-current="page">Signal</a><a href="origin/">Origin</a><a href="music/">Music</a><a href="vision/">Vision<i class="vdot" aria-hidden="true"></i></a><a href="projects/">Projects</a><a href="gaming/">Gaming</a><a href="art/">Art</a><a href="work/">Work</a>
 </nav>
 <div class="hud hud-bl">Prototype 01 · Vortex</div>
 <nav class="rail" id="rail" aria-label="Reytek on social media"><span class="lbl" aria-hidden="true">Channels</span><span class="spark" aria-hidden="true"></span></nav>
@@ -1933,6 +2003,7 @@ window.BOOT = (() => {
         <h2>Drop the needle.</h2>
         <p>Drag the tonearm onto a groove, or tap a band on the record. Grab the vinyl to scratch. Pick another track while one is playing and it backspins into the next.</p>
         <a class="txt-link" href="music/">All releases and lyrics →</a>
+        <a class="txt-link" href="vision/">Watch on Reytek Vision →</a>
       </div>
       <div class="deck-wrap">
         <div class="deck-stage" id="deckStage">
@@ -2260,7 +2331,7 @@ function stab(t) {
 }
 function setSound(on) {
   A.on = on;
-  const btn = $('#sound'); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); $('#soundlbl').textContent = on ? 'Sound on' : 'Sound off';
+  const btn = $('#sound'); if (btn) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); const lbl = $('#soundlbl'); if (lbl) lbl.textContent = on ? 'Sound on' : 'Sound off'; }
   if (on) {
     startAudio(); A.ctx.resume();
     A.master.gain.cancelScheduledValues(A.ctx.currentTime); A.master.gain.setTargetAtTime(0.85, A.ctx.currentTime, 0.5);
@@ -2272,6 +2343,8 @@ function setSound(on) {
   }
 }
 $('#sound').addEventListener('click', () => setSound(!A.on));
+// the rest of the site (videos) asks the homepage's synthesized loop to stop through this
+window.RTAmbient = { playing: () => A.on, stop: () => { if (A.on) setSound(false); } };
 
 /* ---------- boot ---------- */
 let booted = false;

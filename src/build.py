@@ -87,6 +87,8 @@ js['pages'] = open('js/pages.js').read()
 ASSET['pages.js'] = put('pages.js', js['pages'])
 js['router'] = open('js/router.js').read()
 ASSET['router.js'] = put('router.js', js['router'])
+js['vision'] = open('js/vision.js').read()
+ASSET['vision.js'] = put('vision.js', js['vision'])
 # the router runs last on every page
 _lb = re.search(r'<script src="assets/lightbox\.js\?v=\w+" data-rt="lightbox"></script>', s).group(0)
 s = s.replace(_lb, _lb + f'\n<script src="{ASSET["router.js"]}" data-rt="router"></script>')
@@ -102,6 +104,7 @@ GUIDE = [  # number, name, href, one line, lane color
     ('04', 'Gaming', 'gaming/', 'POE Source · Dec 11', 'var(--c3)'),
     ('05', 'Art', 'art/', 'Covers and experiments in light', 'var(--c0)'),
     ('06', 'Work', 'work/', 'Sites, apps and AI tools · order up', '245,185,66'),
+    ('07', 'Vision', 'vision/', 'The site\'s own TV · music videos', '255,61,184'),
 ]
 GUIDE_THEMES = [('Cyan', '34,211,238'), ('Magenta', '255,61,184'), ('Amber', '255,159,28')]
 
@@ -153,7 +156,7 @@ THEMES = grab('<div class="themes" id="themes"', '</div>')
 RAIL = grab('<nav class="rail" id="rail"', '</nav>')
 FOOTER = grab('<footer>', '</footer>')
 LB = grab('<dialog class="lb" id="lb"', '</dialog>')
-NAV = [('Signal', '', ''), ('Origin', 'origin/', ''), ('Music', 'music/', ''), ('Projects', 'projects/', ''), ('Gaming', 'gaming/', ''), ('Art', 'art/', ''), ('Work', 'work/', '')]
+NAV = [('Signal', '', ''), ('Origin', 'origin/', ''), ('Music', 'music/', ''), ('Vision', 'vision/', ''), ('Projects', 'projects/', ''), ('Gaming', 'gaming/', ''), ('Art', 'art/', ''), ('Work', 'work/', '')]
 
 # share images: pages without their own use the site card
 OG = {
@@ -166,7 +169,7 @@ def inner_page(slug, title, desc, content, scripts, label):
     og_url = f'https://www.reytek1201.com/{og_img}'
 
     up = '../' * slug.count('/')
-    nav = ''.join((f'<a href="./" aria-current="page" class="on">' if href == slug else f'<a href="{up}{href}{h}"' + (' data-go="0"' if name == 'Signal' else '') + '>') + f'{name}</a>' for name, href, h in NAV)
+    nav = ''.join((f'<a href="./" aria-current="page" class="on">' if href == slug else f'<a href="{up}{href}{h}"' + (' data-go="0"' if name == 'Signal' else '') + '>') + f'{name}' + ('<i class="vdot" aria-hidden="true"></i>' if name == 'Vision' else '') + '</a>' for name, href, h in NAV)
     url = f'https://www.reytek1201.com/{slug}'
     head = (SK + GA + f'<title>{title}</title>\n<meta name="description" content="{desc}">\n<link rel="canonical" href="{url}">\n'
             '<meta name="robots" content="index,follow,max-image-preview:large">\n<meta name="theme-color" content="#050608">\n'
@@ -176,7 +179,7 @@ def inner_page(slug, title, desc, content, scripts, label):
             f'<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:site" content="@reytek1201">\n<meta name="twitter:image" content="{og_url}">\n'
             '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n'
             + FONTS + f'\n<link rel="stylesheet" href="{up}{ASSET["site.css"]}">\n</head><body>\n')
-    content = content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/')
+    content = content.replace('src="img/', f'src="{up}img/').replace('src="covers/', f'src="{up}covers/').replace(videos.UP, up)
     extra = ''
     mark = '<div id="lyrics"'
     if mark in content:
@@ -217,7 +220,7 @@ for i, t in enumerate(TR):
     w = wave(t['peaks']); title = t['title']
     label = t.get('label')
     vrow = VD_BY.get(title.strip().lower())
-    watch_btn = videos.watch_button(vrow, title) if vrow else ''
+    watch_btn = videos.watch_link(vrow, title) if vrow else ''
     lyr_btn = f'<button class="rel-lyrics" type="button" aria-expanded="false" aria-controls="lyrics" aria-label="Lyrics for {title}">Lyrics</button>' if title in LYR else ''
     rel.append(f'        <li class="rel" data-src="{t["file"]}" data-title="{title}" data-dur="{t["dur"]}">'
                f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
@@ -238,11 +241,13 @@ PAGES = {
   'origin/': ('Origin · REYTEK', "From Puerto Rico to Fort Lauderdale's rave scene and three decades in kitchens: Reytek's story across four lanes, kitchen, sound, code and play.",
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
-             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)).replace('__WATCH__', videos.render(VD)), SCR, 'Music'),
+             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)).replace('__WATCH__', videos.music_link(VD)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
                 projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',
               characters.render(P('gaming'), CH_ROWS, CH_BUILDS), SCR, 'Gaming'),
+  'vision/': ('Vision · REYTEK', "Reytek Vision, the site's own TV: music videos by Reytek, one channel each, starting with Dawn on the Loading Dock.",
+              P('vision').replace('__VISION__', videos.render_vision(VD)), SCR + ['vision.js'], 'Vision'),
   'art/': ('Art · REYTEK', 'Visual work, covers and experiments in light by Reytek: Kaelen of the Threefold Path, a Path of Exile 2 character brought to life with an original score, and the cover art for every release.',
            P('art').replace('__COVERS__', '\n'.join(gal)), SCR, 'Art'),
   'work/': ('Work · REYTEK', 'Websites, web apps, iOS and Android apps and AI tools, built solo by Ray Burgos (Reytek) after 30+ years running kitchens. See the menu and place an order.',

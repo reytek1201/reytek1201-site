@@ -240,7 +240,7 @@ function stab(t) {
 }
 function setSound(on) {
   A.on = on;
-  const btn = $('#sound'); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); $('#soundlbl').textContent = on ? 'Sound on' : 'Sound off';
+  const btn = $('#sound'); if (btn) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); const lbl = $('#soundlbl'); if (lbl) lbl.textContent = on ? 'Sound on' : 'Sound off'; }
   if (on) {
     startAudio(); A.ctx.resume();
     A.master.gain.cancelScheduledValues(A.ctx.currentTime); A.master.gain.setTargetAtTime(0.85, A.ctx.currentTime, 0.5);
@@ -252,6 +252,8 @@ function setSound(on) {
   }
 }
 $('#sound').addEventListener('click', () => setSound(!A.on));
+// the rest of the site (videos) asks the homepage's synthesized loop to stop through this
+window.RTAmbient = { playing: () => A.on, stop: () => { if (A.on) setSound(false); } };
 
 /* ---------- boot ---------- */
 let booted = false;

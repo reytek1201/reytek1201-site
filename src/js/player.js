@@ -19,4 +19,9 @@
     return p;
   })();
 
+  /* everything on the site that makes sound: this player, the turntable, and the homepage's synthesized loop */
+  window.RTSite = window.RTSite || {
+    sounding() { try { const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient; return !!((P && P.playing()) || (D && D.playing && D.playing()) || (A && A.playing())); } catch (e) { return false; } },
+    quiet() { try { const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient; if (P && P.audio) P.audio.pause(); if (D && D.playing && D.playing()) D.stop(); if (A && A.playing()) A.stop(); } catch (e) {} }
+  };
 })();
