@@ -9,14 +9,14 @@ API = 'https://pehytilcqrmzeuoewdnk.supabase.co'
 KEY = 'sb_publishable_FDV1I_WPq08LBsNyHOsbow_iZ0gcXxP'   # publishable: read-only, published rows only
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-def load(table, cols):
+def load(table, cols, allow_empty=False):
     snapshot = os.path.join(HERE, 'content', f'{table}.json')
     url = f'{API}/rest/v1/{table}?' + urllib.parse.urlencode({'select': cols, 'published': 'eq.true', 'order': 'sort.asc,id.asc'})
     try:
         req = urllib.request.Request(url, headers={'apikey': KEY, 'Authorization': f'Bearer {KEY}'})
         with urllib.request.urlopen(req, timeout=20) as r:
             rows = json.loads(r.read().decode())
-        if not rows: raise ValueError(f'no published rows in {table}')
+        if not rows and not allow_empty: raise ValueError(f'no published rows in {table}')
         with open(snapshot, 'w') as f: json.dump(rows, f, ensure_ascii=False, indent=1); f.write('\n')
         return rows, 'database'
     except Exception as e:

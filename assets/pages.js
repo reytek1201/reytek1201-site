@@ -494,6 +494,90 @@
   }
   });
 
+  /* Music: Watch mode. Listen is the turntable; Watch swaps it for a 16:9 screen that shows a poster and creates the
+     YouTube player (privacy mode) only when pressed. The video and the site's music never play together, and
+     leaving the page removes the player, so nothing keeps buffering. #watch-<slug> in the link opens a video. */
+  window.RT.onPage(() => {
+  const w = document.getElementById('watch');
+  if (!w) return;
+  {
+    const ac = new AbortController(), on = { signal: ac.signal };
+    const sec = document.getElementById('deck');
+    const screen = w.querySelector('.watch-screen');
+    const panes = [...w.querySelectorAll('.watch-pane')];
+    const modes = [...w.querySelectorAll('.wm')];
+    const picks = [...w.querySelectorAll('[data-pick]')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const YT = 'https://www.youtube-nocookie.com';
+    const facades = new Map(panes.map(p => [p, p.querySelector('.watch-frame').innerHTML]));
+    let mode = 'listen', cur = null, vidPlaying = false;
+    const frameEl = () => (cur && cur.querySelector('iframe')) || null;
+    const post = msg => { const f = frameEl(); if (f && f.contentWindow) try { f.contentWindow.postMessage(JSON.stringify(msg), YT); } catch (e) {} };
+    const quietSite = () => { try { const P = window.RTPlayer; if (P && P.audio) P.audio.pause(); const D = window.RTDeck; if (D && D.playing && D.playing()) D.stop(); } catch (e) {} };
+    const siteSounding = () => { try { const P = window.RTPlayer, D = window.RTDeck; return !!((P && P.playing()) || (D && D.playing && D.playing())); } catch (e) { return false; } };
+    const resetPane = p => { const f = p.querySelector('.watch-frame'); if (f.querySelector('iframe')) f.innerHTML = facades.get(p); };
+
+    const show = slug => {
+      const D = window.RTDeck;
+      let want = panes.find(p => p.dataset.slug === slug);
+      if (!want && cur) want = cur;
+      if (!want) { let t = ''; try { t = D && D.playing && D.playing() ? String(D.title() || '') : ''; } catch (e) {} want = panes.find(p => t && p.dataset.release.toLowerCase() === t.toLowerCase()) || panes[0]; }
+      if (cur && cur !== want) { resetPane(cur); vidPlaying = false; }
+      cur = want;
+      panes.forEach(p => { p.hidden = p !== cur; });
+      picks.forEach(b => b.setAttribute('aria-pressed', b.dataset.pick === cur.dataset.slug ? 'true' : 'false'));
+    };
+    const setMode = (next, slug) => {
+      mode = next;
+      if (next === 'watch') { show(slug); screen.hidden = false; }
+      else { if (cur) resetPane(cur); vidPlaying = false; screen.hidden = true; }
+      if (sec) sec.classList.toggle('is-watching', next === 'watch');
+      modes.forEach(b => { const on = b.dataset.mode === next; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    };
+
+    modes.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode), on));
+    picks.forEach(b => b.addEventListener('click', () => { if (mode !== 'watch') setMode('watch', b.dataset.pick); else show(b.dataset.pick); }, on));
+    // a Watch button on a release row
+    document.addEventListener('click', e => {
+      const b = e.target.closest && e.target.closest('[data-watch]');
+      if (!b) return;
+      setMode('watch', b.dataset.watch);
+      if (sec) sec.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
+      const play = cur && cur.querySelector('.film-play'); if (play) play.focus({ preventScroll: true });
+    }, on);
+    // pressing play creates the player
+    w.addEventListener('click', e => {
+      const b = e.target.closest('.film-play');
+      if (!b || !cur || !cur.contains(b)) return;
+      quietSite();
+      const f = document.createElement('iframe');
+      f.src = YT + '/embed/' + encodeURIComponent(cur.dataset.vid) + '?autoplay=1&playsinline=1&rel=0&enablejsapi=1&origin=' + encodeURIComponent(location.origin);
+      f.title = cur.dataset.title || 'Video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      f.addEventListener('load', () => post({ event: 'listening', id: 1, channel: 'widget' }), on);
+      cur.querySelector('.watch-frame').replaceChildren(f); f.focus();
+      track('video_play', { video: cur.dataset.vid });
+    }, on);
+    // the player reports play and pause: when the video starts, the site's music stops
+    window.addEventListener('message', e => {
+      const f = frameEl();
+      if (e.origin !== YT || !f || e.source !== f.contentWindow) return;
+      let d = e.data; if (typeof d === 'string') { try { d = JSON.parse(d); } catch (err) { return; } }
+      if (!d) return;
+      const st = d.event === 'onStateChange' ? d.info : (d.event === 'infoDelivery' && d.info && 'playerState' in d.info ? d.info.playerState : null);
+      if (st === 1) { vidPlaying = true; quietSite(); }
+      else if (st === 0 || st === 2) vidPlaying = false;
+    }, on);
+    // and when the music starts, the video pauses
+    const t = setInterval(() => { if (vidPlaying && siteSounding()) { post({ event: 'command', func: 'pauseVideo', args: '' }); vidPlaying = false; } }, 400);
+
+    const m = /^#watch(?:-([\w-]+))?$/.exec(location.hash);
+    if (m) setMode('watch', m[1]);
+    return () => { ac.abort(); clearInterval(t); panes.forEach(resetPane); };
+  }
+  });
+
   /* Gaming: Player Select. Slots are tabs (arrow keys move, like a cabinet), the 1P cursor follows the pick,
      and each gear doll shows one item's tooltip at a time. #pick-<slug> links select a character. */
   window.RT.onPage(() => {

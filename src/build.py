@@ -26,6 +26,11 @@ CH_ROWS, CH_FROM = sitecontent.load('characters', characters.COLS)
 print(f'characters: {len(CH_ROWS)} from the {CH_FROM}')
 CH_BUILDS, CH_BFROM = characters.load_builds(CH_ROWS)
 print(f'poe builds: {len(CH_BUILDS)} from the {CH_BFROM}')
+import videos
+VD_ROWS, VD_FROM = sitecontent.load('videos', videos.COLS, allow_empty=True)
+VD = videos.prepare(VD_ROWS)
+VD_BY = videos.by_release(VD)
+print(f'videos: {len(VD)} from the {VD_FROM}')
 s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
@@ -211,11 +216,13 @@ rel = []
 for i, t in enumerate(TR):
     w = wave(t['peaks']); title = t['title']
     label = t.get('label')
+    vrow = VD_BY.get(title.strip().lower())
+    watch_btn = videos.watch_button(vrow, title) if vrow else ''
     lyr_btn = f'<button class="rel-lyrics" type="button" aria-expanded="false" aria-controls="lyrics" aria-label="Lyrics for {title}">Lyrics</button>' if title in LYR else ''
     rel.append(f'        <li class="rel" data-src="{t["file"]}" data-title="{title}" data-dur="{t["dur"]}">'
                f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
                + (f'<img class="rel-label" src="{label}" alt="" width="1024" height="1024">' if label else '') + '</span>'
-               f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + lyr_btn + '</div>'
+               f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + lyr_btn + watch_btn + '</div>'
                f'<span class="rel-meta">A{i+1} · {round(t["bpm"])} BPM · {fmt(t["dur"])}</span>'
                f'<div class="rel-wave" title="Seek"><svg viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg><svg class="hi" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg></div></div>'
                f'<span class="rel-t">{fmt(t["dur"])}</span><button class="rel-play" type="button" aria-pressed="false" aria-label="Play {title}">{PLAY}</button></li>')
@@ -231,7 +238,7 @@ PAGES = {
   'origin/': ('Origin · REYTEK', "From Puerto Rico to Fort Lauderdale's rave scene and three decades in kitchens: Reytek's story across four lanes, kitchen, sound, code and play.",
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
-             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)), SCR, 'Music'),
+             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)).replace('__WATCH__', videos.render(VD)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
                 projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',

@@ -688,6 +688,34 @@ body.page::before{content:'';position:fixed;inset:-20vmax;z-index:-1;pointer-eve
 .rel.playing .rel-play{background:rgb(var(--sig-rgb));color:#041014}
 .rel-lyrics{flex:none;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);background:transparent;border:1px solid rgba(var(--sig-rgb),.45);border-radius:99px;padding:5px 9px;cursor:pointer}
 .rel-lyrics:hover,.rel-lyrics:focus-visible,.rel-lyrics[aria-expanded="true"]{background:rgba(var(--sig-rgb),.16);border-color:rgb(var(--sig-rgb));color:rgb(var(--sig-rgb));outline:none}
+/* Music: Watch mode. A Listen / Watch switch above the turntable; Watch swaps the deck for a framed 16:9 screen. */
+.rel-watch{flex:none;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);background:transparent;border:1px solid rgba(var(--sig-rgb),.45);border-radius:99px;padding:5px 9px;cursor:pointer}
+.rel-watch svg,.wm svg{width:13px;height:13px;fill:currentColor;flex:none}
+.rel-watch:hover,.rel-watch:focus-visible{background:rgba(var(--sig-rgb),.16);border-color:rgb(var(--sig-rgb));color:rgb(var(--sig-rgb));outline:none}
+@media (max-width:600px){.rel-watch{padding:6px 8px}.rel-watch span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+.watch{margin-bottom:18px}
+.watch-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:14px}
+.watch-mode{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:99px;background:rgba(5,6,8,.6)}
+.wm{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);background:transparent;border:0;border-radius:99px;padding:9px 16px;cursor:pointer;transition:background .2s,color .2s}
+.wm:hover{color:var(--bone)}
+.wm.on{background:rgb(var(--sig-rgb));color:#041014}
+.wm:focus-visible,.watch-pick button:focus-visible{outline:2px solid rgb(var(--sig-rgb));outline-offset:2px}
+.watch-pick{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.watch-pick[hidden]{display:none}
+.watch-pick button{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ash);background:transparent;border:1px solid var(--line);border-radius:99px;padding:7px 12px;cursor:pointer}
+.watch-pick button:hover,.watch-pick button[aria-pressed="true"]{color:rgb(var(--sig-rgb));border-color:rgba(var(--sig-rgb),.6)}
+.watch-screen{padding:12px;border:1px solid rgba(var(--sig-rgb),.35);border-radius:calc(var(--r-lg) + 4px);background:rgba(11,13,18,.7);box-shadow:0 40px 90px -50px rgba(var(--sig-rgb),.65);animation:deckIn .6s cubic-bezier(.16,1,.3,1)}
+.watch-screen[hidden],.watch-pane[hidden]{display:none}
+.watch-pane{margin:0}
+.watch-frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#07080b}
+.watch-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.watch-pane figcaption{display:grid;gap:8px;padding:14px 6px 4px}
+.watch-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.watch-meta b{font-weight:500;font-size:18px}
+.watch-meta span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+.watch-pane figcaption p{margin:0;color:var(--ash);max-width:60ch}
+.deck-sec.is-watching .deck-slot{display:none}
+@media (prefers-reduced-motion:reduce){.watch-screen{animation:none}.wm{transition:none}}
 /* lyrics card. pages.js drives --lc (section color, crossfaded into each downbeat), --pulse (decays after every beat, harder on beat one) and --ang (one lap of the trail per bar) from the audio clock. */
 html.lyr-open,html.lyr-open body{overflow:hidden}
 html.lyr-open #cur,html.lyr-open #dot{z-index:81}
