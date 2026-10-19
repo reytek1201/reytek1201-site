@@ -150,7 +150,7 @@ button{font:inherit;color:inherit}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
 /* origin + portrait (pinned) */
-.origin{position:relative;height:460vh}
+.origin{position:relative;height:400vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .counter{position:absolute;left:clamp(16px,max(6vw,112px),112px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
 .counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(78px,15vw,220px);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
@@ -2615,6 +2615,53 @@ const CAPS = [
   [2024, '2024', 'Code', 'Now or never. I bought my time.']
 ];
 let capIdx = 0, scrollS = 0, chapter = 0;
+// the year track: every caption is a stop where the counter holds; the quiet years between stops roll by quickly
+const YR = (() => {
+  const HW = 0.45, P0 = 0.045, P1 = 0.34, END_YEAR = 2026;
+  const kf = [], centres = []; let x = 0;
+  CAPS.forEach((c, i) => {
+    kf.push([x, c[0]]); centres.push(x + HW); x += 2 * HW; kf.push([x, c[0]]);
+    if (i < CAPS.length - 1) x += Math.min(1.2, 0.35 + 0.12 * (CAPS[i + 1][0] - c[0]));
+  });
+  x += 0.6; kf.push([x, END_YEAR]);
+  const total = x, uOf = p => clamp((p - P0) / (P1 - P0)) * total;
+  return {
+    stops: centres.map(u => P0 + (u / total) * (P1 - P0)),
+    year(p) {
+      const u = uOf(p);
+      for (let k = 0; k < kf.length - 1; k++) if (u <= kf[k + 1][0]) { const [x0, y0] = kf[k], [x1, y1] = kf[k + 1]; return Math.round(x1 === x0 ? y1 : y0 + (y1 - y0) * (u - x0) / (x1 - x0)); }
+      return END_YEAR;
+    },
+    hold(p) { const u = uOf(p); let d = 9; centres.forEach(c => { d = Math.min(d, Math.abs(u - c)); }); return clamp(1 - Math.max(0, d - HW) / 0.35); }   // 1 on a stop, 0 between stops
+  };
+})();
+// soft snap: when scrolling settles inside the years, glide to the nearest event. Arrow keys step event to event.
+const snapStops = () => { const o = els.origin, oLen = o.offsetHeight - VH(); return YR.stops.map(p => Math.round(o.offsetTop + p * oLen)); };
+const snapOn = () => !document.body.classList.contains('page') && !root.classList.contains('locked');
+let snapTimer = 0, snapTouch = false;
+function snapSettle() {
+  if (!snapOn() || snapTouch) return;
+  const ys = snapStops(), y = scrollY, vh = VH();
+  if (y < ys[0] - vh * 0.1 || y > ys[ys.length - 1] + 6) return;
+  const best = ys.reduce((a, b) => Math.abs(b - y) < Math.abs(a - y) ? b : a);
+  if (Math.abs(best - y) < 3) return;
+  scrollTo({ top: best, behavior: reduce ? 'auto' : 'smooth' });
+}
+const snapLater = () => { clearTimeout(snapTimer); snapTimer = setTimeout(snapSettle, 140); };
+addEventListener('scroll', snapLater, { passive: true });
+addEventListener('touchstart', () => { snapTouch = true; clearTimeout(snapTimer); }, { passive: true });
+['touchend', 'touchcancel'].forEach(t => addEventListener(t, () => { snapTouch = false; snapLater(); }, { passive: true }));
+addEventListener('keydown', e => {
+  if (!snapOn() || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  const dir = e.key === 'ArrowDown' || e.key === 'PageDown' ? 1 : e.key === 'ArrowUp' || e.key === 'PageUp' ? -1 : 0;
+  if (!dir || (e.target && e.target !== document.body && e.target !== root)) return;
+  const ys = snapStops(), y = scrollY;
+  if (y < ys[0] - 8 || y > ys[ys.length - 1] + 8) return;
+  const next = dir > 0 ? ys.find(s => s > y + 8) : [...ys].reverse().find(s => s < y - 8);
+  if (next == null) return;   // past the first or last event: normal scrolling
+  e.preventDefault(); scrollTo({ top: next, behavior: reduce ? 'auto' : 'smooth' });
+});
+
 function setCap(i) {
   if (i === capIdx) return; capIdx = i;
   scrambleText(els.capk, CAPS[i][1]);
@@ -3566,7 +3613,7 @@ window.RTDeck = {
 function sectionTop(i) {
   const vh = VH(), o = els.origin, oLen = o.offsetHeight - vh;
   if (i === 0) return 0;
-  if (i === 1) return o.offsetTop + oLen * 0.07;   // first frame with the year counter and "1991" caption fully in
+  if (i === 1) return o.offsetTop + oLen * YR.stops[0];   // first frame with the year counter and "1991" caption fully in
   if (i === 2) return o.offsetTop + oLen * 0.9;    // portrait open, every bio line revealed
   if (i === 3) return headTop(dk.section.querySelector('.music-head'));
   return headTop(els.hub.querySelector('.hub-head'));
@@ -3831,9 +3878,9 @@ function frame(now) {
   const a = clamp(p / 0.34), b = ease(clamp((p - 0.36) / 0.3)), c = clamp((p - 0.68) / 0.26);
   const inOrigin = clamp(p / 0.04) * (1 - clamp((p - 0.34) / 0.08));
   els.counter.style.opacity = inOrigin;
-  els.cap.style.opacity = inOrigin;
+  els.cap.style.opacity = (inOrigin * (0.3 + 0.7 * YR.hold(p))).toFixed(3);
   els.counter.style.transform = `translateY(${(1 - clamp(p / 0.06)) * 40}px)`;
-  const year = Math.round(1991 + a * 35);
+  const year = YR.year(p);
   setYear(year);
   const bpmNow = Math.round(lerp(142, 126, a));
   if (bpmNow !== lastBpm) { lastBpm = bpmNow; els.bpm.textContent = bpmNow; els.bpm.classList.add('tick'); setTimeout(() => els.bpm.classList.remove('tick'), 120); }

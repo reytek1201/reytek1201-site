@@ -144,7 +144,7 @@ button{font:inherit;color:inherit}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
 /* origin + portrait (pinned) */
-.origin{position:relative;height:460vh}
+.origin{position:relative;height:400vh}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .counter{position:absolute;left:clamp(16px,max(6vw,112px),112px);bottom:clamp(110px,16vh,180px);display:grid;gap:6px;opacity:0}
 .counter .yr{font-family:var(--f-num);font-weight:800;font-size:clamp(78px,15vw,220px);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
