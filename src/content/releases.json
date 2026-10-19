@@ -4569,7 +4569,7 @@
    234.104,
    234.707
   ],
-  "lyrics_text": "I walked around with a pocketful of dark\nevery block took a piece of my heart\nMy knees got fluent in concrete\nmy lungs kept catching on the stairs\nI kept on climbing, kept on falling\nlike nobody knew I was there\n\nAnd the light wasn't a clean way out\nit was a door left half ajar\nbut through the noise and through the doubt\nit never looked that far\n\nStill I kept moving toward it\none sore mile, then another\nStill I kept moving toward it\neven when the dark pulled me under\n\nSome nights I wore panic like a jacket\nsome mornings I wore it as my name\nBut the farther I carried that heavy weight\nthe less I answered when it came\n\nAnd the light wasn't a halo\nit was a handrail, it was a hand\nsomebody steady, somebody slow\nholding me up till I could stand\n\nStill I kept moving toward it\none sore mile, then another\nStill I kept moving toward it\neven when the dark pulled me under\n\nYou can turn around now\nthis road keeps receipts\nI've paid for every street\nI'm not turning back\n\nStill I kept moving toward it\none sore mile, then another\nAnd when I got there\nwhen I finally got there\nnothing in me went flying\nno fanfare and no crying\nI just let my hands open\n\nNo choir came down from the sky\njust the hum of the fridge and a quiet night\na room that stayed put, no one asking why\nThe light was plain\nand I could stay here",
+  "lyrics_text": "I walked around with a pocketful of dark\nevery block took a piece of my heart\nMy knees got fluent in concrete\nmy lungs kept catching on the stairs\nI kept on climbing, kept on falling\nlike nobody knew I was there\n\nAnd the light wasn't a clean way out\nit was a door left half ajar\nbut through the noise and through the doubt\nit never looked that far\n\nStill I kept moving toward it\none sore mile, then another\nStill I kept moving toward it\neven when the dark pulled me under\n\nSome nights I wore panic like a jacket\nsome mornings I wore it as my name\nBut the farther I carried that heavy weight\nthe less I answered when it came\n\nAnd the light wasn't a halo\nit was a handrail, it was a hand\nsomebody steady, somebody slow\nholding me up till I could stand\n\nStill I kept moving toward it\none sore mile, then another\nStill I kept moving toward it\neven when the dark pulled me under\n\nYou can turn around now\nthis road keeps receipts\nI've paid for every street\nI'm not turning back\n\nStill I kept moving toward it\none sore mile, then another\nAnd when I got there\nwhen I finally got there\nnothing in me went flying\nI just let my hands up, no crying\nI just let my hands open\n\nNo choir came down from the sky\njust the hum of the fridge and a quiet night\na room that stayed put, no one asking why\nThe light was plain\nand I could stay here",
   "lyrics": {
    "downbeat": 3,
    "sections": [
@@ -5940,21 +5940,36 @@
     },
     {
      "t": 173.0,
-     "text": "no fanfare and no crying",
+     "text": "I just let my hands up, no crying",
      "w": [
       [
-       "no",
+       "I",
        173.0,
-       173.33
+       173.1
       ],
       [
-       "fanfare",
-       173.33,
-       173.66
+       "just",
+       173.1,
+       173.31
       ],
       [
-       "and",
-       173.66,
+       "let",
+       173.31,
+       173.48
+      ],
+      [
+       "my",
+       173.48,
+       173.62
+      ],
+      [
+       "hands",
+       173.62,
+       173.87
+      ],
+      [
+       "up,",
+       173.87,
        174.0
       ],
       [
