@@ -1626,7 +1626,7 @@
   },
   {
    "t": 209.65,
-   "text": "and I could stay here",
+   "text": "and I could stay",
    "w": [
     [
      "and",
@@ -1646,11 +1646,6 @@
     [
      "stay",
      210.8,
-     211.84
-    ],
-    [
-     "here",
-     211.84,
      213.04
     ]
    ],
