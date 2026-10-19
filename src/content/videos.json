@@ -13,5 +13,20 @@
   "created_at": "2026-10-17T18:50:00+00:00",
   "tagline": "Breakbeat · 131 BPM",
   "color": null
+ },
+ {
+  "slug": "threshold-of-sound",
+  "sort": 20,
+  "release_title": "Threshold of Sound",
+  "title": "Threshold of Sound",
+  "kind": "music-video",
+  "youtube_url": "https://www.youtube.com/watch?v=MNvqcJxrcRk",
+  "published_on": "2026-10-19",
+  "duration": null,
+  "blurb": null,
+  "poster": [],
+  "created_at": "2026-10-19T16:30:00+00:00",
+  "tagline": null,
+  "color": null
  }
 ]

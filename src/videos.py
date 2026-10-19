@@ -194,8 +194,16 @@ def render_vision(rows):
     ld = '\n'.join('<script type="application/ld+json">' + json.dumps(_ld(r), ensure_ascii=False).replace('</', '<\\/') + '</script>' for r in rows)
     data = json.dumps(chans, ensure_ascii=False).replace('</', '<\\/')
     nch = len(rows)
-    keys = ''.join(f'<button class="tc-key" type="button" data-key="{k}" aria-label="Channel {k}">{k}</button>' for k in '123456789')
-    keys += _btn('down', 'Previous channel', I_DOWN, 'tc-key') + '<button class="tc-key" type="button" data-key="0" aria-label="Channel 0">0</button>' + _btn('up', 'Next channel', I_UP, 'tc-key')
+    I_LOCK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2M3.5 7h9v6.5h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>'
+    def _open(k):   # a number works only if a channel starts with it; the rest stay locked
+        k = int(k)
+        return (k >= 1 and (k <= nch or k * 10 <= nch)) or (k == 0 and nch >= 10)
+    def _key(k):
+        if _open(k):
+            return f'<button class="tc-key" type="button" data-key="{k}" aria-label="Channel {k}">{k}</button>'
+        return f'<button class="tc-key locked" type="button" disabled aria-label="Channel {k}, locked">{I_LOCK}</button>'
+    keys = ''.join(_key(k) for k in '123456789')
+    keys += _btn('down', 'Previous channel', I_DOWN, 'tc-key') + _key('0') + _btn('up', 'Next channel', I_UP, 'tc-key')
     seek = '<input class="tv-seek" data-seek type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" disabled>'
     playb = lambda cls: f'<button class="{cls}" type="button" data-act="play" aria-pressed="false" aria-label="Play">{I_PLAY}{I_PAUSE}</button>'
     muteb = lambda cls: f'<button class="{cls}" type="button" data-act="mute" aria-pressed="false" aria-label="Mute" disabled>{I_VOL}{I_MUTE}</button>'

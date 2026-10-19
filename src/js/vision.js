@@ -236,7 +236,7 @@
       else if (k === 'ArrowDown' && chans.length > 1) { e.preventDefault(); tune(idx + 1); }
       else if ((k === 'f' || k === 'F') && FS) { e.preventDefault(); toggleFull(); }
       else if (k === 'm' || k === 'M') { e.preventDefault(); const b = acts('mute').find(x => x.offsetParent !== null && !x.disabled); if (b) b.click(); }
-      else if (/^[0-9]$/.test(k)) { e.preventDefault(); digit(k); }
+      else if (/^[0-9]$/.test(k)) { e.preventDefault(); const kb = tv.querySelector('[data-key="' + k + '"]'); if (kb) digit(k); else { showOsd('LOCKED'); el.live.textContent = 'Channel ' + k + ' is locked'; } }
       else if (k === ' ' && !(e.target.closest && e.target.closest('button, a'))) { e.preventDefault(); const b = acts('play').find(x => x.offsetParent !== null) || acts('play')[0]; if (b) b.click(); }
     }, on);
 
