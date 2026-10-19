@@ -131,7 +131,7 @@
       document.documentElement.classList.remove('lyr-open');
       others().forEach(el => { el.inert = false; });
       if (lyrBtn) lyrBtn.setAttribute('aria-expanded', 'false');
-      cancelAnimationFrame(raf);
+      // (raf is the page's watch loop: closing the panel must not stop it, or the lyrics freeze the next time they open)
       if (focus && lyrBtn) lyrBtn.focus();
     };
     const openLyrics = row => {
