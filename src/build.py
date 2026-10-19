@@ -26,13 +26,18 @@ CH_ROWS, CH_FROM = sitecontent.load('characters', characters.COLS)
 print(f'characters: {len(CH_ROWS)} from the {CH_FROM}')
 CH_BUILDS, CH_BFROM = characters.load_builds(CH_ROWS)
 print(f'poe builds: {len(CH_BUILDS)} from the {CH_BFROM}')
+import releases
+REL_ROWS, REL_FROM = releases.load()
+REL_TRACKS = releases.tracks(REL_ROWS)
+print(f'releases: {len(REL_TRACKS)} from the {REL_FROM}')
+TRACKS_JSON = json.dumps(REL_TRACKS, separators=(',', ':'), ensure_ascii=False).replace('</', '<\\/')
 import videos
 VD_ROWS, VD_FROM = sitecontent.load('videos', videos.COLS, allow_empty=True)
 VD = videos.prepare(VD_ROWS)
 VD_BY = videos.by_release(VD)
 print(f'videos: {len(VD)} from the {VD_FROM}')
 HV_TABS, HV_PANE = videos.render_home(VD)
-s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS))).replace('__HOMETABS__', HV_TABS).replace('__HOMEVID__', HV_PANE)
+s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS))).replace('__HOMETABS__', HV_TABS).replace('__HOMEVID__', HV_PANE).replace('__TRACKS__', TRACKS_JSON)
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
 # 1. CSS: the single <style> block -> assets/site.css
@@ -148,7 +153,7 @@ open(f'{OUT}/index.html', 'w').write(page)
 print('built', {k: len(v) for k, v in js.items()}, 'css', len(css), 'html', len(page))
 
 # ---------- inner pages ----------
-SRC_TXT = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
+SRC_TXT = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS))).replace('__TRACKS__', TRACKS_JSON)
 def grab(start, end, txt=SRC_TXT):
     i = txt.index(start); j = txt.index(end, i) + len(end); return txt[i:j]
 GA = next(b for a, b in SEO_REPS if 'googletagmanager' in b).split('<title>')[0]
@@ -200,7 +205,7 @@ def inner_page(slug, title, desc, content, scripts, label):
     return html
 
 lanes_html = timeline.render(open('pages/origin-timeline.html').read(), TL_ROWS)
-TR = json.loads(re.search(r'const TRACKS = (\[.*?\]);\n', SRC_TXT).group(1))
+TR = REL_TRACKS
 fmt = lambda x: f'{int(x)//60}:{int(x)%60:02d}'
 def wave(peaks, n=120):
     k = len(peaks) / n; bars = []
@@ -209,40 +214,37 @@ def wave(peaks, n=120):
         bars.append(f'M{i+0.15:.2f} {12-h/2:.2f}h0.7v{h:.2f}h-0.7z')
     return ''.join(bars)
 PLAY = '<svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg>'
-LYR = {}
-if os.path.isdir('lyrics'):
-    for name in sorted(os.listdir('lyrics')):
-        if name.endswith('.json'):
-            data = json.load(open(os.path.join('lyrics', name)))
-            data['beats'] = next(t['beats'] for t in TR if t['title'] == data['title'])
-            LYR[data['title']] = data
+import html as _html
+esc = lambda s: _html.escape(str(s if s is not None else ''), True)
+LYR, LT = releases.lyrics(REL_ROWS)
 rel = []
 for i, t in enumerate(TR):
-    w = wave(t['peaks']); title = t['title']
-    label = t.get('label')
-    vrow = VD_BY.get(title.strip().lower())
-    watch_btn = videos.watch_link(vrow, title) if vrow else ''
-    lyr_btn = f'<button class="rel-lyrics" type="button" aria-expanded="false" aria-controls="lyrics" aria-label="Lyrics for {title}">Lyrics</button>' if title in LYR else ''
-    rel.append(f'        <li class="rel" data-src="{t["file"]}" data-title="{title}" data-dur="{t["dur"]}">'
-               f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{t["cover"]}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
+    w = wave(t['peaks']); raw = t['title']; title = esc(raw)
+    label = esc(t['label']) if t.get('label') else ''
+    vrow = VD_BY.get(raw.strip().lower())
+    watch_btn = videos.watch_link(vrow, raw) if vrow else ''
+    lyr_btn = (f'<button class="rel-lyrics" type="button" aria-expanded="false" aria-controls="lyrics" aria-label="Lyrics for {title}">Lyrics</button>' if raw in LYR else
+               f'<button class="rel-lyrics" type="button" data-plain="1" aria-haspopup="dialog" aria-label="Lyrics for {title}">Lyrics</button>' if raw in LT else '')
+    rel.append(f'        <li class="rel" data-src="{esc(t["file"])}" data-title="{title}" data-dur="{t["dur"]}">'
+               f'<span class="rel-disc{" has-label" if label else ""}"><span class="rel-vinyl" aria-hidden="true"></span><img class="rel-cover" src="{esc(t["cover"])}" alt="Cover art for {title}" width="640" height="640" loading="lazy" decoding="async">'
                + (f'<img class="rel-label" src="{label}" alt="" width="1024" height="1024">' if label else '') + '</span>'
                f'<div class="rel-info"><div class="rel-top"><b>{title}</b>' + ('<span class="rel-new">NEW</span>' if t.get('isNew') else '') + lyr_btn + watch_btn + '</div>'
-               f'<span class="rel-meta">A{i+1} · {round(t["bpm"])} BPM · {fmt(t["dur"])}</span>'
+               f'<span class="rel-meta">A{i+1} · {round(t["bpm"]) if t["bpm"] else "—"} BPM · {fmt(t["dur"])}</span>'
                f'<div class="rel-wave" title="Seek"><svg viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg><svg class="hi" viewBox="0 0 120 24" preserveAspectRatio="none" aria-hidden="true"><path d="{w}"/></svg></div></div>'
                f'<span class="rel-t">{fmt(t["dur"])}</span><button class="rel-play" type="button" aria-pressed="false" aria-label="Play {title}">{PLAY}</button></li>')
 gal = []
 for t in TR:
-    gal.append(f'        <li class="gal"><figure><img src="{t["cover"]}" alt="Cover art for {t["title"]}" width="640" height="640" loading="lazy" decoding="async"><figcaption>{t["title"]} · cover</figcaption></figure></li>')
+    gal.append(f'        <li class="gal"><figure><img src="{esc(t["cover"])}" alt="Cover art for {esc(t["title"])}" width="640" height="640" loading="lazy" decoding="async"><figcaption>{esc(t["title"])} · cover</figcaption></figure></li>')
 for t in TR:
     if t.get('label'):
-        gal.append(f'        <li class="gal"><figure><img src="{t["label"]}" alt="Record label art for {t["title"]}" width="1024" height="1024" loading="lazy" decoding="async"><figcaption>{t["title"]} · label</figcaption></figure></li>')
+        gal.append(f'        <li class="gal"><figure><img src="{esc(t["label"])}" alt="Record label art for {esc(t["title"])}" width="1024" height="1024" loading="lazy" decoding="async"><figcaption>{esc(t["title"])} · label</figcaption></figure></li>')
 P = lambda n: open(f'pages/{n}.html').read()
 SCR = ['theme.js', 'shell.js', 'pages.js', 'lightbox.js']
 PAGES = {
   'origin/': ('Origin · REYTEK', "From Puerto Rico to Fort Lauderdale's rave scene and three decades in kitchens: Reytek's story across four lanes, kitchen, sound, code and play.",
               P('origin').replace('__LANES__', lanes_html), ['theme.js', 'shell.js', 'lanes.js', 'lightbox.js'], 'Origin'),
   'music/': ('Music · REYTEK', 'Electronic music from Fort Lauderdale, shaped by the early-90s rave scene. Play every Reytek release, from Threshold of Sound to The Light Was Plain.',
-             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False)).replace('__WATCH__', videos.music_link(VD)), SCR, 'Music'),
+             P('music').replace('__RELEASES__', '\n'.join(rel)).replace('__COUNT__', str(len(TR))).replace('__LYRICS_JSON__', json.dumps(LYR, ensure_ascii=False).replace('</', '<\\/')).replace('__LYRICS_PLAIN__', json.dumps(LT, ensure_ascii=False).replace('</', '<\\/')).replace('__WATCH__', videos.music_link(VD)), SCR, 'Music'),
   'projects/': ('Projects · REYTEK', 'Apps built out of necessity: KeyMacro, an AI nutrition and training app, SlidePress for social posting, the FunkHarp site and this hub.',
                 projects.render(P('projects'), PJ_ROWS), SCR, 'Projects'),
   'gaming/': ('Gaming · REYTEK', 'From the arcades of the 80s to POE Source: free Path of Exile 2 guides and tools by Reytek, with the endgame companion aimed at the POE2 1.0 launch on December 11.',

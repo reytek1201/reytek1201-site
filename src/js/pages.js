@@ -178,6 +178,20 @@
       const row = b.closest('.rel');
       if (panel && !panel.hidden && lyrRow === row) closeLyrics(true); else openLyrics(row);
     }));
+    // lyrics without karaoke timing open as plain text
+    const plainDlg = document.getElementById('lyrPlain');
+    if (plainDlg) {
+      let plainBook = {};
+      try { plainBook = JSON.parse((document.getElementById('lyrPlainData') || {}).textContent || '{}'); } catch (e) {}
+      list.querySelectorAll('.rel-lyrics[data-plain]').forEach(b => b.addEventListener('click', () => {
+        const row = b.closest('.rel');
+        plainDlg.querySelector('h2').textContent = row.dataset.title;
+        plainDlg.querySelector('.lyr-plain-text').textContent = plainBook[row.dataset.title] || '';
+        plainDlg.showModal();
+      }, on));
+      plainDlg.querySelector('.lyr-plain-x').addEventListener('click', () => plainDlg.close(), on);
+      plainDlg.addEventListener('click', e => { if (e.target === plainDlg) plainDlg.close(); }, on);
+    }
     const discLabel = () => {
       if (!panel || !lyrRow) return;
       panel.querySelector('.lyr-disc').setAttribute('aria-label', (cur === lyrRow && !S.paused() ? 'Pause ' : 'Play ') + lyrRow.dataset.title);
@@ -211,7 +225,7 @@
       if (panel && !panel.hidden) frame();
     };
     raf = requestAnimationFrame(watch);
-    return () => { closeLyrics(false); cancelAnimationFrame(raf); ac.abort(); };
+    return () => { closeLyrics(false); if (plainDlg && plainDlg.open) plainDlg.close(); cancelAnimationFrame(raf); ac.abort(); };
   }
   });
 

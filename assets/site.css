@@ -907,6 +907,14 @@ html.lyr-open #cur,html.lyr-open #dot{z-index:81}
 .lyr-beat i{width:5px;height:5px;border-radius:50%;background:rgba(237,235,230,.18);transition:background .08s}
 .lyr-beat[data-b="0"] i:nth-child(1),.lyr-beat[data-b="1"] i:nth-child(2),.lyr-beat[data-b="2"] i:nth-child(3),.lyr-beat[data-b="3"] i:nth-child(4){background:rgb(var(--lc));box-shadow:0 0 6px rgb(var(--lc))}
 .lyr-x{width:44px;height:44px;border-radius:50%;border:1px solid rgba(var(--lc),.5);background:rgba(5,6,8,.6);color:inherit;font-size:22px;line-height:1;cursor:pointer}
+.lyr-plain{width:min(560px,92vw);max-height:84svh;padding:0;border:1px solid var(--line);border-radius:18px;background:#0b0d12;color:var(--bone)}
+.lyr-plain::backdrop{background:rgba(0,0,0,.72)}
+.lyr-plain,.lyr-plain *{cursor:auto!important}
+.lyr-plain button{cursor:pointer!important}
+.lyr-plain-in{max-height:84svh;overflow:auto;padding:26px 28px 32px}
+.lyr-plain h2{margin:0 44px 16px 0;font-family:var(--f-mark);font-weight:800;font-variation-settings:'wdth' 118;font-size:22px;line-height:1.1;text-transform:uppercase}
+.lyr-plain-text{margin:0;white-space:pre-line;line-height:1.7}
+.lyr-plain-x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(5,6,8,.6);color:inherit;font-size:22px;line-height:1}
 .lyr-x:hover,.lyr-x:focus-visible{background:rgba(var(--lc),.18);border-color:rgb(var(--lc));outline:none}
 .lyr-stack{display:grid;justify-items:center;gap:14px;text-align:center}
 .lyr-line{margin:0;max-width:17em;text-wrap:balance}
