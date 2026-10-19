@@ -31,7 +31,8 @@ VD_ROWS, VD_FROM = sitecontent.load('videos', videos.COLS, allow_empty=True)
 VD = videos.prepare(VD_ROWS)
 VD_BY = videos.by_release(VD)
 print(f'videos: {len(VD)} from the {VD_FROM}')
-s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS)))
+HV_TABS, HV_PANE = videos.render_home(VD)
+s = open(SRC).read().replace('__MOMENTS__', str(len(TL_ROWS))).replace('__HOMETABS__', HV_TABS).replace('__HOMEVID__', HV_PANE)
 s = s.replace('__PORTRAIT__', open('portrait.b64').read().strip()).replace('__ANYBODY__', open('anybody.b64').read().strip())
 
 # 1. CSS: the single <style> block -> assets/site.css

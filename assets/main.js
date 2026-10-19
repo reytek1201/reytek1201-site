@@ -1834,3 +1834,155 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setT
 setTimeout(runBoot, 1500);
 })();
 
+/* ---------- Watch: the homepage's compact TV beside the turntable (Listen / Watch) ----------
+   One stage, two modes. Watch is a small set with the same rules as Reytek Vision: no autoplay, the player loads only
+   when someone tunes in, tuning in stops every site sound, any site sound pauses the picture, and leaving the page
+   removes the player. The full set (keypad, hardware, guide) lives on /vision/. */
+(() => {
+  const fmt = n => { n = Math.max(0, Math.floor(n || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
+  const track = (name, params) => { try { if (window.gtag) window.gtag('event', name, params); } catch (e) {} };
+  const WATCH = ['› Now showing · Reytek Vision', 'Press the screen.', 'Every video is a channel. Tune in and the music stops; start the deck and the picture pauses. The full set, with the keypad and the whole guide, is on Vision.'];
+  let apiP = null;
+  const loadApi = () => apiP || (apiP = new Promise((res, rej) => {
+    if (window.YT && window.YT.Player) return res();
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { try { if (prev) prev(); } catch (e) {} res(); };
+    const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api';
+    sc.onerror = () => { apiP = null; rej(new Error('player')); };
+    document.head.appendChild(sc);
+  }));
+  window.RT.onPage(() => {
+    const hv = document.getElementById('hv'); if (!hv) return;   // the homepage is only in the document while you are on it
+    let chans = []; try { chans = JSON.parse((document.getElementById('hvData') || {}).textContent || '[]'); } catch (e) {}
+    if (!chans.length) return;
+    const $ = id => document.getElementById(id);
+    const el = { mount: $('hvVideo'), standby: $('hvStandby'), poster: $('hvPoster'), cue: $('hvCue'), osd: $('hvOsd'), end: $('hvEnd'), endK: $('hvEndK'), endGo: $('hvEndGo'),
+      ch: $('hvCh'), seek: $('hvSeek'), time: $('hvTime'), k: $('hvK'), t: $('hvNowT'), b: $('hvNowB'), full: $('hvFull'), live: $('hvLive'),
+      tabL: $('tabListen'), tabW: $('tabWatch'), paneL: $('paneListen'), paneW: $('paneWatch'), mhL: $('mhLbl'), mhT: $('mhTitle'), mhP: $('mhText') };
+    const head = [el.mhL, el.mhT, el.mhP];
+    head.forEach(n => { if (n && n.dataset.listen == null) n.dataset.listen = n.textContent; });
+    const btn = a => hv.querySelector('[data-hv="' + a + '"]');
+    const guide = [...hv.querySelectorAll('.hv-guide li')];
+    const ac = new AbortController(), on = { signal: ac.signal };
+    const YT_HOST = 'https://www.youtube-nocookie.com';
+    let player = null, ready = false, idx = 0, tuned = false, st = -1, dragging = false, seq = 0, osdT = 0;
+
+    const setState = s => {
+      hv.dataset.state = s;
+      const p = btn('play'); p.setAttribute('aria-pressed', s === 'playing' ? 'true' : 'false'); p.setAttribute('aria-label', s === 'playing' ? 'Pause' : 'Play');
+    };
+    const setTime = (t, v) => { el.time.textContent = t; if (v != null) el.seek.value = v; };
+    const enableSeek = yes => { el.seek.disabled = !yes; btn('mute').disabled = !yes; };
+    const posterUrl = c => /^https?:/.test(c.poster) ? c.poster : rtUrl(c.poster);
+    const select = (i, say) => {
+      idx = (i + chans.length) % chans.length;
+      const c = chans[idx];
+      if (c.rgb) hv.style.setProperty('--hc', c.rgb); else hv.style.removeProperty('--hc');
+      guide.forEach((li, n) => { li.classList.toggle('on', n === idx); li.querySelector('.tick').textContent = n === idx && tuned ? 'On air' : ''; });
+      el.k.textContent = 'CH.' + c.n + (c.meta ? ' · ' + c.meta : ''); el.t.textContent = c.title; el.b.textContent = c.blurb; el.b.hidden = !c.blurb;
+      el.ch.firstChild.textContent = c.n; el.cue.textContent = 'CH.' + c.n;
+      el.full.href = rtUrl('vision/#' + c.slug);
+      el.standby.setAttribute('aria-label', 'Tune in to channel ' + c.n + ': ' + c.title);
+      if (!tuned && el.poster) el.poster.src = posterUrl(c);
+      if (say) el.live.textContent = 'Channel ' + c.n + ': ' + c.title;
+    };
+    const showOsd = text => { el.osd.textContent = text; el.osd.classList.add('on'); clearTimeout(osdT); osdT = setTimeout(() => el.osd.classList.remove('on'), 2000); };
+    const noCc = () => { try { player.unloadModule('captions'); player.unloadModule('cc'); } catch (e) {} };
+    const onState = e => {
+      st = e.data;
+      if (st === 1) { setState('playing'); noCc(); if (window.RTSite) window.RTSite.quiet(); enableSeek(true); }
+      else if (st === 2) setState('paused');
+      else if (st === 0) onEnd();
+    };
+    const onEnd = () => {
+      setState('ended');
+      if (chans.length > 1) { const nx = chans[(idx + 1) % chans.length]; el.endK.textContent = 'Next · CH.' + nx.n + ' · ' + nx.title; el.endGo.textContent = 'Tune in'; el.endGo.onclick = () => tune(idx + 1); }
+      else { el.endK.textContent = 'Signal ends'; el.endGo.textContent = 'Watch again'; el.endGo.onclick = () => { el.end.hidden = true; try { player.seekTo(0, true); player.playVideo(); } catch (e) {} }; }
+      el.end.hidden = false; el.endGo.focus({ preventScroll: true });
+    };
+    const tune = async i => {
+      const my = ++seq;
+      el.end.hidden = true; tuned = true; select(i, true);
+      const c = chans[idx];
+      el.standby.hidden = true; setState('tuning'); showOsd('CH.' + c.n);
+      if (window.RTSite) window.RTSite.quiet();   // the site's music stops the moment you tune in
+      try { await loadApi(); } catch (e) {
+        if (my !== seq) return;
+        tuned = false; el.standby.hidden = false; setState('standby'); select(idx);
+        el.live.textContent = 'The player could not load. Use the full set on Vision instead.'; return;
+      }
+      if (my !== seq) return;
+      if (!player) {
+        const d = document.createElement('div'); el.mount.replaceChildren(d);
+        const noFs = !document.fullscreenEnabled && !document.webkitFullscreenEnabled;   // iPhone: the system player takes over
+        player = new YT.Player(d, {
+          host: YT_HOST, videoId: c.id,
+          playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: noFs ? 0 : 1, fs: 0, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 0, disablekb: 1, origin: location.origin },
+          events: { onReady: () => { ready = true; noCc(); try { player.playVideo(); } catch (e) {} }, onStateChange: onState }
+        });
+      } else if (ready) player.loadVideoById(c.id);
+      track('video_play', { video: c.id, from: 'home' });
+    };
+    const stopAll = () => {
+      seq++; el.end.hidden = true; clearTimeout(osdT); el.osd.classList.remove('on');
+      try { if (player && player.destroy) player.destroy(); } catch (e) {}
+      player = null; ready = false; st = -1; tuned = false;
+      el.mount.replaceChildren(); el.standby.hidden = false; enableSeek(false); setTime('0:00', 0); setState('standby'); select(idx);
+      const m = btn('mute'); m.setAttribute('aria-pressed', 'false'); m.setAttribute('aria-label', 'Mute');
+    };
+    const pause = () => { try { if (player && ready && st === 1) player.pauseVideo(); } catch (e) {} };
+
+    // Listen / Watch
+    let mode = el.tabW.getAttribute('aria-selected') === 'true' ? 'watch' : 'listen';
+    let shown = null;
+    const show = (m, focus) => {
+      mode = m; const w = m === 'watch';
+      el.tabL.setAttribute('aria-selected', w ? 'false' : 'true'); el.tabW.setAttribute('aria-selected', w ? 'true' : 'false');
+      el.tabL.tabIndex = w ? -1 : 0; el.tabW.tabIndex = w ? 0 : -1;
+      el.paneL.hidden = w; el.paneW.hidden = !w;
+      head.forEach((n, k) => { if (n) n.textContent = w ? WATCH[k] : n.dataset.listen; });
+      if (!w) pause();   // leaving Watch pauses the picture; the player stays ready
+      if (focus) (w ? el.tabW : el.tabL).focus();
+      if (shown !== null && shown !== m) dispatchEvent(new Event('resize'));   // the turntable re-measures when it comes back
+      shown = m;
+    };
+    el.paneL.setAttribute('role', 'tabpanel'); el.paneL.setAttribute('aria-labelledby', 'tabListen');
+    el.tabL.addEventListener('click', () => show('listen'), on);
+    el.tabW.addEventListener('click', () => show('watch'), on);
+    [el.tabL, el.tabW].forEach(t => t.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'Home' || e.key === 'End') { e.preventDefault(); show(e.key === 'ArrowLeft' || e.key === 'Home' ? 'listen' : 'watch', true); }
+    }, on));
+
+    // controls
+    el.standby.addEventListener('click', () => tune(idx), on);
+    guide.forEach((li, n) => li.querySelector('button').addEventListener('click', () => tune(n), on));
+    btn('up').addEventListener('click', () => tune(idx + 1), on);
+    btn('down').addEventListener('click', () => tune(idx - 1), on);
+    btn('play').addEventListener('click', () => {
+      if (!tuned) return tune(idx);
+      if (!player || !ready) return;
+      try { if (st === 1) player.pauseVideo(); else { el.end.hidden = true; player.playVideo(); } } catch (e) {}
+    }, on);
+    btn('mute').addEventListener('click', () => {
+      if (!player || !ready) return;
+      try { const m = player.isMuted(); if (m) player.unMute(); else player.mute(); const b = btn('mute'); b.setAttribute('aria-pressed', m ? 'false' : 'true'); b.setAttribute('aria-label', m ? 'Mute' : 'Unmute'); } catch (e) {}
+    }, on);
+    el.seek.addEventListener('input', () => { dragging = true; try { setTime(fmt(el.seek.value / 1000 * player.getDuration()), el.seek.value); } catch (e) {} }, on);
+    el.seek.addEventListener('change', () => { dragging = false; try { player.seekTo(el.seek.value / 1000 * player.getDuration(), true); } catch (e) {} }, on);
+
+    // progress, and the handoff: if the site's sound starts while the video plays, the video pauses
+    const poll = setInterval(() => {
+      if (!player || !ready || typeof player.getCurrentTime !== 'function') return;
+      try {
+        const d = player.getDuration() || 0, t = player.getCurrentTime() || 0;
+        if (!dragging) setTime(fmt(t), d ? Math.round(t / d * 1000) : 0);
+        if (st === 1 && window.RTSite && window.RTSite.sounding()) player.pauseVideo();
+      } catch (e) {}
+    }, 250);
+
+    select(idx, false);
+    show(mode);
+    return () => { ac.abort(); clearInterval(poll); stopAll(); };   // leaving the homepage removes the player
+  });
+})();
+
