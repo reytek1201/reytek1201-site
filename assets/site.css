@@ -852,6 +852,12 @@ body.page::before{content:'';position:fixed;inset:-20vmax;z-index:-1;pointer-eve
 .tv-screen:fullscreen .tv-fsbar,.tv-screen:-webkit-full-screen .tv-fsbar{display:flex}
 .tv-fsbar{position:absolute;left:0;right:0;bottom:0;z-index:6;align-items:center;gap:10px;padding:14px 18px;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent);opacity:0;transition:opacity .25s}
 .tv-fsbar.on,.tv-fsbar:focus-within{opacity:1}
+/* full screen sits above the site's custom cursor, so the real one comes back inside it; the bar stays up once the video has ended */
+.tv-screen:fullscreen,.tv-screen:fullscreen *{cursor:auto!important}
+.tv-screen:fullscreen button,.tv-screen:fullscreen .btn,.tv-screen:fullscreen a{cursor:pointer!important}
+.tv-screen:-webkit-full-screen,.tv-screen:-webkit-full-screen *{cursor:auto!important}
+.tv-screen:-webkit-full-screen button,.tv-screen:-webkit-full-screen .btn,.tv-screen:-webkit-full-screen a{cursor:pointer!important}
+.tv[data-state="ended"] .tv-fsbar{opacity:1}
 .tv-fsbar .tv-time{margin-right:auto}
 @media (max-width:759px){
   .tv-fit{aspect-ratio:358/316;isolation:isolate;filter:drop-shadow(0 0 22px rgba(var(--vc),calc(var(--glow) * .55)))}
