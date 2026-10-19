@@ -175,7 +175,7 @@ def _bars(n=5):
 def _btn(act, label, icon, cls='tv-btn', extra=''):
     return f'<button class="{cls}" type="button" data-act="{act}" aria-label="{label}"{extra}>{icon}</button>'
 
-def render_vision(rows):
+def render_vision(rows, ld_on=True):
     """The TV, its channel guide and the data the page script reads."""
     if not rows:
         return '<section class="vis" aria-label="Reytek Vision"><div class="page-in"><p class="lede">No channels on air yet.</p></div></section>'
@@ -191,7 +191,7 @@ def render_vision(rows):
                   f'aria-label="Channel {n}: {e(r["title"])}. {e(tag)}"><span class="n">CH.{n}</span>'
                   f'<span class="name"><b>{e(r["title"])}</b><i>{e(tag)}</i></span><span class="tick"></span></button></li>')
     c = chans[0]
-    ld = '\n'.join('<script type="application/ld+json">' + json.dumps(_ld(r), ensure_ascii=False).replace('</', '<\\/') + '</script>' for r in rows)
+    ld = '' if not ld_on else '\n'.join('<script type="application/ld+json">' + json.dumps(_ld(r), ensure_ascii=False).replace('</', '<\\/') + '</script>' for r in rows)
     data = json.dumps(chans, ensure_ascii=False).replace('</', '<\\/')
     nch = len(rows)
     I_LOCK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2M3.5 7h9v6.5h-9z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>'
@@ -269,55 +269,12 @@ def render_vision(rows):
 
 
 def render_home(rows):
-    """The homepage's Watch side: a compact TV beside the turntable. Returns (tabs, pane); both empty when there are no videos.
-    The player is only created when someone tunes in. Vision (/vision/) is the full set."""
+    """The homepage's Watch side: the same set as Reytek Vision (built by render_vision, run by vision.js), beside the turntable.
+    Returns (tabs, pane); both empty when there are no videos."""
     if not rows: return '', ''
-    chans, items = [], ''
-    for i, r in enumerate(rows):
-        n = f'{i+1:02d}'
-        rgb = _rgb(r.get('color'))
-        tag = r.get('tagline') or KINDS.get(r['kind'], 'Video')
-        meta = ' · '.join(x for x in (KINDS.get(r['kind'], ''), _year(r), r.get('duration') or '') if x)
-        chans.append({'slug': r['slug'], 'id': r['id'], 'n': n, 'title': r['title'], 'meta': meta, 'blurb': r.get('blurb') or '',
-                      'rgb': rgb, 'poster': r['poster_src']})
-        items += (f'<li{" class=on" if i == 0 else ""}><button type="button" data-ch="{i}" aria-label="Channel {n}: {e(r["title"])}. {e(tag)}">'
-                  f'<span class="n">CH.{n}</span><span class="name"><b>{e(r["title"])}</b><i>{e(tag)}</i></span><span class="tick"></span></button></li>')
-    c = chans[0]
-    data = json.dumps(chans, ensure_ascii=False).replace('</', '<\\/')
-    multi = len(rows) > 1
-    btn = lambda act, label, icon, extra='': f'<button class="hv-btn{" mute" if act == "mute" else ""}" type="button" data-hv="{act}" aria-label="{label}"{extra}>{icon}</button>'
-    tabs = (f'<div class="stage-tabs" role="tablist" aria-label="Listen or watch">'
-            f'<button type="button" role="tab" id="tabListen" aria-selected="true" aria-controls="paneListen">Listen</button>'
-            f'<button type="button" role="tab" id="tabWatch" aria-selected="false" aria-controls="paneWatch" tabindex="-1">Watch</button></div>')
-    pane = f"""<div class="stage-pane" id="paneWatch" role="tabpanel" aria-labelledby="tabWatch" hidden>
-        <div class="hv" id="hv" data-state="standby"{' style="--hc:' + c['rgb'] + '"' if c['rgb'] else ''}>
-          <div class="hv-grid">
-            <div class="hv-set">
-              <div class="hv-screen" id="hvScreen">
-                <div class="hv-video" id="hvVideo"></div>
-                <button class="hv-standby" id="hvStandby" type="button" aria-label="Tune in to channel {c['n']}: {e(c['title'])}">
-                  <img id="hvPoster" src="{e(c['poster'])}" alt="" width="1280" height="720" loading="lazy" decoding="async" onerror="this.remove()">
-                  <span class="hv-cue"><b id="hvCue">CH.{c['n']}</b><small>Press to tune in</small></span>
-                </button>
-                <div class="hv-osd" id="hvOsd" aria-hidden="true"></div>
-                <div class="hv-end" id="hvEnd" hidden><p id="hvEndK"></p><button class="btn primary" type="button" id="hvEndGo"></button></div>
-              </div>
-              <div class="hv-bar">
-                {btn('down', 'Previous channel', I_DOWN, ' disabled' if not multi else '')}<span class="hv-ch"><b id="hvCh">{c['n']}</b></span>{btn('up', 'Next channel', I_UP, ' disabled' if not multi else '')}
-                {btn('play', 'Play', I_PLAY + I_PAUSE, ' aria-pressed="false"')}
-                <input class="hv-seek" id="hvSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek" disabled>
-                <span class="hv-time" id="hvTime">0:00</span>
-                {btn('mute', 'Mute', I_VOL + I_MUTE, ' aria-pressed="false" disabled')}
-              </div>
-            </div>
-            <aside class="hv-panel" aria-label="Channels">
-              <div class="hv-now"><span class="hv-k" id="hvK">CH.{c['n']}{' · ' + e(c['meta']) if c['meta'] else ''}</span><b id="hvNowT">{e(c['title'])}</b><p id="hvNowB"{' hidden' if not c['blurb'] else ''}>{e(c['blurb'])}</p></div>
-              <ol class="hv-guide" aria-label="Channel guide">{items}</ol>
-              <a class="txt-link" id="hvFull" href="vision/#{e(c['slug'])}">The full set on Vision →</a>
-            </aside>
-          </div>
-          <p class="hv-sr" id="hvLive" aria-live="polite"></p>
-          <script type="application/json" id="hvData">{data}</script>
-        </div>
-      </div>"""
+    tabs = ('<div class="stage-tabs" role="tablist" aria-label="Listen or watch">'
+            '<button type="button" role="tab" id="tabListen" aria-selected="true" aria-controls="paneListen">Listen</button>'
+            '<button type="button" role="tab" id="tabWatch" aria-selected="false" aria-controls="paneWatch" tabindex="-1">Watch</button></div>')
+    pane = ('<div class="stage-pane vwatch" id="paneWatch" role="tabpanel" aria-labelledby="tabWatch" hidden>\n'
+            + render_vision(rows, ld_on=False) + '      </div>')
     return tabs, pane

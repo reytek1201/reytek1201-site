@@ -97,6 +97,7 @@
         REGIONS.forEach(sel => { const n = doc.querySelector(sel); if (n) { nodes[sel] = document.adoptNode(n); hold.appendChild(nodes[sel]); } });
         document.body.prepend(hold);   // first in the document, so the engine binds to the homepage's elements
         await loadEngine(doc);
+        await pageScripts(doc, ROOT.href);
         // the engine lets returning visitors straight in a tick after it starts; keep its homepage in reach until then
         const gate = nodes.main && nodes.main.querySelector('#gate');
         await new Promise(r => { const t0 = performance.now(), chk = () => (!gate || gate.classList.contains('done') || performance.now() - t0 > 4000) ? r() : setTimeout(chk, 30); chk(); });
@@ -149,21 +150,21 @@
       a.setAttribute('aria-label', on ? lbl + ', on air' : lbl);
     });
   }
-  function loadScript(el) {
+  function loadScript(el, base) {
     return new Promise(res => {
       const s = document.createElement('script');
       if (el.dataset.rt) s.dataset.rt = el.dataset.rt;
       const src = el.getAttribute('src');
-      if (src) { s.src = new URL(src, location.href).href; s.onload = s.onerror = () => res(); document.body.appendChild(s); }
+      if (src) { s.src = new URL(src, base || location.href).href; s.onload = s.onerror = () => res(); document.body.appendChild(s); }
       else { s.textContent = el.textContent; document.body.appendChild(s); res(); }
     });
   }
-  async function pageScripts(doc) {
+  async function pageScripts(doc, base) {
     for (const el of doc.querySelectorAll('script[data-rt]')) {
       const n = el.dataset.rt;
       if (loadedScripts.has(n) || ['boot', 'three', 'main', 'router', 'theme'].includes(n)) continue;
       loadedScripts.add(n);
-      await loadScript(el);
+      await loadScript(el, base);
     }
   }
   async function loadEngine(doc) {
@@ -237,7 +238,7 @@
     if (slug === 'music/') { if (window.RT_ENGINE) mountDeck(); else engineUnder(); }
     if (slug === '') dispatchEvent(new Event('resize'));   // the homepage re-measures itself after being away
     window.RT.inits.forEach(fn => window.RT.run(fn));
-    if (doc && slug !== '') await pageScripts(doc);
+    if (doc) await pageScripts(doc, slug === '' ? ROOT.href : undefined);   // the homepage's Watch side runs on vision.js
     scrollFor(slug, u, opt.pop ? opt.y : null);
     const m = document.querySelector('main'); if (m) { m.tabIndex = -1; m.focus({ preventScroll: true }); }
     warpIn();

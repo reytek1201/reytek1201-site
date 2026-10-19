@@ -241,6 +241,9 @@
       else if (k === ' ' && !(e.target.closest && e.target.closest('button, a'))) { e.preventDefault(); const b = acts('play').find(x => x.offsetParent !== null) || acts('play')[0]; if (b) b.click(); }
     }, on);
 
+    // the homepage's Listen / Watch switch asks the picture to pause when you go back to Listen
+    addEventListener('rt-pause-video', () => { try { if (player && ready && st === 1) player.pauseVideo(); } catch (e) {} }, on);
+
     // progress, and the handoff: if the site's sound starts while the video plays, the video pauses
     const poll = setInterval(() => {
       if (!player || !ready || typeof player.getCurrentTime !== 'function') return;

@@ -92,7 +92,7 @@ js['vision'] = open('js/vision.js').read()
 ASSET['vision.js'] = put('vision.js', js['vision'])
 # the router runs last on every page
 _lb = re.search(r'<script src="assets/lightbox\.js\?v=\w+" data-rt="lightbox"></script>', s).group(0)
-s = s.replace(_lb, _lb + f'\n<script src="{ASSET["router.js"]}" data-rt="router"></script>')
+s = s.replace(_lb, _lb + f'\n<script src="{ASSET["vision.js"]}" data-rt="vision"></script>\n<script src="{ASSET["router.js"]}" data-rt="router"></script>')
 
 # phone channel guide: the bottom strip and the full-screen guide. Same markup on the homepage and every inner page.
 N_TRACKS = len(json.loads(re.search(r'const TRACKS = (\[.*?\]);\n', js['main']).group(1)))
