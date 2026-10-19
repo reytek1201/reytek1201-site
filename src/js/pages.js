@@ -13,7 +13,7 @@
     const ac = new AbortController(), on = { signal: ac.signal };
     const rows = [...list.querySelectorAll('.rel')];
     const srcOf = row => rtUrl(row.dataset.src);
-    const queue = rows.map(r => ({ src: srcOf(r), title: r.dataset.title }));
+    const queue = rows.map(r => { const im = r.querySelector('.rel-cover'); return { src: srcOf(r), title: r.dataset.title, cover: im ? im.src : '' }; });
     // the source: whichever of the turntable or the plain player is sounding (the turntable wins when idle)
     const D = () => window.RTDeck || null;
     const deck = () => { const d = D(); return d && d.mounted && d.mounted() ? d : null; };

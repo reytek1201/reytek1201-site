@@ -68,10 +68,12 @@
 
   /* ---- the turntable: one deck, shown on the homepage and on the Music page ---- */
   let deckHome = null, engineP = null;
+  // touch-only devices play the Music page through the plain audio element: it keeps going with the screen locked, the turntable engine doesn't
+  const handheld = matchMedia('(hover: none) and (pointer: coarse)').matches;
   const deckWrap = () => document.querySelector('.deck-wrap') || (home && home.nodes.main ? home.nodes.main.querySelector('.deck-wrap') : null);
   function mountDeck() {
     const slot = document.getElementById('deckSlot');
-    if (!slot || !window.RT_ENGINE) return;
+    if (!slot || !window.RT_ENGINE || handheld) return;
     const w = deckWrap(); if (!w || slot.contains(w)) return;
     deckHome = w.parentNode;
     slot.appendChild(w); slot.classList.add('mounted');
@@ -82,7 +84,7 @@
   }
   // a visit that starts on the Music page: start the homepage engine underneath it, out of sight
   function engineUnder() {
-    if (engineP || window.RT_ENGINE || !document.getElementById('deckSlot')) return engineP;
+    if (engineP || window.RT_ENGINE || handheld || !document.getElementById('deckSlot')) return engineP;
     engineP = (async () => {
       try {
         const doc = await fetchDoc(ROOT.href);

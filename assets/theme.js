@@ -26,6 +26,32 @@ window.RT = window.RT || { inits: [], cleanups: [],
     return p;
   })();
 
+  /* lock screen, car display and headset buttons: the plain audio element is what keeps playing with the screen off */
+  (() => {
+    const ms = navigator.mediaSession;
+    if (!ms || typeof MediaMetadata === 'undefined') return;
+    const P = window.RTPlayer, a = P.audio;
+    const at = () => P.queue.findIndex(q => q.src === P.src);
+    const meta = () => {
+      if (!P.title) return;
+      const q = P.queue[at()];
+      try { ms.metadata = new MediaMetadata({ title: P.title, artist: 'Reytek', album: 'reytek1201.com', artwork: q && q.cover ? [{ src: q.cover, sizes: '640x640', type: 'image/webp' }] : [] }); } catch (e) {}
+    };
+    const go = d => { const q = P.queue[at() + d]; if (q) P.play(q.src, q.title); };
+    const set = (name, fn) => { try { ms.setActionHandler(name, fn); } catch (e) {} };
+    const pos = () => { try { if (a.duration && isFinite(a.duration)) ms.setPositionState({ duration: a.duration, position: Math.min(a.currentTime, a.duration), playbackRate: a.playbackRate || 1 }); } catch (e) {} };
+    ['play', 'playing', 'loadedmetadata'].forEach(ev => a.addEventListener(ev, () => { meta(); ms.playbackState = 'playing'; }));
+    a.addEventListener('pause', () => { ms.playbackState = 'paused'; });
+    ['loadedmetadata', 'seeked', 'play', 'pause', 'ratechange'].forEach(ev => a.addEventListener(ev, pos));
+    set('play', () => { a.play().catch(() => {}); });
+    set('pause', () => a.pause());
+    set('previoustrack', () => { if (a.currentTime > 3 || at() <= 0) a.currentTime = 0; else go(-1); });
+    set('nexttrack', () => go(1));
+    set('seekto', e => { a.currentTime = e.seekTime; });
+    set('seekbackward', e => { a.currentTime = Math.max(0, a.currentTime - (e.seekOffset || 10)); });
+    set('seekforward', e => { a.currentTime = Math.min(a.duration || 1e9, a.currentTime + (e.seekOffset || 10)); });
+  })();
+
   /* everything on the site that makes sound: this player, the turntable, and the homepage's synthesized loop */
   window.RTSite = window.RTSite || {
     sounding() { try { const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient; return !!((P && P.playing()) || (D && D.playing && D.playing()) || (A && A.playing())); } catch (e) { return false; } },
