@@ -29,7 +29,13 @@ window.RT = window.RT || { inits: [], cleanups: [],
   /* everything on the site that makes sound: this player, the turntable, and the homepage's synthesized loop */
   window.RTSite = window.RTSite || {
     sounding() { try { const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient; return !!((P && P.playing()) || (D && D.playing && D.playing()) || (A && A.playing())); } catch (e) { return false; } },
-    quiet() { try { const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient; if (P && P.audio) P.audio.pause(); if (D && D.playing && D.playing()) D.stop(); if (A && A.playing()) A.stop(); } catch (e) {} }
+    // every step on its own, so one failing can't leave another sound running; the turntable also stops mid-load, mid-backspin or mid-gap
+    quiet() {
+      const P = window.RTPlayer, D = window.RTDeck, A = window.RTAmbient;
+      try { if (P && P.audio) P.audio.pause(); } catch (e) {}
+      try { if (D && ((D.playing && D.playing()) || (D.active && D.active()))) D.stop(); } catch (e) {}
+      try { if (A && A.silence) A.silence(); else if (A && A.playing()) A.stop(); } catch (e) {}
+    }
   };
 })();
 /* ---------- theme: one accent color (cyan / magenta / amber) drives the whole site ---------- */

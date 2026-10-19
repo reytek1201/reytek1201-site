@@ -31,7 +31,10 @@
     const YT_HOST = 'https://www.youtube-nocookie.com';
     const FS = el.screen.requestFullscreen ? 'requestFullscreen' : el.screen.webkitRequestFullscreen ? 'webkitRequestFullscreen' : null;
     let player = null, apiP = null, ready = false, idx = 0, tuned = false, st = -1, dragging = false, powered = true;
-    let osdT = 0, endT = 0, tuneSeq = 0, bootT = 0, keyT = 0, keyBuf = '', fsT = 0;
+    let osdT = 0, endT = 0, tuneSeq = 0, bootT = 0, keyT = 0, keyBuf = '', fsT = 0, guardUntil = 0;
+    // after the picture is asked for, site sound is stopped again if anything brings it back (a track that was still loading, a fade),
+    // so the video and the music are never on together. After that window, music the visitor starts pauses the picture.
+    const guard = ms => { guardUntil = Date.now() + ms; if (window.RTSite) window.RTSite.quiet(); };
 
     const each = (list, fn) => list.forEach(fn);
     if (!FS) each(acts('full'), b => { b.hidden = true; });
@@ -86,7 +89,7 @@
       st = e.data;
       if (st === 1) {
         setState('playing'); noCc();
-        if (window.RTSite) window.RTSite.quiet();
+        guard(4000);
         enableSeek(true);
       } else if (st === 2) setState('paused');
       else if (st === 0) onEnd();
@@ -102,7 +105,7 @@
       el.standby.hidden = true;
       setState('tuning');
       flash(); showOsd('CH.' + c.n);
-      if (window.RTSite) window.RTSite.quiet();   // the site's music stops the moment you tune in
+      guard(6000);   // the site's music stops the moment you tune in
       try { await loadApi(); } catch (e) {
         if (seq !== tuneSeq) return;
         tuned = false; el.standby.hidden = false; setState('standby'); select(idx);
@@ -184,7 +187,7 @@
       if (!powered) power(true);
       if (!tuned) return tune(idx);
       if (!player || !ready) return;
-      try { if (st === 1) player.pauseVideo(); else { clearEnd(); player.playVideo(); } } catch (e) {}
+      try { if (st === 1) player.pauseVideo(); else { clearEnd(); guard(4000); player.playVideo(); } } catch (e) {}
     }, on));
     each(acts('mute'), b => b.addEventListener('click', () => {
       if (!player || !ready) return;
@@ -246,11 +249,12 @@
 
     // progress, and the handoff: if the site's sound starts while the video plays, the video pauses
     const poll = setInterval(() => {
+      if (tuned && Date.now() < guardUntil && window.RTSite && window.RTSite.sounding()) window.RTSite.quiet();
       if (!player || !ready || typeof player.getCurrentTime !== 'function') return;
       try {
         const d = player.getDuration() || 0, t = player.getCurrentTime() || 0;
         if (!dragging) setTimes(fmt(t), d ? Math.round(t / d * 1000) : 0);
-        if (st === 1 && window.RTSite && window.RTSite.sounding()) player.pauseVideo();
+        if (st === 1 && Date.now() >= guardUntil && window.RTSite && window.RTSite.sounding()) player.pauseVideo();
       } catch (e) {}
     }, 250);
 

@@ -2444,7 +2444,15 @@ function setSound(on) {
 }
 $('#sound').addEventListener('click', () => setSound(!A.on));
 // the rest of the site (videos) asks the homepage's synthesized loop to stop through this
-window.RTAmbient = { playing: () => A.on, stop: () => { if (A.on) setSound(false); } };
+window.RTAmbient = {
+  playing: () => A.on,
+  stop: () => { if (A.on) setSound(false); },
+  // forced quiet: also pulls both gains down if something left them up while the flag says off
+  silence: () => {
+    if (A.on) setSound(false);
+    if (A.ctx && A.master) { const t = A.ctx.currentTime; [A.master, A.deckOut].forEach(g => { g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(0, t, 0.05); }); }
+  }
+};
 
 /* ---------- boot ---------- */
 let booted = false;
@@ -3611,6 +3619,8 @@ const NAV_GAP = () => (VW() <= 820 ? 64 : 80);   // clears the top bar and its f
 const headTop = el => el.getBoundingClientRect().top + scrollY - NAV_GAP();
 window.RTGo = i => scrollTo({ top: sectionTop(i), behavior: 'auto' });
 window.RTDeck = {
+  // anything that can still make sound: needle down, a drop on its way, a track queued behind a backspin
+  active: () => !!(D.needle || D.auto || D.pending != null || D.backspin > 0),
   playing: () => (D.needle || !!(D.auto && D.auto.drop)) && D.pending == null && D.motor && trackAt(D.auto && D.auto.drop ? D.auto.t : D.t) >= 0,
   title: () => { const i = trackAt(D.auto && D.auto.drop ? D.auto.t : D.t); return TRACKS[i >= 0 ? i : D.sel].title; },
   time: () => { const i = trackAt(D.t); return i >= 0 ? Math.max(0, D.t - TRACKS[i].start) : 0; },
