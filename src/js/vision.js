@@ -81,10 +81,11 @@
       document.head.appendChild(s);
     }));
 
+    const noCc = () => { try { player.unloadModule('captions'); player.unloadModule('cc'); } catch (e) {} };   // no YouTube captions on the picture
     const onState = e => {
       st = e.data;
       if (st === 1) {
-        setState('playing');
+        setState('playing'); noCc();
         if (window.RTSite) window.RTSite.quiet();
         enableSeek(true);
       } else if (st === 2) setState('paused');
@@ -115,9 +116,9 @@
         const noFs = !document.fullscreenEnabled && !document.webkitFullscreenEnabled;   // iPhone: let the system player take over
         player = new YT.Player(d, {
           host: YT_HOST, videoId: c.id,
-          playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: noFs ? 0 : 1, fs: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, origin: location.origin },
+          playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: noFs ? 0 : 1, fs: 0, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 0, disablekb: 1, origin: location.origin },
           events: {
-            onReady: () => { ready = true; try { player.playVideo(); } catch (e) {} },
+            onReady: () => { ready = true; noCc(); try { player.playVideo(); } catch (e) {} },
             onStateChange: onState
           }
         });
