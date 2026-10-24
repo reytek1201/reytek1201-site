@@ -1,5 +1,5 @@
 /* ---------- Reytek Vision: the site's TV ----------
-   A chunky set with a power button, a keypad and a channel guide. Every video is a channel. Standby shows the poster;
+   A chunky set with a power button, a deck of pads (one per channel) and a channel guide. Every video is a channel. Standby shows the poster;
    pressing it (or a channel) tunes in: a scanline flash, the channel number on screen, then the YouTube player
    (privacy mode, controls off) with the set's own controls. The player loads only on tune-in. When a video starts,
    every other sound on the site stops; when the site's sound starts, the video pauses. The picture is never covered
@@ -25,6 +25,7 @@
     const acts = n => all('[data-act="' + n + '"]');
     const seeks = all('[data-seek]'), times = all('[data-time]');
     const guide = [...document.querySelectorAll('.vg-chan')];
+    const pads = all('[data-pad]');   // the deck on the set, and the row under the set on phones
     const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     const wide = matchMedia('(min-width: 760px)');
     const ac = new AbortController(), on = { signal: ac.signal };
@@ -50,6 +51,25 @@
     const setTimes = (t, v) => { each(times, x => { x.textContent = t; }); if (v != null) each(seeks, x => { x.value = v; }); };
     const enableSeek = yes => { each(seeks, x => { x.disabled = !yes; }); each(acts('mute'), b => { b.disabled = !yes; }); };
     const posterUrl = c => /^https?:/.test(c.poster) ? c.poster : rtUrl(c.poster);
+    // eight pads per page: channel numbers follow the page the selected channel is on
+    const fillPads = () => {
+      const base = Math.floor(idx / 8) * 8;
+      pads.forEach(b => {
+        const i = base + (+b.dataset.pad), c = chans[i], num = String(i + 1).padStart(2, '0');
+        b.querySelector('b span').textContent = num;
+        if (!c) {
+          b.className = 'tv-pad off'; b.disabled = true; b.style.removeProperty('--pc');
+          b.querySelector('small').textContent = 'Open slot';
+          b.setAttribute('aria-label', 'Channel ' + num + ', empty'); b.removeAttribute('aria-current');
+          return;
+        }
+        b.disabled = false; b.className = 'tv-pad ' + (i === idx ? 'on' : 'lit');
+        b.style.setProperty('--pc', c.rgb || 'var(--sig-rgb)');
+        b.querySelector('small').textContent = c.title;
+        b.setAttribute('aria-label', 'Channel ' + c.n + ': ' + c.title);
+        if (i === idx) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+      });
+    };
     const select = (i, announce) => {
       idx = (i + chans.length) % chans.length;
       const c = chans[idx];
@@ -62,6 +82,7 @@
       if (el.chnum) el.chnum.textContent = c.n;
       if (el.foot) el.foot.textContent = 'CH.' + c.n + ' · ' + c.title;
       el.standby.setAttribute('aria-label', 'Tune in to channel ' + c.n + ': ' + c.title);
+      fillPads();
       if (!tuned && el.poster) { el.poster.src = posterUrl(c); }
       if (announce) el.live.textContent = 'Channel ' + c.n + ': ' + c.title;
     };
@@ -217,19 +238,25 @@
     el.screen.addEventListener('pointermove', () => { if (fullOn()) pokeBar(); }, on);
     el.screen.addEventListener('click', () => { if (fullOn()) pokeBar(); }, on);
 
-    // keypad: digits build a channel number; no such channel shows NO SIGNAL
+    // number keys build a channel number; no such channel shows NO SIGNAL
     const digit = d => {
       if (!powered) power(true);
       keyBuf = (keyBuf + d).slice(-2);
       showOsd('CH.' + keyBuf.padStart(2, '0'));
       clearTimeout(keyT);
+      const wait = parseInt(keyBuf, 10) * 10 <= chans.length ? 1200 : 0;   // tune at once when no longer number could follow
       keyT = setTimeout(() => {
         const n = parseInt(keyBuf, 10), buf = keyBuf; keyBuf = '';
         if (n >= 1 && n <= chans.length) tune(n - 1);
         else { flash(); showOsd('NO SIGNAL'); el.live.textContent = 'No signal on channel ' + buf.padStart(2, '0'); }
-      }, 1200);
+      }, wait);
     };
-    all('[data-key]').forEach(b => b.addEventListener('click', () => digit(b.dataset.key), on));
+    // a number works only if a channel starts with it
+    const numOpen = k => { k = +k; return (k >= 1 && (k <= chans.length || k * 10 <= chans.length)) || (k === 0 && chans.length >= 10); };
+    pads.forEach(b => b.addEventListener('click', () => {
+      const i = Math.floor(idx / 8) * 8 + (+b.dataset.pad);
+      if (chans[i]) { clearTimeout(keyT); keyBuf = ''; tune(i); }
+    }, on));
 
     // keyboard, while focus is on the TV or the guide: up/down channel, space play/pause, F full screen, M mute, digits
     document.addEventListener('keydown', e => {
@@ -240,7 +267,7 @@
       else if (k === 'ArrowDown' && chans.length > 1) { e.preventDefault(); tune(idx + 1); }
       else if ((k === 'f' || k === 'F') && FS) { e.preventDefault(); toggleFull(); }
       else if (k === 'm' || k === 'M') { e.preventDefault(); const b = acts('mute').find(x => x.offsetParent !== null && !x.disabled); if (b) b.click(); }
-      else if (/^[0-9]$/.test(k)) { e.preventDefault(); const kb = tv.querySelector('[data-key="' + k + '"]'); if (kb) digit(k); else { showOsd('LOCKED'); el.live.textContent = 'Channel ' + k + ' is locked'; } }
+      else if (/^[0-9]$/.test(k)) { e.preventDefault(); if (numOpen(k) || keyBuf) digit(k); else { flash(); showOsd('NO SIGNAL'); el.live.textContent = 'No signal on channel ' + k; } }
       else if (k === ' ' && !(e.target.closest && e.target.closest('button, a'))) { e.preventDefault(); const b = acts('play').find(x => x.offsetParent !== null) || acts('play')[0]; if (b) b.click(); }
     }, on);
 
@@ -258,7 +285,7 @@
       } catch (e) {}
     }, 250);
 
-    // the rig is drawn at 1200x680 and scaled to the width of its box; phones use the plain layout instead
+    // the rig is drawn at 1200x840 and scaled to the width of its box; phones use the plain layout instead
     const fit = () => { if (wide.matches && el.fit.clientWidth) el.rig.style.setProperty('--s', (el.fit.clientWidth / 1200).toFixed(4)); else el.rig.style.removeProperty('--s'); };
     const ro = window.ResizeObserver ? new ResizeObserver(fit) : null;
     if (ro) ro.observe(el.fit);
